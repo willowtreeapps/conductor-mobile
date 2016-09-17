@@ -17,12 +17,12 @@ Using maven, add jitpack.io to your repositories and include it as a dependency:
 
 <dependencies>
     <dependency>
-    ...
-        <groupId>io.ddavison</groupId>
-        <artifactId>conductor</artifactId>
-        <version>2.2.2</version>
+        ...
+        <groupId>com.github.jossjacobo</groupId>
+        <artifactId>conductor-mobile</artifactId>
+        <version>v1.0</version>
+        ...
     </dependency>
-    ...
 </dependencies>
 ```
 Create a Java Class, and extend it from `com.joss.conductor.mobile.Locomotive`
