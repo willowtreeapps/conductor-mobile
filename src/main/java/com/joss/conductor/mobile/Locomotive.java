@@ -161,8 +161,12 @@ public class Locomotive implements Conductor<Locomotive> {
     }
 
     /**
-     * Method that acts as an arbiter of implicit timeouts of sorts.. sort of like a Wait For Ajax method.
+     * Method that acts as an arbiter of implicit timeouts of sorts
      */
+    public WebElement waitForElement(String id) {
+        return waitForElement(PageUtil.buildBy(configuration, id));
+    }
+
     public WebElement waitForElement(By by) {
         int size = driver.findElements(by).size();
 

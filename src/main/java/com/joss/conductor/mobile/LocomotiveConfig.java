@@ -190,7 +190,7 @@ public class LocomotiveConfig implements Config {
 
     private int getIntValue(String defaultPropertyKey, Integer testConfigValue, String jvmParamKey, int defaultValue) {
         int value = defaultValue;
-        String defaultPropValue = getProperty(defaultPropertyKey, String.valueOf(defaultPropertyKey));
+        String defaultPropValue = getProperty(defaultPropertyKey, String.valueOf(defaultValue));
         String jvmValue = JvmUtil.getJvmProperty(jvmParamKey);
 
         if(defaultPropValue != null && !StringUtils.isEmpty(defaultPropValue)) {

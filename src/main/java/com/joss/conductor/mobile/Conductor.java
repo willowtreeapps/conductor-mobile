@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
  * Created on 8/19/16.
  */
 public interface Conductor<Test> {
+    WebElement waitForElement(String id);
     WebElement waitForElement(By by);
 
     /*
