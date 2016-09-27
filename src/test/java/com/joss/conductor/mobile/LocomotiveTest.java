@@ -151,6 +151,58 @@ public class LocomotiveTest {
     }
 
     @Test
+    public void test_is_present_wait_found_on_first_try() {
+        By id = mock(By.class);
+        WebElement foundElement = mock(WebElement.class);
+
+        when(mockDriver.findElements(id)).thenReturn(Collections.singletonList(foundElement));
+        when(mockDriver.findElement(id)).thenReturn(foundElement);
+        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+
+        Assertions.assertThat(locomotive.isPresentWait(id))
+                .isEqualTo(true);
+        verify(mockDriver, times(1))
+                .findElements(id);
+    }
+
+    @Test
+    public void test_is_present_wait_retries_and_fail() {
+        int numberOfRetries = 5;
+        LocomotiveConfig config = mock(LocomotiveConfig.class);
+        when(config.retries()).thenReturn(numberOfRetries);
+
+        final By id = mock(By.class);
+        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
+        final Locomotive locomotive = new Locomotive(config, mockDriver);
+
+        Assertions.assertThat(locomotive.isPresentWait(id))
+                .isEqualTo(false);
+        verify(mockDriver, times(numberOfRetries + 1)) // First attempt to find elements plus 5 retries
+                .findElements(id);
+    }
+
+    @Test
+    public void test_is_present_wait_retries_and_find_item() {
+        int numberOfRetries = 5;
+        LocomotiveConfig config = mock(LocomotiveConfig.class);
+        when(config.retries()).thenReturn(numberOfRetries);
+
+        WebElement foundElement = mock(WebElement.class);
+        By id = mock(By.class);
+
+        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList(foundElement));
+        when(mockDriver.findElement(id)).thenReturn(foundElement);
+        Locomotive locomotive = new Locomotive(config, mockDriver);
+
+        Assertions.assertThat(locomotive.isPresentWait(id))
+                .isEqualTo(true);
+        verify(mockDriver, times(3)) // Found on it's 3rd attempt
+                .findElements(id);
+    }
+
+    @Test
     public void test_get_center_web_element() {
         WebElement element = mock(WebElement.class);
         when(element.getLocation()).thenReturn(new Point(50, 0));

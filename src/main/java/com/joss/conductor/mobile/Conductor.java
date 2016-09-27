@@ -43,6 +43,15 @@ public interface Conductor<Test> {
     boolean isPresent(By by);
 
     /**
+     * Method to continuously checks if the element is present or not for 5 seconds (default).<br>
+     * @param id/by The element
+     * @return <i>this method is not meant to be used fluently.</i><br><br>.
+     * Returns <code>true</code> if the element is present. and <code>false</code> if it's not.
+     */
+    boolean isPresentWait(String id);
+    boolean isPresentWait(By by);
+
+    /**
      * Get the text of an element.
      * <blockquote>This is a consolidated method that works on input's, as select boxes, and fetches the value rather than the innerHTMl.</blockquote>
      * @param id/by The element

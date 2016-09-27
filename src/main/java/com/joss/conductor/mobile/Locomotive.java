@@ -9,6 +9,7 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.api.Assertions;
 import org.assertj.swing.dependency.jsr305.Nullable;
 import org.junit.After;
 import org.junit.Assert;
@@ -236,6 +237,37 @@ public class Locomotive implements Conductor<Locomotive> {
 
     public boolean isPresent(By by) {
         return driver.findElements(by).size() > 0;
+    }
+
+    public boolean isPresentWait(String id) {
+        return isPresentWait(PageUtil.buildBy(configuration, id));
+    }
+
+    public boolean isPresentWait(By by) {
+        int size = driver.findElements(by).size();
+
+        if (size == 0) {
+            int attempts = 1;
+            while (attempts <= configuration.retries()) {
+                try {
+                    Thread.sleep(1000); // sleep for 1 second.
+                } catch (Exception x) {
+                    Assertions.fail(x.getMessage(), x);
+                }
+
+                size = driver.findElements(by).size();
+                if (size > 0) {
+                    break;
+                }
+                attempts++;
+            }
+        }
+
+        if (size > 1) {
+            System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+        }
+
+        return size > 0;
     }
 
     public String getText(String id) {
