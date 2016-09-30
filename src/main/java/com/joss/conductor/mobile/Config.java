@@ -24,6 +24,7 @@ public @interface Config {
     boolean autoWebView()  default false;
     boolean noReset()  default false;
     boolean fullReset() default false;
+    boolean autoAcceptAlerts() default false;
     String hub() default "";
     int timeout() default 5;
     int retries() default 5;

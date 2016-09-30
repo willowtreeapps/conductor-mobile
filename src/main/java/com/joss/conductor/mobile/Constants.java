@@ -5,6 +5,8 @@ package com.joss.conductor.mobile;
  */
 public class Constants {
 
+    public static final String AUTO_ACCEPT_ALERTS = "autoAcceptAlerts";
+
     public static final String JVM_CONDUCTOR_APP_PACKAGE_NAME = "conductorAppPackageName";
     public static final String JVM_CONDUCTOR_PLATFORM_NAME = "conductorPlatformName";
     public static final String JVM_CONDUCTOR_PLATFORM_VERSION = "conductorPlatformVersion";
@@ -22,6 +24,7 @@ public class Constants {
     public static final String JVM_CONDUCTOR_HUB = "conductorHub";
     public static final String JVM_CONDUCTOR_TIMEOUT = "conductorTimeout";
     public static final String JVM_CONDUCTOR_RETRIES = "conductorRetries";
+    public static final String JVM_CONDUCTOR_AUTO_ACCEPT_ALERTS = "conductorAutoAcceptAlerts";
 
     public static final String DEFAULT_PROPERTY_APP_PACKAGE_NAME = "appPackageName";
     public static final String DEFAULT_PROPERTY_PLATFORM_NAME = "platformName";
@@ -40,4 +43,5 @@ public class Constants {
     public static final String DEFAULT_PROPERTY_HUB = "hub";
     public static final String DEFAULT_PROPERTY_TIMEOUT = "timeout";
     public static final String DEFAULT_PROPERTY_RETRIES = "retries";
+    public static final String DEFAULT_PROPERTY_AUTO_ACCEPT_ALERTS = "autoAcceptAlerts";
 }

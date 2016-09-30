@@ -36,6 +36,7 @@ public class LocomotiveTest {
         when(androidConfig.platformVersion()).thenReturn("6.0");
         when(androidConfig.deviceName()).thenReturn("Pixelated Nexus");
         when(androidConfig.getAppFullPath()).thenReturn("/full/path/to/android.apk");
+        when(androidConfig.autoAcceptAlerts()).thenReturn(true);
 
         iosConfig = mock(LocomotiveConfig.class);
         when(iosConfig.platformName()).thenReturn(Platform.IOS);
@@ -44,6 +45,7 @@ public class LocomotiveTest {
         when(iosConfig.platformVersion()).thenReturn("10.0.0");
         when(iosConfig.deviceName()).thenReturn("Bravest Auxless Phone");
         when(iosConfig.getAppFullPath()).thenReturn("/full/path/to/ios.ipa");
+        when(iosConfig.autoAcceptAlerts()).thenReturn(true);
     }
 
     @Test
@@ -68,6 +70,7 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Bravest Auxless Phone");
         capabilities.setCapability(MobileCapabilityType.APP, "/full/path/to/ios.ipa");
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
+        capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, true);
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(iosConfig))
@@ -85,6 +88,7 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Puddy");
         capabilities.setCapability(MobileCapabilityType.APP, "/full/path/to/ios.ipa");
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
+        capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, true);
 
         List<String> devices = Arrays.asList("1234", "2345");
 
@@ -374,6 +378,20 @@ public class LocomotiveTest {
                 locomotive.swipeLong(null, element);
             }
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void test_auto_accept_alerts_are_on_compatibilities_ios() {
+        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
+        Assertions.assertThat(locomotive.buildCapabilities(iosConfig).getCapability(Constants.AUTO_ACCEPT_ALERTS))
+                .isEqualTo(true);
+    }
+
+    @Test
+    public void test_auto_accept_alerts_are_not_on_compatibilities_android() {
+        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+        Assertions.assertThat(locomotive.buildCapabilities(androidConfig).getCapability(Constants.AUTO_ACCEPT_ALERTS))
+                .isNull();
     }
 
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.Properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,12 +28,14 @@ public class LocomotiveConfigTest {
         defaultProperties.setProperty(Constants.DEFAULT_PROPERTY_PLATFORM_NAME, Platform.ANDROID.name());
         defaultProperties.setProperty(Constants.DEFAULT_PROPERTY_AUTO_WEBVIEW, Boolean.TRUE.toString());
         defaultProperties.setProperty(Constants.DEFAULT_PROPERTY_TIMEOUT, String.valueOf(15));
+        defaultProperties.setProperty(Constants.DEFAULT_PROPERTY_AUTO_ACCEPT_ALERTS, Boolean.TRUE.toString());
 
         testConfig = mock(Config.class);
         when(testConfig.platformName()).thenReturn(Platform.IOS);
         when(testConfig.appPackageName()).thenReturn("com.joss.conductor.mobile.test.andoridConfig");
         when(testConfig.autoWebView()).thenReturn(false);
         when(testConfig.timeout()).thenReturn(10);
+        when(testConfig.autoAcceptAlerts()).thenReturn(true);
     }
 
     @After

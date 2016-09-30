@@ -136,6 +136,11 @@ public class Locomotive implements Conductor<Locomotive> {
         capabilities.setCapability(MobileCapabilityType.APP, config.getAppFullPath());
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, config.orientation());
 
+
+        if (config.platformName() == Platform.IOS) {
+            capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, config.autoAcceptAlerts());
+        }
+
         // Try to use a connected iOS device if the UDID is not provided
         if (config.platformName() == Platform.IOS
                 && Strings.isNullOrEmpty(config.udid())

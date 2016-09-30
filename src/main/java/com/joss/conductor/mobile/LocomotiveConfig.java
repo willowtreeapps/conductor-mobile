@@ -113,6 +113,12 @@ public class LocomotiveConfig implements Config {
                 Constants.JVM_CONDUCTOR_FULL_RESET);
     }
 
+    public boolean autoAcceptAlerts() {
+        return getBooleanValue(Constants.DEFAULT_PROPERTY_AUTO_ACCEPT_ALERTS,
+                testConfig == null ? null : testConfig.autoAcceptAlerts(),
+                Constants.JVM_CONDUCTOR_AUTO_ACCEPT_ALERTS);
+    }
+
     public String hub() {
         return getStringValue(Constants.DEFAULT_PROPERTY_HUB,
                 testConfig == null ? null : testConfig.hub(),
