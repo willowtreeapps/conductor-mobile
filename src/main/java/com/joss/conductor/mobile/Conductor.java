@@ -116,6 +116,12 @@ public interface Conductor<Test> {
     Test swipe(SwipeElementDirection direction, By by, float percentage);
     Test swipe(SwipeElementDirection direction, WebElement element, float percentage);
 
+    /**
+     * Hides keyboard if present
+     * @return
+     */
+    Test hideKeyboard();
+
     /*
         Validations
      */

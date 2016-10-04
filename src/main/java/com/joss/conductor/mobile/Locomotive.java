@@ -13,10 +13,7 @@ import org.assertj.core.api.Assertions;
 import org.assertj.swing.dependency.jsr305.Nullable;
 import org.junit.After;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -25,6 +22,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -337,6 +335,15 @@ public class Locomotive implements Conductor<Locomotive> {
 
     public Locomotive swipe(SwipeElementDirection direction, WebElement element, float percentage) {
         return performSwipe(direction, element, /*by=*/null, percentage);
+    }
+
+    public Locomotive hideKeyboard() {
+        try {
+            driver.hideKeyboard();
+        } catch (WebDriverException e) {
+            System.err.println("WARN:" + e.getMessage());
+        }
+        return this;
     }
 
     private Locomotive performSwipe(SwipeElementDirection direction, WebElement element, By by, float percentage) {
