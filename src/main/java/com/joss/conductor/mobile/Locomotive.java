@@ -72,7 +72,7 @@ public class Locomotive implements Conductor<Locomotive> {
         } else {
             boolean isLocal = StringUtils.isEmpty(configuration.hub());
             URL url = getUrl(isLocal);
-            DesiredCapabilities capabilities = getCapabilities(configuration);
+            DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
             switch (configuration.platformName()) {
                 case ANDROID:
                     this.driver = isLocal
@@ -101,6 +101,10 @@ public class Locomotive implements Conductor<Locomotive> {
             }
         }
         return url;
+    }
+
+    protected DesiredCapabilities onCapabilitiesCreated(DesiredCapabilities desiredCapabilities) {
+        return desiredCapabilities;
     }
 
     private DesiredCapabilities getCapabilities(LocomotiveConfig configuration) {
