@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.IOSDeviceUtil;
 import com.joss.conductor.mobile.util.PageUtil;
 import com.joss.conductor.mobile.util.PropertiesUtil;
+import com.joss.conductor.mobile.util.ScreenShotUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -13,6 +14,10 @@ import org.assertj.core.api.Assertions;
 import org.assertj.swing.dependency.jsr305.Nullable;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -163,9 +168,45 @@ public class Locomotive implements Conductor<Locomotive> {
         return iosDeviceUtil == null ? IOSDeviceUtil.getInstance() : iosDeviceUtil;
     }
 
+    @Rule
+    public TestRule watchman = new TestWatcher() {
+        boolean failure;
+        Throwable e;
+        Description description;
+
+
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            if (configuration.screenshotsOnFail()) {
+                failure = true;
+                this.e = e;
+                this.description = description;
+            }
+        }
+
+        /**
+         * Take screenshot if the test failed.
+         */
+        @Override
+        protected void finished(Description description) {
+            super.finished(description);
+            if (configuration.screenshotsOnFail()) {
+                if (failure) {
+                    ScreenShotUtil.take(Locomotive.this,
+                            description.getDisplayName(),
+                            e.getMessage());
+                }
+                Locomotive.this.driver.quit();
+            }
+        }
+    };
+
     @After
     public void teardown() {
-        driver.quit();
+        if (!configuration.screenshotsOnFail()) {
+            driver.quit();
+        }
     }
 
     /**

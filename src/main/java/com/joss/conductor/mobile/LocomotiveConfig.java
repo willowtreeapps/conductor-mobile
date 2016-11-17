@@ -139,6 +139,12 @@ public class LocomotiveConfig implements Config {
                 DEFAULT_MAX_RETRIES);
     }
 
+    public boolean screenshotsOnFail() {
+        return getBooleanValue(Constants.DEFAULT_PROPERTY_SCREENSHOTS_ON_FAIL,
+                testConfig == null ? null : testConfig.screenshotsOnFail(),
+                Constants.JVM_CONDUCTOR_SCREENSHOTS_ON_FAIL);
+    }
+
     public Class<? extends Annotation> annotationType() {
         return null;
     }
