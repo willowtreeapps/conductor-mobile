@@ -7,13 +7,16 @@ import org.openqa.selenium.OutputType;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * Created on 7/25/16.
  */
 public class ScreenShotUtil {
 
-    private static final String DIR = "/target/test-screenshots";
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.S");
+    private static final String DIR = "target/test-screenshots";
     private static final String WORKING_DIR = System.getProperty("user.dir");
     private static final String PNG_EXT = ".png";
 
@@ -33,24 +36,28 @@ public class ScreenShotUtil {
         }
     }
 
-    private static String createFilePathAndName(String testName) {
+    public static String createFilePathAndName(String testName) {
         return WORKING_DIR
                 + File.separator
                 + DIR
                 + File.separator
-                + limitLengthTo100Chars(removeInvalidFilenameChars(testName))
+                + limitLengthTo100Chars(removeInvalidFilenameChars(testName)) + "-" +  getTimestamp()
                 + PNG_EXT;
     }
 
-    private static String createFilePathAndName(String path, String testName) {
+    public static String createFilePathAndName(String path, String testName) {
         return WORKING_DIR
                 + File.separator
                 + DIR
                 + File.separator
                 + limitLengthTo100Chars(removeInvalidFilenameChars(path))
                 + File.separator
-                + limitLengthTo100Chars(removeInvalidFilenameChars(testName))
+                + limitLengthTo100Chars(removeInvalidFilenameChars(testName)) + "-" +  getTimestamp()
                 + PNG_EXT;
+    }
+
+    private static String getTimestamp() {
+        return SDF.format(new Timestamp(System.currentTimeMillis()));
     }
 
     private static String removeInvalidFilenameChars(String name) {
@@ -58,8 +65,7 @@ public class ScreenShotUtil {
                 .replace(":", "-")
                 .replace("?", "-")
                 .replace("*", "-")
-                .replace("|", "-")
-                .replace(":", "-");
+                .replace("|", "-");
     }
 
     private static String limitLengthTo100Chars(String name) {
