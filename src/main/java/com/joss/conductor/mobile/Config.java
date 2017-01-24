@@ -28,4 +28,5 @@ public @interface Config {
     String hub() default "";
     int timeout() default 5;
     int retries() default 5;
+    boolean screenshotsOnFail() default false;
 }
