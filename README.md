@@ -7,22 +7,22 @@ Conductor Mobile is a port of the [Conductor](https://github.com/conductor-frame
 Using maven, add jitpack.io to your repositories and include it as a dependency:
 ```xml
 <repositories>
-    ...
+    
     <repository>
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
     </repository>
-    ...
+    
 </repositories>
 
 <dependencies>
+
     <dependency>
-        ...
         <groupId>com.github.jossjacobo</groupId>
         <artifactId>conductor-mobile</artifactId>
         <version>v1.0</version>
-        ...
     </dependency>
+    
 </dependencies>
 ```
 Create a Java Class, and extend it from `com.joss.conductor.mobile.Locomotive`
