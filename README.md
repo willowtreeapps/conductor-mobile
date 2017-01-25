@@ -36,23 +36,23 @@ Same as the original conductor, the primary goals of this project are to...
 - Automatic detection of connected iOS devices
 
 # Default Properties
-- deviceName = {name of the device}
-- appPackageName = {android app package name}
-- apk = {path to apk}
-- ipa = {path to ipa}
-- platformName = {string: android or ios}
-- platformVersion = {string: appium platform version}
-- udid = {string: iOS device's UDID or Android's device name from ADB}
-- language = {string: }
-- locale = {string: }
-- orientation = {string: portrait or landscape}
-- autoWebview = {boolean: true or false}
-- noReset = {boolean: true or false}
-- fullReset = {boolean: true or false}
-- hub = {string: url}
-- timeout = {int: default equals 5 seconds per call}
-- retries = {int: default equals 5 retries}
-- screenshotsOnFail = {boolean: true or false}
+- `deviceName` = {name of the device}
+- `appPackageName` = {android app package name}
+- `apk` = {path to apk}
+- `ipa` = {path to ipa}
+- `platformName` = {string: android or ios}
+- `platformVersion` = {string: appium platform version}
+- `udid` = {string: iOS device's UDID or Android's device name from ADB}
+- `language` = {string: }
+- `locale` = {string: }
+- `orientation` = {string: portrait or landscape}
+- `autoWebview` = {boolean: true or false}
+- `noReset` = {boolean: true or false}
+- `fullReset` = {boolean: true or false}
+- `hub` = {string: url}
+- `timeout` = {int: default equals 5 seconds per call}
+- `retries` = {int: default equals 5 retries}
+- `screenshotsOnFail` = {boolean: true or false}
 
 # Inline Actions
 - ```click(By)```
