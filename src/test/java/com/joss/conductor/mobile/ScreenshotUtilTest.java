@@ -1,6 +1,7 @@
 package com.joss.conductor.mobile;
 
 import com.joss.conductor.mobile.util.ScreenShotUtil;
+import com.joss.conductor.mobile.util.WaitUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -17,6 +18,7 @@ public class ScreenshotUtilTest {
         String testName = "Error message of the test";
 
         String filepath1 = ScreenShotUtil.createFilePathAndName(path, testName);
+        WaitUtil.wait(100, "Waiting " + 100 + " millis");
         String filepath2 = ScreenShotUtil.createFilePathAndName(path, testName);
 
         Assertions.assertThat(filepath1)
