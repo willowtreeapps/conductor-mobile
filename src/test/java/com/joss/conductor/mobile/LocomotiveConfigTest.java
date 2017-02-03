@@ -33,9 +33,7 @@ public class LocomotiveConfigTest {
         testConfig = mock(Config.class);
         when(testConfig.platformName()).thenReturn(Platform.IOS);
         when(testConfig.appPackageName()).thenReturn("com.joss.conductor.mobile.test.andoridConfig");
-        when(testConfig.autoWebView()).thenReturn(false);
         when(testConfig.timeout()).thenReturn(10);
-        when(testConfig.autoAcceptAlerts()).thenReturn(true);
     }
 
     @After
@@ -110,21 +108,6 @@ public class LocomotiveConfigTest {
     @Test
     public void test_default_boolean_properties() {
         LocomotiveConfig config = new LocomotiveConfig(null, defaultProperties);
-        Assertions.assertThat(config.autoWebView())
-                .isTrue();
-    }
-
-    @Test
-    public void test_config_override_default_boolean_properties() {
-        LocomotiveConfig config = new LocomotiveConfig(testConfig, defaultProperties);
-        Assertions.assertThat(config.autoWebView())
-                .isFalse();
-    }
-
-    @Test
-    public void test_jvm_overrides_test_config_boolean_properties() {
-        System.setProperty(Constants.JVM_CONDUCTOR_AUTO_WEBVIEW, Boolean.TRUE.toString());
-        LocomotiveConfig config = new LocomotiveConfig(testConfig, null);
         Assertions.assertThat(config.autoWebView())
                 .isTrue();
     }
