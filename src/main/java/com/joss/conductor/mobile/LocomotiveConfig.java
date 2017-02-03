@@ -97,25 +97,21 @@ public class LocomotiveConfig implements Config {
 
     public boolean autoWebView() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_AUTO_WEBVIEW,
-                testConfig == null ? null : testConfig.autoWebView(),
                 Constants.JVM_CONDUCTOR_AUTO_WEBVIEW);
     }
 
     public boolean noReset() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_NO_RESET,
-                testConfig == null ? null : testConfig.noReset(),
                 Constants.JVM_CONDUCTOR_NO_RESET);
     }
 
     public boolean fullReset() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_FULL_RESET,
-                testConfig == null ? null : testConfig.fullReset(),
                 Constants.JVM_CONDUCTOR_FULL_RESET);
     }
 
     public boolean autoAcceptAlerts() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_AUTO_ACCEPT_ALERTS,
-                testConfig == null ? null : testConfig.autoAcceptAlerts(),
                 Constants.JVM_CONDUCTOR_AUTO_ACCEPT_ALERTS);
     }
 
@@ -141,7 +137,6 @@ public class LocomotiveConfig implements Config {
 
     public boolean screenshotsOnFail() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_SCREENSHOTS_ON_FAIL,
-                testConfig == null ? null : testConfig.screenshotsOnFail(),
                 Constants.JVM_CONDUCTOR_SCREENSHOTS_ON_FAIL);
     }
 
@@ -183,16 +178,13 @@ public class LocomotiveConfig implements Config {
         return value;
     }
 
-    private boolean getBooleanValue(String defaultPropertyKey, Boolean testConfigValue, String jvmParamKey) {
+    private boolean getBooleanValue(String defaultPropertyKey, String jvmParamKey) {
         boolean value = false;
         String defaultValue = getProperty(defaultPropertyKey, Boolean.FALSE.toString());
         String jvmValue = JvmUtil.getJvmProperty(jvmParamKey);
 
         if(defaultValue != null && !StringUtils.isEmpty(defaultValue)) {
             value = Boolean.valueOf(defaultValue);
-        }
-        if(testConfigValue != null) {
-            value = testConfigValue;
         }
         if(jvmValue != null && !StringUtils.isEmpty(jvmValue)) {
             value = Boolean.valueOf(jvmValue);
