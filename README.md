@@ -55,6 +55,8 @@ Same as the original conductor, the primary goals of this project are to...
 - `timeout` = {int: default equals 5 seconds per call}
 - `retries` = {int: default equals 5 retries}
 - `screenshotsOnFail` = {boolean: true or false}
+- `autoGrantPermissions` = {boolean: true or false}
+- `automationName` = {string: i.e. uiautomator2 or xcuitest}
 
 # Inline Actions
 - ```click(By)```
