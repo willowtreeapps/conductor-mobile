@@ -24,9 +24,5 @@ public @interface Config {
     String hub() default "";
     int timeout() default 5;
     int retries() default 5;
-//    boolean screenshotsOnFail() default false;
-//    boolean autoWebView()  default false;
-//    boolean noReset()  default false;
-//    boolean fullReset() default false;
-//    boolean autoAcceptAlerts() default false;
+    String automationName() default "";
 }

@@ -142,7 +142,11 @@ public class Locomotive implements Conductor<Locomotive> {
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.deviceName());
         capabilities.setCapability(MobileCapabilityType.APP, config.getAppFullPath());
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, config.orientation());
+        capabilities.setCapability("autoGrantPermissions", config.autoGrantPermissions());
 
+        if (StringUtils.isNotEmpty(config.automationName())) {
+            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.automationName());
+        }
 
         if (config.platformName() == Platform.IOS) {
             capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, config.autoAcceptAlerts());

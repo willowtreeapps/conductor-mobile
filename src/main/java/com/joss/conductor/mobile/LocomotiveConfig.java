@@ -140,6 +140,17 @@ public class LocomotiveConfig implements Config {
                 Constants.JVM_CONDUCTOR_SCREENSHOTS_ON_FAIL);
     }
 
+    public boolean autoGrantPermissions() {
+        return getBooleanValue(Constants.DEFAULT_PROPERTY_AUTO_GRANT_PERMISSIONS,
+                Constants.JVM_CONDUCTOR_AUTO_GRANT_PERMISSIONS);
+    }
+
+    public String automationName() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_AUTOMATION_NAME,
+                testConfig == null ? null : testConfig.automationName(),
+                Constants.JVM_CONDUCTOR_AUTOMATION_NAME);
+    }
+
     public Class<? extends Annotation> annotationType() {
         return null;
     }
