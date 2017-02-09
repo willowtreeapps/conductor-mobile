@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
 public class PageUtil {
 
     private static final String ANDROID_APP_PACKAGE_NAME_ID = "%s:id/%s";
-    private static final String IOS_XPATH_LABEL = "//*[@label='%s']";
+    private static final String IOS_XPATH_ACCESSIBILITY_IDENTIFIER = "//*[@name='%s']";
 
     public static String buildId(Config config, String id) {
         switch (config.platformName()) {
@@ -29,7 +29,7 @@ public class PageUtil {
             case ANDROID:
                 return By.id(String.format(ANDROID_APP_PACKAGE_NAME_ID, config.appPackageName(), identifier));
             case IOS:
-                return By.xpath(String.format(IOS_XPATH_LABEL, identifier));
+                return By.xpath(String.format(IOS_XPATH_ACCESSIBILITY_IDENTIFIER, identifier));
             default:
                 System.err.println("Unknown platform: " + config.platformName());
                 System.exit(1);
