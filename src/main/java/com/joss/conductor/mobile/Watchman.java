@@ -40,6 +40,10 @@ public abstract class Watchman extends TestWatcher {
                         e.getMessage());
             }
         }
+        tearDownDriverConnection();
+    }
+
+    protected void tearDownDriverConnection() {
         getLocomotive().driver.quit();
     }
 }
