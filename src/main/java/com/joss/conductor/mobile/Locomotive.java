@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.IOSDeviceUtil;
 import com.joss.conductor.mobile.util.PageUtil;
 import com.joss.conductor.mobile.util.PropertiesUtil;
-import com.joss.conductor.mobile.util.ScreenShotUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -12,12 +11,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.swing.dependency.jsr305.Nullable;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -34,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 8/10/16.
  */
-public class Locomotive implements Conductor<Locomotive> {
+public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     private static final float SWIPE_DISTANCE = 0.25f;
     private static final float SWIPE_DISTANCE_LONG = 0.50f;
@@ -44,9 +38,11 @@ public class Locomotive implements Conductor<Locomotive> {
     public AppiumDriver driver;
     private IOSDeviceUtil iosDeviceUtil;
 
-    private Pattern p;
-    private Matcher m;
     private Map<String, String> vars = new HashMap<String, String>();
+
+    public Locomotive getLocomotive() {
+        return this;
+    }
 
     public Locomotive() {
         init();
@@ -129,6 +125,14 @@ public class Locomotive implements Conductor<Locomotive> {
             default:
                 throw new IllegalArgumentException("Unknown platform: " + configuration.platformName());
         }
+
+        // If deviceName is empty replace it with something
+        // TODO might want to override this at some point to launch emulators
+        // noinspection Since15
+        if (capabilities.getCapability(MobileCapabilityType.DEVICE_NAME).toString().isEmpty()) {
+            capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Empty Device Name");
+        }
+
         return capabilities;
     }
 
@@ -170,47 +174,6 @@ public class Locomotive implements Conductor<Locomotive> {
 
     private IOSDeviceUtil iosDeviceUtil() {
         return iosDeviceUtil == null ? IOSDeviceUtil.getInstance() : iosDeviceUtil;
-    }
-
-    @Rule
-    public TestRule watchman = new TestWatcher() {
-        boolean failure;
-        Throwable e;
-        Description description;
-
-
-
-        @Override
-        protected void failed(Throwable e, Description description) {
-            if (configuration.screenshotsOnFail()) {
-                failure = true;
-                this.e = e;
-                this.description = description;
-            }
-        }
-
-        /**
-         * Take screenshot if the test failed.
-         */
-        @Override
-        protected void finished(Description description) {
-            super.finished(description);
-            if (configuration.screenshotsOnFail()) {
-                if (failure) {
-                    ScreenShotUtil.take(Locomotive.this,
-                            description.getDisplayName(),
-                            e.getMessage());
-                }
-                Locomotive.this.driver.quit();
-            }
-        }
-    };
-
-    @After
-    public void teardown() {
-        if (!configuration.screenshotsOnFail()) {
-            driver.quit();
-        }
     }
 
     /**
@@ -577,8 +540,8 @@ public class Locomotive implements Conductor<Locomotive> {
             Assert.fail("Cannot validate an attribute if an element doesn't have it!");
         }
 
-        p = Pattern.compile(regex);
-        m = p.matcher(actual);
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(actual);
 
         Assert.assertTrue(
                 String.format("Attribute doesn't match! [Selector: %s] [Attribute: %s] [Desired value: %s] [Actual value: %s]",

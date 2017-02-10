@@ -11,19 +11,6 @@ public class PageUtil {
     private static final String ANDROID_APP_PACKAGE_NAME_ID = "%s:id/%s";
     private static final String IOS_XPATH_ACCESSIBILITY_IDENTIFIER = "//*[@name='%s']";
 
-    public static String buildId(Config config, String id) {
-        switch (config.platformName()) {
-            case ANDROID:
-                return String.format(ANDROID_APP_PACKAGE_NAME_ID, config.appPackageName(), id);
-            case IOS:
-                return id; // TODO
-            default:
-                System.err.println("Unknown platform: " + config.platformName());
-                System.exit(1);
-        }
-        return null;
-    }
-
     public static By buildBy(Config config, String identifier) {
         switch (config.platformName()) {
             case ANDROID:

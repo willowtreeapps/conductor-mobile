@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
  * Created on 8/19/16.
  */
 public interface Conductor<Test> {
+
     WebElement waitForElement(String id);
     WebElement waitForElement(By by);
 
@@ -73,23 +74,20 @@ public interface Conductor<Test> {
 
     /**
      * Swipe on specified direction from center 25 percent of the screen
-     * @param id/by The element to swipe from.
-     * @param swipeElementDirection The direction to swipe to
      * @return The implementing class for fluency
      */
     Test swipeCenter(SwipeElementDirection direction);
 
     /**
      * Swipe on specified direction from center 50 percent of the screen
-     * @param id/by The element to swipe from.
-     * @param swipeElementDirection The direction to swipe to
+     * @param direction The direction to swipe to
      * @return The implementing class for fluency
      */
     Test swipeCenterLong(SwipeElementDirection direction);
     /**
      * Swipe on specified direction from element 25 percent of the screen
-     * @param id/by The element to swipe from.
-     * @param swipeElementDirection The direction to swipe to
+     * @param id/by/element The element to swipe from.
+     * @param direction The direction to swipe to
      * @return The implementing class for fluency
      */
     Test swipe(SwipeElementDirection direction, String id);
@@ -98,8 +96,8 @@ public interface Conductor<Test> {
 
     /**
      * Swipe on specified direction from element 50 percent of the screen
-     * @param id/by The element to swipe from.
-     * @param swipeElementDirection The direction to swipe to
+     * @param id/by/element The element to swipe from.
+     * @param direction The direction to swipe to
      * @return The implementing class for fluency
      */
     Test swipeLong(SwipeElementDirection direction, String id);
@@ -108,8 +106,8 @@ public interface Conductor<Test> {
 
     /**
      * Swipe on specified direction from element, if element is null, swipe from center.
-     * @param swipeElementDirection The direction to swipe to
      * @param by The element to swipe from
+     * @param direction The direction to swipe to
      * @param percentage The distance to perform the swipe 0.0 to 1.0
      * @return
      */
@@ -143,7 +141,7 @@ public interface Conductor<Test> {
 
     /**
      * Validate that the text of an element is correct.
-     * @param id/by The element to validate the text of.
+     * @param id/by/element The element to validate the text of.
      * @param text The text the element should have.
      * @return The implementing class for fluency
      */
@@ -153,7 +151,7 @@ public interface Conductor<Test> {
 
     /**
      * Validate that the text of an element is correct, ignoring case.
-     * @param id/by The element to validate the text of.
+     * @param id/by/element The element to validate the text of.
      * @param text The text the element should have.
      * @return The implementing class for fluency
      */
@@ -163,7 +161,7 @@ public interface Conductor<Test> {
 
     /**
      * Validate that the text of an element is not matching text.
-     * @param id/by The element to validate the text of.
+     * @param id/by/element The element to validate the text of.
      * @param text The text the element should not have.
      * @return The implementing class for fluency
      */
@@ -173,7 +171,7 @@ public interface Conductor<Test> {
 
     /**
      * Validate that the text of an element is not matching text, ignoring case.
-     * @param id/by The element to validate the text of.
+     * @param id/by/element The element to validate the text of.
      * @param text The text the element should not have.
      * @return The implementing class for fluency
      */
@@ -203,7 +201,7 @@ public interface Conductor<Test> {
      * <br><br>
      * <code>.validateAttribute("input#test", "type", "text") // validates that the "type" attribute equals "test"</code>
      * </blockquote>
-     * @param id/by The element
+     * @param id/by/element The element
      * @param attr The attribute you'd like to validate
      * @param regex What the attribute <b>should</b> be.  (this method supports regex)
      * @return The implementing class for fluency
