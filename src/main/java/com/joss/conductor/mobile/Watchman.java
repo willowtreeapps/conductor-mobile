@@ -1,7 +1,6 @@
 package com.joss.conductor.mobile;
 
 import com.joss.conductor.mobile.util.ScreenShotUtil;
-import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
@@ -14,6 +13,7 @@ public abstract class Watchman extends TestWatcher {
 
     @Rule
     public TestRule watchman = this;
+
     public abstract Locomotive getLocomotive();
 
     private boolean failure;
@@ -39,15 +39,7 @@ public abstract class Watchman extends TestWatcher {
                         description.getDisplayName(),
                         e.getMessage());
             }
-            getLocomotive().driver.quit();
         }
+        getLocomotive().driver.quit();
     }
-
-    @After
-    public void teardown() {
-        if (!getLocomotive().configuration.screenshotsOnFail()) {
-            getLocomotive().driver.quit();
-        }
-    }
-
 }
