@@ -39,6 +39,7 @@ public class LocomotiveTest {
         when(androidConfig.getAppFullPath()).thenReturn("/full/path/to/android.apk");
         when(androidConfig.autoAcceptAlerts()).thenReturn(true);
         when(androidConfig.autoGrantPermissions()).thenReturn(true);
+        when(androidConfig.fullReset()).thenReturn(true);
 
         iosConfig = mock(LocomotiveConfig.class);
         when(iosConfig.platformName()).thenReturn(Platform.IOS);
@@ -58,6 +59,8 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.APP, "/full/path/to/android.apk");
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
         capabilities.setCapability("autoGrantPermissions", true);
+        capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, true);
         Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(androidConfig))
@@ -75,6 +78,8 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
         capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, true);
         capabilities.setCapability("autoGrantPermissions", false);
+        capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(iosConfig))
@@ -94,6 +99,8 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
         capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, true);
         capabilities.setCapability("autoGrantPermissions", false);
+        capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
 
         List<String> devices = Arrays.asList("1234", "2345");
 

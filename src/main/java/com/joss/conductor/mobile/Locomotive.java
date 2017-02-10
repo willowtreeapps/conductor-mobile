@@ -147,6 +147,8 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         capabilities.setCapability(MobileCapabilityType.APP, config.getAppFullPath());
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, config.orientation());
         capabilities.setCapability("autoGrantPermissions", config.autoGrantPermissions());
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, config.fullReset());
+        capabilities.setCapability(MobileCapabilityType.NO_RESET, config.noReset());
 
         if (StringUtils.isNotEmpty(config.automationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.automationName());
