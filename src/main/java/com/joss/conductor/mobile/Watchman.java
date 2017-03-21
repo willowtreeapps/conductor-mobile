@@ -11,9 +11,6 @@ import org.junit.runner.Description;
  */
 public abstract class Watchman extends TestWatcher {
 
-    @Rule
-    public TestRule watchman = this;
-
     public abstract Locomotive getLocomotive();
 
     private boolean failure;

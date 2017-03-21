@@ -12,11 +12,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.swing.dependency.jsr305.Nullable;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,6 +34,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 8/10/16.
  */
+@Listeners(TestListener.class)
 public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     private static final float SWIPE_DISTANCE = 0.25f;
@@ -40,22 +47,26 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     private Map<String, String> vars = new HashMap<String, String>();
 
+    @Rule
+    public TestRule watchman = this;
+
     public Locomotive getLocomotive() {
         return this;
     }
 
     public Locomotive() {
-        init();
     }
 
     /**
-     * Need this constructor for Unit Tests
+     * Constructor for Unit Tests
      */
     public Locomotive(LocomotiveConfig configuration, AppiumDriver driver) {
         init(configuration, driver);
     }
 
-    private void init() {
+    @Before
+    @BeforeTest
+    public void init() {
         Properties props = PropertiesUtil.getDefaultProperties(this);
         Config testConfiguration = this.getClass().getAnnotation(Config.class);
         init(props, testConfiguration);

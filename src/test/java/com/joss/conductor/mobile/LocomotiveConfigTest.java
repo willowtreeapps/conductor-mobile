@@ -2,13 +2,12 @@ package com.joss.conductor.mobile;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.Properties;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -21,7 +20,7 @@ public class LocomotiveConfigTest {
     private Config testConfig;
     private Properties defaultProperties;
 
-    @Before
+    @BeforeMethod
     public void setup() {
         defaultProperties = new Properties();
         defaultProperties.setProperty(Constants.DEFAULT_PROPERTY_APP_PACKAGE_NAME, "com.joss.conductor.mobile.default");
@@ -36,7 +35,7 @@ public class LocomotiveConfigTest {
         when(testConfig.timeout()).thenReturn(10);
     }
 
-    @After
+    @AfterMethod
     public void teardown() {
         System.clearProperty(Constants.JVM_CONDUCTOR_APP_PACKAGE_NAME);
         System.clearProperty(Constants.JVM_CONDUCTOR_PLATFORM_NAME);
@@ -188,12 +187,12 @@ public class LocomotiveConfigTest {
 
     @Test
     public void test_platform_none_throws_on_full_path() {
-        Config mockConfig = mock(Config.class);
-        when(mockConfig.platformName()).thenReturn(Platform.NONE);
-
-        final LocomotiveConfig config = new LocomotiveConfig(mockConfig, null);
         assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
             public void call() throws Throwable {
+                Config mockConfig = mock(Config.class);
+                when(mockConfig.platformName()).thenReturn(Platform.NONE);
+
+                LocomotiveConfig config = new LocomotiveConfig(mockConfig, null);
                 config.getAppFullPath();
             }
         }).isInstanceOf(IllegalArgumentException.class);
