@@ -23,7 +23,7 @@ public class TestListener implements ITestListener {
     public void onTestFailure(ITestResult result) {
         if (locomotive.configuration.screenshotsOnFail()) {
                 ScreenShotUtil.take(locomotive,
-                        result.getTestName(),
+                        result.getTestClass().getName() + "." + result.getMethod().getMethodName(),
                         result.getThrowable().getMessage());
         }
     }
