@@ -3,7 +3,7 @@ package com.joss.conductor.mobile;
 import com.joss.conductor.mobile.util.ScreenShotUtil;
 import com.joss.conductor.mobile.util.WaitUtil;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.io.File;
 

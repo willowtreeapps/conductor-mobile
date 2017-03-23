@@ -5,11 +5,10 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Answers;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +25,7 @@ public class LocomotiveTest {
     private LocomotiveConfig androidConfig;
     private LocomotiveConfig iosConfig;
 
-    @Before
+    @BeforeMethod
     public void setup() {
         mockDriver = mock(AppiumDriver.class);
         androidConfig = mock(LocomotiveConfig.class);

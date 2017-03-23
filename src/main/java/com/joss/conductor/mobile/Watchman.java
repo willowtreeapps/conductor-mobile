@@ -11,10 +11,8 @@ import org.junit.runner.Description;
  */
 public abstract class Watchman extends TestWatcher {
 
-    @Rule
-    public TestRule watchman = this;
-
     public abstract Locomotive getLocomotive();
+    public abstract void quit();
 
     private boolean failure;
     private Throwable e;
@@ -40,10 +38,6 @@ public abstract class Watchman extends TestWatcher {
                         e.getMessage());
             }
         }
-        tearDownDriverConnection();
-    }
-
-    protected void tearDownDriverConnection() {
-        getLocomotive().driver.quit();
+        quit();
     }
 }
