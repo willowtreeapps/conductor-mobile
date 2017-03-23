@@ -20,9 +20,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,13 +63,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     @Before
-    @BeforeTest (alwaysRun = true)
+    @BeforeMethod
     public void init() {
         Properties props = PropertiesUtil.getDefaultProperties(this);
         Config testConfiguration = this.getClass().getAnnotation(Config.class);
         init(props, testConfiguration);
     }
 
+    @AfterMethod
+    public void quit() {
+        driver.quit();
+    }
 
     private void init(Properties properties, Config testConfig) {
         init(new LocomotiveConfig(testConfig, properties), /*AppiumDriver=*/null);
