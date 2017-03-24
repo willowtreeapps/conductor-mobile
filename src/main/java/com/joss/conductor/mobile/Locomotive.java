@@ -186,6 +186,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public WebElement waitForElement(By by) {
+
+        try {
+            waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
+        } catch (Exception e) {
+            System.out.println("WaitForElement: Eat exception thrown waiting for condition");
+        }
+
         int size = driver.findElements(by).size();
 
         if (size == 0) {
@@ -263,7 +270,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         try {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         } catch (Exception e) {
-            System.out.println("Eat exception thrown waiting for condition");
+            System.out.println("IsPresentWait: Eat exception thrown waiting for condition");
         }
 
         int size = driver.findElements(by).size();
