@@ -224,7 +224,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public Locomotive click(By by) {
-        //waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         return click(waitForElement(by));
     }
 
@@ -238,7 +237,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public Locomotive setText(By by, String text) {
-      //  waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         return setText(waitForElement(by), text);
     }
 
@@ -299,7 +297,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public String getText(By by) {
-       // waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         return getText(waitForElement(by));
     }
 
