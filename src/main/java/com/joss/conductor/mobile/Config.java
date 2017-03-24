@@ -25,4 +25,9 @@ public @interface Config {
     int timeout() default 5;
     int retries() default 5;
     String automationName() default "";
+    boolean screenshotsOnFail() default true;
+    boolean adbLogOnFail() default true;
+
+
+
 }
