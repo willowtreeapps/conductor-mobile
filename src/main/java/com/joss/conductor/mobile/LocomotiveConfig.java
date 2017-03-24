@@ -140,6 +140,11 @@ public class LocomotiveConfig implements Config {
                 Constants.JVM_CONDUCTOR_SCREENSHOTS_ON_FAIL);
     }
 
+    public boolean adbLogOnFail() {
+        return getBooleanValue(Constants.DEFAULT_PROPERTY_ADB_LOGS_ON_FAIL,
+                Constants.JVM_CONDUCTOR_ADB_LOGS_ON_FAIL);
+    }
+
     public boolean autoGrantPermissions() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_AUTO_GRANT_PERMISSIONS,
                 Constants.JVM_CONDUCTOR_AUTO_GRANT_PERMISSIONS);

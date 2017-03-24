@@ -1,5 +1,6 @@
 package com.joss.conductor.mobile;
 
+import com.joss.conductor.mobile.util.ADBLogUtil;
 import com.joss.conductor.mobile.util.ScreenShotUtil;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -25,6 +26,14 @@ public class TestListener implements ITestListener {
                         result.getTestClass().getName() + "." + result.getMethod().getMethodName(),
                         result.getThrowable().getMessage());
         }
+
+        if (locomotive.configuration.adbLogOnFail() && locomotive.configuration.platformName() == Platform.ANDROID) {
+            ADBLogUtil.take(locomotive,
+                    result.getTestClass().getName() + "." + result.getMethod().getMethodName(),
+                    result.getThrowable().getMessage());
+        }
+
+
     }
 
     public void onTestSkipped(ITestResult result) {

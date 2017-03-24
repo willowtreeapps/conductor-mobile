@@ -1,5 +1,6 @@
 package com.joss.conductor.mobile;
 
+import com.joss.conductor.mobile.util.ADBLogUtil;
 import com.joss.conductor.mobile.util.ScreenShotUtil;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
@@ -23,6 +24,11 @@ public abstract class Watchman extends TestWatcher {
             failure = true;
             this.e = e;
         }
+
+        if (getLocomotive().configuration.adbLogOnFail()) {
+            failure = true;
+            this.e = e;
+        }
     }
 
     /**
@@ -34,6 +40,9 @@ public abstract class Watchman extends TestWatcher {
         if (getLocomotive().configuration.screenshotsOnFail()) {
             if (failure) {
                 ScreenShotUtil.take(getLocomotive(),
+                        description.getDisplayName(),
+                        e.getMessage());
+                ADBLogUtil.take(getLocomotive(),
                         description.getDisplayName(),
                         e.getMessage());
             }

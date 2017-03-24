@@ -26,6 +26,7 @@ public class Constants {
     public static final String JVM_CONDUCTOR_RETRIES = "conductorRetries";
     public static final String JVM_CONDUCTOR_AUTO_ACCEPT_ALERTS = "conductorAutoAcceptAlerts";
     public static final String JVM_CONDUCTOR_SCREENSHOTS_ON_FAIL = "conductorScreenshotOnFail";
+    public static final String JVM_CONDUCTOR_ADB_LOGS_ON_FAIL = "conductorADBLogsOnFail";
     public static final String JVM_CONDUCTOR_AUTO_GRANT_PERMISSIONS = "conductorAutoGrantPermissions";
     public static final String JVM_CONDUCTOR_AUTOMATION_NAME = "conductorAutomationName";
 
@@ -48,6 +49,7 @@ public class Constants {
     public static final String DEFAULT_PROPERTY_RETRIES = "retries";
     public static final String DEFAULT_PROPERTY_AUTO_ACCEPT_ALERTS = "autoAcceptAlerts";
     public static final String DEFAULT_PROPERTY_SCREENSHOTS_ON_FAIL ="screenshotOnFail";
+    public static final String DEFAULT_PROPERTY_ADB_LOGS_ON_FAIL ="adbLogsOnFail";
     public static final String DEFAULT_PROPERTY_AUTO_GRANT_PERMISSIONS = "autoGrantPermissions";
     public static final String DEFAULT_PROPERTY_AUTOMATION_NAME = "automationName";
 }
