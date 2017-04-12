@@ -105,6 +105,20 @@ public class LocomotiveConfig implements Config {
                 Constants.JVM_CONDUCTOR_NO_RESET);
     }
 
+
+    public String xcodeSigningId() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_SIGN_ID,
+                testConfig == null ? null : testConfig.xcodeSigningId(),
+                Constants.JVM_CONDUCTOR_SIGN_ID);
+    }
+
+
+    public String xcodeOrgIdxcodeOrgId() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_TEAM_ID,
+                testConfig == null ? null : testConfig.xcodeOrgIdxcodeOrgId(),
+                Constants.JVM_CONDUCTOR_TEAM_ID);
+    }
+
     public boolean fullReset() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_FULL_RESET,
                 Constants.JVM_CONDUCTOR_FULL_RESET);

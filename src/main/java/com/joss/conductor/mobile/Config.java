@@ -25,4 +25,6 @@ public @interface Config {
     int timeout() default 5;
     int retries() default 5;
     String automationName() default "";
+    String xcodeSigningId() default "";
+    String xcodeOrgIdxcodeOrgId() default "";
 }
