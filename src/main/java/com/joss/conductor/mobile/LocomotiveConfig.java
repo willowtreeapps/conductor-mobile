@@ -165,6 +165,12 @@ public class LocomotiveConfig implements Config {
                 Constants.JVM_CONDUCTOR_AUTOMATION_NAME);
     }
 
+    public String logLevel() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_LOG_LEVEL,
+                testConfig == null ? null : testConfig.logLevel(),
+                Constants.JVM_CONDUCTOR_LOG_LEVEL);
+    }
+
     public Class<? extends Annotation> annotationType() {
         return null;
     }

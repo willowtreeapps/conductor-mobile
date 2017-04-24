@@ -30,6 +30,7 @@ public class Constants {
     public static final String JVM_CONDUCTOR_AUTOMATION_NAME = "conductorAutomationName";
     public static final String JVM_CONDUCTOR_TEAM_ID = "conductorTeamID";
     public static final String JVM_CONDUCTOR_SIGN_ID = "conductorSignId";
+    public static final String JVM_CONDUCTOR_LOG_LEVEL = "conductorLogLevel";
 
     public static final String DEFAULT_PROPERTY_APP_PACKAGE_NAME = "appPackageName";
     public static final String DEFAULT_PROPERTY_PLATFORM_NAME = "platformName";
@@ -54,4 +55,5 @@ public class Constants {
     public static final String DEFAULT_PROPERTY_AUTOMATION_NAME = "automationName";
     public static final String DEFAULT_PROPERTY_TEAM_ID = "teamID";
     public static final String DEFAULT_PROPERTY_SIGN_ID = "signID";
+    public static final String DEFAULT_PROPERTY_LOG_LEVEL = "logLevel";
 }
