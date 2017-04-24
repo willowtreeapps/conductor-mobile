@@ -27,4 +27,5 @@ public @interface Config {
     String automationName() default "";
     String xcodeSigningId() default "";
     String xcodeOrgIdxcodeOrgId() default "";
+    String logLevel() default "debug";
 }

@@ -8,6 +8,9 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.appium.java_client.service.local.flags.GeneralServerFlag;
+import io.appium.java_client.service.local.flags.ServerArgument;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.swing.dependency.jsr305.Nullable;
@@ -87,15 +90,22 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             boolean isLocal = StringUtils.isEmpty(configuration.hub());
             URL url = getUrl(isLocal);
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
+
+            AppiumServiceBuilder builder = new AppiumServiceBuilder()
+                    .withArgument(GeneralServerFlag.LOG_LEVEL, configuration.logLevel().equals("")
+                            ? "debug"
+                            : configuration.logLevel());
+
             switch (configuration.platformName()) {
                 case ANDROID:
                     this.driver = isLocal
-                            ? new AndroidDriver(capabilities)
+                            ? new AndroidDriver(builder, capabilities)
                             : new AndroidDriver(url, capabilities);
+
                     break;
                 case IOS:
                     this.driver = isLocal
-                            ? new IOSDriver(capabilities)
+                            ? new IOSDriver(builder, capabilities)
                             : new IOSDriver(url, capabilities);
                     break;
                 default:
