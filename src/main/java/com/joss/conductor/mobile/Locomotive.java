@@ -66,14 +66,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     @Before
-    @BeforeMethod
+    @BeforeMethod (alwaysRun = true)
     public void init() {
         Properties props = PropertiesUtil.getDefaultProperties(this);
         Config testConfiguration = this.getClass().getAnnotation(Config.class);
         init(props, testConfiguration);
     }
 
-    @AfterMethod
+    @AfterMethod (alwaysRun = true)
     public void quit() {
         driver.quit();
     }
