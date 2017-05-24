@@ -31,6 +31,9 @@ public class Constants {
     public static final String JVM_CONDUCTOR_TEAM_ID = "conductorTeamID";
     public static final String JVM_CONDUCTOR_SIGN_ID = "conductorSignId";
     public static final String JVM_CONDUCTOR_LOG_LEVEL = "conductorLogLevel";
+    public static final String JVM_CONDUCTOR_AVD = "conductorAVD";
+    public static final String JVM_CONDUCTOR_APP_ACTIVITY = "conductorAppActivity";
+    public static final String JVM_CONDUCTOR_APP_WAITACTIVITY = "conductorAppWaitActivity";
 
     public static final String DEFAULT_PROPERTY_APP_PACKAGE_NAME = "appPackageName";
     public static final String DEFAULT_PROPERTY_PLATFORM_NAME = "platformName";
@@ -56,4 +59,7 @@ public class Constants {
     public static final String DEFAULT_PROPERTY_TEAM_ID = "teamID";
     public static final String DEFAULT_PROPERTY_SIGN_ID = "signID";
     public static final String DEFAULT_PROPERTY_LOG_LEVEL = "logLevel";
+    public static final String DEFAULT_PROPERTY_AVD = "avd";
+    public static final String DEFAULT_PROPERTY_APP_ACTIVITY = "appActivity";
+    public static final String DEFAULT_PROPERTY_APP_WAITACTIVITY = "appWaitActivity";
 }
