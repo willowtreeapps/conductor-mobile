@@ -28,4 +28,7 @@ public @interface Config {
     String xcodeSigningId() default "";
     String xcodeOrgIdxcodeOrgId() default "";
     String logLevel() default "debug";
+    String avd() default "";
+    String appActivity() default "";
+    String appWaitActivity() default "";
 }

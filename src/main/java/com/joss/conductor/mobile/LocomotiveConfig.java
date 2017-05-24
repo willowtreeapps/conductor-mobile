@@ -119,6 +119,24 @@ public class LocomotiveConfig implements Config {
                 Constants.JVM_CONDUCTOR_TEAM_ID);
     }
 
+    public String avd() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_AVD,
+                testConfig == null ? null : testConfig.avd(),
+                Constants.JVM_CONDUCTOR_AVD);
+    }
+
+    public String appActivity() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_APP_ACTIVITY,
+                testConfig == null ? null : testConfig.appActivity(),
+                Constants.JVM_CONDUCTOR_APP_ACTIVITY);
+    }
+
+    public String appWaitActivity() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_APP_WAITACTIVITY,
+                testConfig == null ? null : testConfig.appWaitActivity(),
+                Constants.JVM_CONDUCTOR_APP_WAITACTIVITY);
+    }
+
     public boolean fullReset() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_FULL_RESET,
                 Constants.JVM_CONDUCTOR_FULL_RESET);
