@@ -1,6 +1,7 @@
 package com.joss.conductor.mobile;
 
 import com.google.common.base.Strings;
+import com.joss.conductor.mobile.util.IOSDeviceUtil;
 import com.joss.conductor.mobile.util.PageUtil;
 import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
@@ -9,6 +10,7 @@ import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
+import io.appium.java_client.service.local.flags.ServerArgument;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.swing.dependency.jsr305.Nullable;
@@ -21,9 +23,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,6 +44,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     public LocomotiveConfig configuration;
     public AppiumDriver driver;
+    private IOSDeviceUtil iosDeviceUtil;
 
     private Map<String, String> vars = new HashMap<String, String>();
 
@@ -134,14 +135,22 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         DesiredCapabilities capabilities;
         switch (configuration.platformName()) {
             case ANDROID:
-            case IOS:
                 capabilities = buildCapabilities(configuration);
+                break;
+            case IOS:
+                // If a UDID is not specified try to find connected devices and use the first device
+                if (StringUtils.isEmpty(configuration.udid())) {
+                    capabilities = buildCapabilities(configuration, IOSDeviceUtil.getInstance().findDevices());
+                } else {
+                    capabilities = buildCapabilities(configuration);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unknown platform: " + configuration.platformName());
         }
 
         // If deviceName is empty replace it with something
+        // TODO might want to override this at some point to launch emulators
         // noinspection Since15
         if (capabilities.getCapability(MobileCapabilityType.DEVICE_NAME).toString().isEmpty()) {
             capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Empty Device Name");
@@ -151,6 +160,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public DesiredCapabilities buildCapabilities(LocomotiveConfig config) {
+        return buildCapabilities(config, null);
+    }
+
+    public DesiredCapabilities buildCapabilities(LocomotiveConfig config, List<String> devices) {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(MobileCapabilityType.UDID, config.udid());
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.deviceName());
@@ -159,7 +172,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         capabilities.setCapability("autoGrantPermissions", config.autoGrantPermissions());
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, config.fullReset());
         capabilities.setCapability(MobileCapabilityType.NO_RESET, config.noReset());
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.platformVersion());
 
         if (StringUtils.isNotEmpty(config.automationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.automationName());
@@ -168,7 +180,25 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         if (config.platformName() == Platform.IOS) {
             capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, config.autoAcceptAlerts());
         }
+
+        // Try to use a connected iOS device if the UDID is not provided
+        if (config.platformName() == Platform.IOS
+                && Strings.isNullOrEmpty(config.udid())
+                && devices != null && devices.size() > 0) {
+            String udid = devices.get(0);
+
+            capabilities.setCapability(MobileCapabilityType.UDID, udid);
+            capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, iosDeviceUtil().getDeviceName(udid));
+        }
         return capabilities;
+    }
+
+    public void setIosDeviceUtil(IOSDeviceUtil iosDeviceUtil) {
+        this.iosDeviceUtil = iosDeviceUtil;
+    }
+
+    private IOSDeviceUtil iosDeviceUtil() {
+        return iosDeviceUtil == null ? IOSDeviceUtil.getInstance() : iosDeviceUtil;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.joss.conductor.mobile;
 
+import com.joss.conductor.mobile.util.IOSDeviceUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.assertj.core.api.ThrowableAssert;
@@ -9,7 +10,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -57,7 +60,6 @@ public class LocomotiveTest {
         capabilities.setCapability("autoGrantPermissions", true);
         capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, true);
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "6.0");
         Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(androidConfig))
@@ -77,10 +79,34 @@ public class LocomotiveTest {
         capabilities.setCapability("autoGrantPermissions", false);
         capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.0.0");
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(iosConfig))
+                .isEqualToComparingFieldByField(capabilities);
+    }
+
+    @Test
+    public void test_building_ios_capabilities_with_devices() {
+        when(iosConfig.udid()).thenReturn("");
+        IOSDeviceUtil util = mock(IOSDeviceUtil.class);
+        when(util.getDeviceName("1234")).thenReturn("Puddy");
+
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(MobileCapabilityType.UDID, "1234");
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Puddy");
+        capabilities.setCapability(MobileCapabilityType.APP, "/full/path/to/ios.ipa");
+        capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
+        capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, true);
+        capabilities.setCapability("autoGrantPermissions", false);
+        capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
+
+        List<String> devices = Arrays.asList("1234", "2345");
+
+        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
+        locomotive.setIosDeviceUtil(util);
+
+        Assertions.assertThat(locomotive.buildCapabilities(iosConfig, devices))
                 .isEqualToComparingFieldByField(capabilities);
     }
 
