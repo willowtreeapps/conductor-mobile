@@ -67,12 +67,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.ios-driver</groupId>
-            <artifactId>libimobiledevice-wrapper</artifactId>
-            <version>72c08d3880</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.annotation</artifactId>
             <version>10.0-b28</version>
