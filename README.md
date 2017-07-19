@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/jossjacobo/conductor-mobile.svg?branch=master)](https://travis-ci.org/jossjacobo/conductor-mobile)
+[![GitHub release](https://img.shields.io/github/release/jossjacobo/conductor-mobile.svg)](https://github.com/jossjacobo/conductor-mobile)
 
 Conductor Mobile
 ================
