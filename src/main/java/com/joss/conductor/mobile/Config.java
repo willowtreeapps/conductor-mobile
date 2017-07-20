@@ -26,7 +26,7 @@ public @interface Config {
     int retries() default 5;
     String automationName() default "";
     String xcodeSigningId() default "";
-    String xcodeOrgIdxcodeOrgId() default "";
+    String xcodeOrgId() default "";
     String logLevel() default "debug";
     String avd() default "";
     String appActivity() default "";

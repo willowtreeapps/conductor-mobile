@@ -6,6 +6,8 @@ import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.remote.AndroidMobileCapabilityType;
+import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
@@ -160,6 +162,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, config.fullReset());
         capabilities.setCapability(MobileCapabilityType.NO_RESET, config.noReset());
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.platformVersion());
+        capabilities.setCapability("xcodeSigningId", config.xcodeSigningId());
+        capabilities.setCapability("xcodeOrgId", config.xcodeOrgId());
+        capabilities.setCapability(AndroidMobileCapabilityType.AVD, config.avd());
+        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, config.appActivity());
+        capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, config.appWaitActivity());
 
         if (StringUtils.isNotEmpty(config.automationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.automationName());

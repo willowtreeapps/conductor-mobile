@@ -1,6 +1,7 @@
 package com.joss.conductor.mobile;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
@@ -36,6 +37,11 @@ public class LocomotiveTest {
         when(androidConfig.autoAcceptAlerts()).thenReturn(true);
         when(androidConfig.autoGrantPermissions()).thenReturn(true);
         when(androidConfig.fullReset()).thenReturn(true);
+        when(androidConfig.xcodeOrgId()).thenReturn(null);
+        when(androidConfig.xcodeSigningId()).thenReturn(null);
+        when(androidConfig.avd()).thenReturn("Nexus 13");
+        when(androidConfig.appActivity()).thenReturn("LaunchActivity");
+        when(androidConfig.appWaitActivity()).thenReturn("HomeActivity");
 
         iosConfig = mock(LocomotiveConfig.class);
         when(iosConfig.platformName()).thenReturn(Platform.IOS);
@@ -45,10 +51,17 @@ public class LocomotiveTest {
         when(iosConfig.deviceName()).thenReturn("Bravest Auxless Phone");
         when(iosConfig.getAppFullPath()).thenReturn("/full/path/to/ios.ipa");
         when(iosConfig.autoAcceptAlerts()).thenReturn(true);
+        when(iosConfig.xcodeOrgId()).thenReturn("orgId");
+        when(iosConfig.xcodeSigningId()).thenReturn("signingId");
+        when(iosConfig.avd()).thenReturn(null);
+        when(iosConfig.appActivity()).thenReturn(null);
+        when(iosConfig.appWaitActivity()).thenReturn(null);
     }
 
     @Test
     public void test_building_android_capabilities() {
+        String nul = null;
+
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(MobileCapabilityType.UDID, "qwerty");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Pixelated Nexus");
@@ -58,6 +71,11 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, true);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "6.0");
+        capabilities.setCapability(AndroidMobileCapabilityType.AVD, "Nexus 13");
+        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, "LaunchActivity");
+        capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, "HomeActivity");
+        capabilities.setCapability("xcodeOrgId", nul);
+        capabilities.setCapability("xcodeSigningId", nul);
         Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(androidConfig))
@@ -67,6 +85,7 @@ public class LocomotiveTest {
     @Test
     public void test_building_ios_capabilities_no_devices() {
         when(iosConfig.udid()).thenReturn("qwerty");
+        String nul = null;
 
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(MobileCapabilityType.UDID, "qwerty");
@@ -78,10 +97,15 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.0.0");
+        capabilities.setCapability(AndroidMobileCapabilityType.AVD, nul);
+        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, nul);
+        capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, nul);
+        capabilities.setCapability("xcodeOrgId", "orgId");
+        capabilities.setCapability("xcodeSigningId", "signingId");
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(iosConfig))
-                .isEqualToComparingFieldByField(capabilities);
+                .isEqualToIgnoringNullFields(capabilities);
     }
 
     @Test

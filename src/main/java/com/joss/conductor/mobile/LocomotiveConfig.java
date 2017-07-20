@@ -113,9 +113,9 @@ public class LocomotiveConfig implements Config {
     }
 
 
-    public String xcodeOrgIdxcodeOrgId() {
+    public String xcodeOrgId() {
         return getStringValue(Constants.DEFAULT_PROPERTY_TEAM_ID,
-                testConfig == null ? null : testConfig.xcodeOrgIdxcodeOrgId(),
+                testConfig == null ? null : testConfig.xcodeOrgId(),
                 Constants.JVM_CONDUCTOR_TEAM_ID);
     }
 
