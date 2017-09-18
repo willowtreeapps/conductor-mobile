@@ -281,7 +281,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             System.out.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- "+ newLine + e + newLine + newLine);
         }
 
-
         int size = driver.findElements(by).size();
 
         if (size == 0) {
@@ -424,9 +423,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), SWIPE_DURATION_MILLIS);
         return this;
     }
-
-
-
 
     /**
      * Get center point of element, if element is null return center of screen
