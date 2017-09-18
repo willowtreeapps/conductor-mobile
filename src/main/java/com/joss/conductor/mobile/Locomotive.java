@@ -267,11 +267,20 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     public boolean isPresentWait(By by) {
 
+
+        String newLine = System.getProperty("line.separator");//This will retrieve line separator dependent on OS.
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+
         try {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
+
         } catch (Exception e) {
-            System.out.println("IsPresentWait: Eat exception thrown waiting for condition");
+            System.out.println(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----"+ newLine + stackTraceElements[1]);
+            System.out.println(stackTraceElements[2]);
+            System.out.println(stackTraceElements[3]+ newLine + newLine);
+            System.out.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- "+ newLine + e + newLine + newLine);
         }
+
 
         int size = driver.findElements(by).size();
 
@@ -415,6 +424,60 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), SWIPE_DURATION_MILLIS);
         return this;
     }
+
+
+
+
+    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts){
+
+        int i;
+
+        if (isPresentWait(by)){
+            return driver.findElement(by);
+        }
+        else {
+            for (i = 0; i < attempts; i++) {
+
+                swipeCenter(s);
+                if (isPresentWait(by)) {
+                    return driver.findElement(by);
+                }
+
+            }
+
+        }
+        System.err.println("WARN: Element" + by.toString() + "does not exist!");
+        return null;
+
+
+    }
+
+
+    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts){
+
+        int i;
+
+        if (isPresentWait(id)){
+            return driver.findElementById(id);
+        }
+        else {
+            for (i = 0; i < attempts; i++) {
+
+                swipeCenter(s);
+                if (isPresentWait(id)) {
+                    return driver.findElementById(id);
+                }
+
+            }
+
+        }
+        System.err.println("WARN: Element" + id.toString() + "does not exist!");
+        return null;
+
+
+    }
+
+
 
     /**
      * Get center point of element, if element is null return center of screen
