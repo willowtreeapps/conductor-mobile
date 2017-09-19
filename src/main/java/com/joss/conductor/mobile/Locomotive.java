@@ -67,14 +67,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     @Before
-    @BeforeMethod (alwaysRun = true)
+    @BeforeMethod(alwaysRun = true)
     public void init() {
         Properties props = PropertiesUtil.getDefaultProperties(this);
         Config testConfiguration = this.getClass().getAnnotation(Config.class);
         init(props, testConfiguration);
     }
 
-    @AfterMethod (alwaysRun = true)
+    @AfterMethod(alwaysRun = true)
     public void quit() {
         driver.quit();
     }
@@ -417,16 +417,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
 
-
-
-    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts){
+    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
 
         int i;
 
-        if (isPresentWait(by)){
+        if (isPresentWait(by)) {
             return driver.findElement(by);
-        }
-        else {
+        } else {
             for (i = 0; i < attempts; i++) {
 
                 swipeCenter(s);
@@ -440,34 +437,30 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         System.err.println("WARN: Element" + by.toString() + "does not exist!");
         return null;
 
+    }
+
+    public WebElement swipeTo(By by) {
+
+        SwipeElementDirection s = SwipeElementDirection.UP;
+        int attempts = 3;
+
+        return swipeTo(s, by, attempts);
 
     }
 
 
-    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts){
+    public WebElement swipeTo(SwipeElementDirection s, By by) {
 
-        int i;
+        int attempts = 3;
 
-        if (isPresentWait(id)){
-            return driver.findElementById(id);
-        }
-        else {
-            for (i = 0; i < attempts; i++) {
-
-                swipeCenter(s);
-                if (isPresentWait(id)) {
-                    return driver.findElementById(id);
-                }
-
-            }
-
-        }
-        System.err.println("WARN: Element" + id.toString() + "does not exist!");
-        return null;
-
+        return swipeTo(s, by, attempts);
 
     }
 
+
+    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts) {
+        return swipeTo(s, By.id(id), attempts);
+    }
 
 
     /**
