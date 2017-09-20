@@ -416,7 +416,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return this;
     }
 
-
     public WebElement swipeTo(SwipeElementDirection s, By by, int attempts){
         int i;
 
