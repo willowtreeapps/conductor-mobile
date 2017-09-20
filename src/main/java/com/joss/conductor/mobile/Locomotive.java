@@ -267,12 +267,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     public boolean isPresentWait(By by) {
 
-        try {
-            waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
-        } catch (Exception e) {
-            System.out.println("IsPresentWait: Eat exception thrown waiting for condition");
-        }
-
         int size = driver.findElements(by).size();
 
         if (size == 0) {
@@ -294,6 +288,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
         if (size > 1) {
             System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+        }
+
+        if (size == 0) {
+            System.err.println("WARN: Could not find element " + by.toString());
         }
 
         return size > 0;
@@ -416,9 +414,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return this;
     }
 
-
     public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
-
         int i;
 
         if (isPresentWait(by)) {
@@ -440,7 +436,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public WebElement swipeTo(By by) {
-
         SwipeElementDirection s = SwipeElementDirection.UP;
         int attempts = 3;
 
@@ -448,9 +443,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     }
 
-
     public WebElement swipeTo(SwipeElementDirection s, By by) {
-
         int attempts = 3;
 
         return swipeTo(s, by, attempts);
