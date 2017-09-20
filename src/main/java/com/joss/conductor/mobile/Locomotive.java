@@ -276,9 +276,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
 
         } catch (Exception e) {
-            System.err.println(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----"+ newLine + stackTraceElements[1]);
-            System.err.println(stackTraceElements[2]);
-            System.err.println(stackTraceElements[3]+ newLine + newLine);
+            System.err.println(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
+
+            try {
+                System.err.print(stackTraceElements[1]);
+                System.err.println(stackTraceElements[2]);
+                System.err.println(stackTraceElements[3] + newLine + newLine);
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                System.err.print(exception);
+            }
             System.err.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- "+ newLine + e + newLine + newLine);
         }
 
