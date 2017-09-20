@@ -456,8 +456,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return swipeTo(s, By.id(id), attempts);
     }
 
-
-
     /**
      * Get center point of element, if element is null return center of screen
      *
