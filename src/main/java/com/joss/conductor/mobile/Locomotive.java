@@ -267,8 +267,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     public boolean isPresentWait(By by) {
 
-
+        //Line Separator Variable for formatting output
         String newLine = System.getProperty("line.separator");//This will retrieve line separator dependent on OS.
+        //Array of stacktrace elements to output
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 
         try {
