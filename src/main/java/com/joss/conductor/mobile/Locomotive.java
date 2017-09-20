@@ -416,6 +416,43 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return this;
     }
 
+    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts){
+        int i;
+
+        if (isPresentWait(by)){
+            return driver.findElement(by);
+        } else {
+            for (i = 0; i < attempts; i++) {
+
+                swipeCenter(s);
+                if (isPresentWait(by)) {
+                    return driver.findElement(by);
+                }
+
+            }
+
+        }
+        System.err.println("WARN: Element" + by.toString() + "does not exist!");
+        return null;
+    }
+
+    public WebElement swipeTo(By by){
+        SwipeElementDirection s = SwipeElementDirection.UP;
+        int attempts = 3;
+
+       return swipeTo(s, by, attempts );
+    }
+
+    public WebElement swipeTo(SwipeElementDirection s, By by){
+        int attempts = 3;
+
+        return swipeTo(s, by, attempts);
+    }
+
+    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts){
+        return swipeTo(s, By.id(id), attempts);
+    }
+
     /**
      * Get center point of element, if element is null return center of screen
      *
