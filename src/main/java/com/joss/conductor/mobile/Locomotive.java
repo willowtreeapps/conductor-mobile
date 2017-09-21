@@ -378,6 +378,48 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return performSwipe(direction, element, /*by=*/null, percentage);
     }
 
+
+    public void swipeDown() {
+        swipeCenterLong(SwipeElementDirection.UP);
+    }
+
+    public void swipeDown(int times) {
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.UP);
+        }
+    }
+
+    public void swipeUp() {
+        swipeCenterLong(SwipeElementDirection.DOWN);
+    }
+
+    public void swipeUp(int times) {
+
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.DOWN);
+        }
+    }
+
+    public void swipeRight() {
+        swipeCenterLong(SwipeElementDirection.LEFT);
+    }
+
+    public void swipeRight(int times) {
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.LEFT);
+        }
+    }
+
+    public void swipeLeft() {
+        swipeCenterLong(SwipeElementDirection.RIGHT);
+    }
+
+    public void swipeLeft(int times) {
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.RIGHT);
+        }
+    }
+
     public Locomotive hideKeyboard() {
         try {
             driver.hideKeyboard();
