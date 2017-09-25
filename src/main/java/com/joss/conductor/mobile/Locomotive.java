@@ -67,14 +67,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     @Before
-    @BeforeMethod (alwaysRun = true)
+    @BeforeMethod(alwaysRun = true)
     public void init() {
         Properties props = PropertiesUtil.getDefaultProperties(this);
         Config testConfiguration = this.getClass().getAnnotation(Config.class);
         init(props, testConfiguration);
     }
 
-    @AfterMethod (alwaysRun = true)
+    @AfterMethod(alwaysRun = true)
     public void quit() {
         driver.quit();
     }
@@ -280,20 +280,24 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
             if (stackTraceElements != null) {
 
-                int traceSize = stackTraceElements.length;
+                int traceSize = stackTraceElements.length >= 3 ? 3 : stackTraceElements.length;
 
-                if ((traceSize) > 4) {
+                try {
 
-                    try {
-                        System.err.print(stackTraceElements[1] + newLine);
-                        System.err.println(stackTraceElements[2]);
-                        System.err.println(stackTraceElements[3] + newLine);
-                    } catch (ArrayIndexOutOfBoundsException exception) {
-                        System.err.print(exception);
+                    for (int i = 0; i < traceSize; i++) {
+
+                        if (stackTraceElements[i] != null) {
+                            System.err.print(stackTraceElements[i] + newLine);
+                        }
                     }
+
+                } catch (ArrayIndexOutOfBoundsException exception) {
+                    System.err.print(exception);
                 }
             }
-            System.err.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- "+ newLine + e.toString() + newLine + newLine);
+
+
+            System.err.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
         }
 
         int size = driver.findElements(by).size();
