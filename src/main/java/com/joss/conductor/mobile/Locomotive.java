@@ -386,7 +386,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return performSwipe(direction, element, /*by=*/null, percentage);
     }
 
-
     public void swipeDown() {
         swipeCenterLong(SwipeElementDirection.UP);
     }
@@ -402,7 +401,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public void swipeUp(int times) {
-
         for (int i = 0; i < times; i++) {
             swipeCenterLong(SwipeElementDirection.DOWN);
         }
