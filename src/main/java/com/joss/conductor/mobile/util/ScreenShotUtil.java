@@ -15,17 +15,16 @@ import java.text.SimpleDateFormat;
  */
 public class ScreenShotUtil {
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.S");
-    private static final String DIR = "target/test-screenshots";
-    private static final String WORKING_DIR = System.getProperty("user.dir");
-    private static final String PNG_EXT = ".png";
+    private static final String SCREENSHOT_EXT = ".png";
 
     public static void take(Locomotive locomotive, String testName) {
-        writeFile(locomotive.driver, createFilePathAndName(testName));
+        String artifactName = ArtifactUtil.artifactPathForTest(testName, SCREENSHOT_EXT);
+        writeFile(locomotive.driver, artifactName);
     }
 
     public static void take(Locomotive locomotive, String path, String testName) {
-        writeFile(locomotive.driver, createFilePathAndName(path, testName));
+        String artifactName = ArtifactUtil.artifactPathForTest(path, testName, SCREENSHOT_EXT);
+        writeFile(locomotive.driver, artifactName);
     }
 
     private static void writeFile(AppiumDriver appiumDriver, String filePathAndName) {
@@ -34,42 +33,6 @@ public class ScreenShotUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static String createFilePathAndName(String testName) {
-        return WORKING_DIR
-                + File.separator
-                + DIR
-                + File.separator
-                + limitLengthTo100Chars(removeInvalidFilenameChars(testName)) + "-" +  getTimestamp()
-                + PNG_EXT;
-    }
-
-    public static String createFilePathAndName(String path, String testName) {
-        return WORKING_DIR
-                + File.separator
-                + DIR
-                + File.separator
-                + limitLengthTo100Chars(removeInvalidFilenameChars(path))
-                + File.separator
-                + limitLengthTo100Chars(removeInvalidFilenameChars(testName)) + "-" +  getTimestamp()
-                + PNG_EXT;
-    }
-
-    private static String getTimestamp() {
-        return SDF.format(new Timestamp(System.currentTimeMillis()));
-    }
-
-    private static String removeInvalidFilenameChars(String name) {
-        return name.replace(File.separator, "-")
-                .replace(":", "-")
-                .replace("?", "-")
-                .replace("*", "-")
-                .replace("|", "-");
-    }
-
-    private static String limitLengthTo100Chars(String name) {
-        return name.substring(0, name.length() > 100 ? 100 : name.length());
     }
 }
 
