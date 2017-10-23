@@ -21,7 +21,7 @@ Using maven, add jitpack.io to your repositories and include it as a dependency:
 <dependencies>
 
     <dependency>
-        <groupId>com.github.jossjacobo</groupId>
+        <groupId>com.github.willowtreeapps</groupId>
         <artifactId>conductor-mobile</artifactId>
         <version>v1.0</version>
     </dependency>
