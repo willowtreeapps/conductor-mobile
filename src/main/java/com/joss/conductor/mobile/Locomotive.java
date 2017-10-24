@@ -167,6 +167,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, config.avd());
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, config.appActivity());
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, config.appWaitActivity());
+        capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, config.intentCategory());
 
         if (StringUtils.isNotEmpty(config.automationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.automationName());

@@ -137,6 +137,12 @@ public class LocomotiveConfig implements Config {
                 Constants.JVM_CONDUCTOR_APP_WAITACTIVITY);
     }
 
+    public String intentCategory() {
+        return getStringValue(Constants.DEFAULT_PROPERTY_INTENT_CATEGORY,
+                testConfig == null ? null : testConfig.intentCategory(),
+                Constants.JVM_CONDUCTOR_APP_INTENT_CATEGORY);
+    }
+
     public boolean fullReset() {
         return getBooleanValue(Constants.DEFAULT_PROPERTY_FULL_RESET,
                 Constants.JVM_CONDUCTOR_FULL_RESET);

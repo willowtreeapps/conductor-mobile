@@ -31,4 +31,5 @@ public @interface Config {
     String avd() default "";
     String appActivity() default "";
     String appWaitActivity() default "";
+    String intentCategory() default "";
 }

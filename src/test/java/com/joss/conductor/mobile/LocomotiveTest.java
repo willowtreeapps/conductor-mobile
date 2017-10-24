@@ -3,6 +3,7 @@ package com.joss.conductor.mobile;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.apache.xpath.operations.And;
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
 import org.openqa.selenium.*;
@@ -42,6 +43,7 @@ public class LocomotiveTest {
         when(androidConfig.avd()).thenReturn("Nexus 13");
         when(androidConfig.appActivity()).thenReturn("LaunchActivity");
         when(androidConfig.appWaitActivity()).thenReturn("HomeActivity");
+        when(androidConfig.intentCategory()).thenReturn("android.intent.category.LEANBACK_LAUNCHER");
 
         iosConfig = mock(LocomotiveConfig.class);
         when(iosConfig.platformName()).thenReturn(Platform.IOS);
@@ -56,6 +58,7 @@ public class LocomotiveTest {
         when(iosConfig.avd()).thenReturn(null);
         when(iosConfig.appActivity()).thenReturn(null);
         when(iosConfig.appWaitActivity()).thenReturn(null);
+        when(iosConfig.intentCategory()).thenReturn(null);
     }
 
     @Test
@@ -74,6 +77,7 @@ public class LocomotiveTest {
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, "Nexus 13");
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, "LaunchActivity");
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, "HomeActivity");
+        capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, "android.intent.category.LEANBACK_LAUNCHER");
         capabilities.setCapability("xcodeOrgId", nul);
         capabilities.setCapability("xcodeSigningId", nul);
         Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
@@ -100,6 +104,7 @@ public class LocomotiveTest {
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, nul);
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, nul);
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, nul);
+        capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, nul);
         capabilities.setCapability("xcodeOrgId", "orgId");
         capabilities.setCapability("xcodeSigningId", "signingId");
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);

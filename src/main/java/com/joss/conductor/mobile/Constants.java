@@ -34,6 +34,7 @@ public class Constants {
     public static final String JVM_CONDUCTOR_AVD = "conductorAVD";
     public static final String JVM_CONDUCTOR_APP_ACTIVITY = "conductorAppActivity";
     public static final String JVM_CONDUCTOR_APP_WAITACTIVITY = "conductorAppWaitActivity";
+    public static final String JVM_CONDUCTOR_APP_INTENT_CATEGORY = "conductorIntentCategory";
 
     public static final String DEFAULT_PROPERTY_APP_PACKAGE_NAME = "appPackageName";
     public static final String DEFAULT_PROPERTY_PLATFORM_NAME = "platformName";
@@ -62,4 +63,5 @@ public class Constants {
     public static final String DEFAULT_PROPERTY_AVD = "avd";
     public static final String DEFAULT_PROPERTY_APP_ACTIVITY = "appActivity";
     public static final String DEFAULT_PROPERTY_APP_WAITACTIVITY = "appWaitActivity";
+    public static final String DEFAULT_PROPERTY_INTENT_CATEGORY = "intentCategory";
 }
