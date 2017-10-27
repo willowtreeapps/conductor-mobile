@@ -19,7 +19,7 @@ public abstract class Watchman extends TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        if (getLocomotive().configuration.screenshotsOnFail()) {
+        if (getLocomotive().configuration.shouldScreenshotOnFail()) {
             failure = true;
             this.e = e;
         }
@@ -31,7 +31,7 @@ public abstract class Watchman extends TestWatcher {
     @Override
     protected void finished(Description description) {
         super.finished(description);
-        if (getLocomotive().configuration.screenshotsOnFail()) {
+        if (getLocomotive().configuration.shouldScreenshotOnFail()) {
             if (failure) {
                 ScreenShotUtil.take(getLocomotive(),
                         description.getDisplayName(),

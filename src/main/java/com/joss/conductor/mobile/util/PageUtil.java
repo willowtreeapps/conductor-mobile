@@ -1,6 +1,6 @@
 package com.joss.conductor.mobile.util;
 
-import com.joss.conductor.mobile.Config;
+import com.joss.conductor.mobile.config.LocomotiveConfig;
 import org.openqa.selenium.By;
 
 /**
@@ -11,14 +11,14 @@ public class PageUtil {
     private static final String ANDROID_APP_PACKAGE_NAME_ID = "%s:id/%s";
     private static final String IOS_XPATH_ACCESSIBILITY_IDENTIFIER = "//*[@name='%s']";
 
-    public static By buildBy(Config config, String identifier) {
-        switch (config.platformName()) {
+    public static By buildBy(LocomotiveConfig config, String identifier) {
+        switch (config.getPlatformName()) {
             case ANDROID:
-                return By.id(String.format(ANDROID_APP_PACKAGE_NAME_ID, config.appPackageName(), identifier));
+                return By.id(String.format(ANDROID_APP_PACKAGE_NAME_ID, config.getAppPackageName(), identifier));
             case IOS:
                 return By.xpath(String.format(IOS_XPATH_ACCESSIBILITY_IDENTIFIER, identifier));
             default:
-                System.err.println("Unknown platform: " + config.platformName());
+                System.err.println("Unknown platform: " + config.getPlatformName());
                 System.exit(1);
         }
         return null;

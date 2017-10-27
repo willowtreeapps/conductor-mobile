@@ -11,21 +11,25 @@ public class PropertiesUtil {
 
     private static final String DEFAULT_PROPERTIES_PATH = "/default.properties";
 
-    public static Properties getDefaultProperties(Object object) {
+    public static Properties getProperties(Object object, String file) {
         Properties props = new Properties();
         try {
-            InputStream inputStream = object.getClass().getResourceAsStream(DEFAULT_PROPERTIES_PATH);
+            InputStream inputStream = object.getClass().getResourceAsStream(file);
             if (inputStream != null) {
                 props.load(inputStream);
             }
         } catch (IOException ioException) {
             ioException.printStackTrace();
-            Log.fatal("Couldn\'t load in default properties");
+            Log.fatal("Couldn\'t load properties file: " + file);
         } catch (Exception exception) {
             exception.printStackTrace();
-            Log.fatal("Couldn\'t load in default properties");
+            Log.fatal("Couldn\'t load properties file: " + file);
         }
         return props;
+    }
+
+    public static Properties getDefaultProperties(Object object) {
+        return getProperties(object, DEFAULT_PROPERTIES_PATH);
     }
 
 }

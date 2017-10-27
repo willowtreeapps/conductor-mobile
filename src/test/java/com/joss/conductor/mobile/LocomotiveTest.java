@@ -1,5 +1,7 @@
 package com.joss.conductor.mobile;
 
+import com.joss.conductor.mobile.config.LocomotiveConfig;
+import com.joss.conductor.mobile.config.LocomotiveProperties;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -27,35 +29,35 @@ public class LocomotiveTest {
     public void setup() {
         mockDriver = mock(AppiumDriver.class);
         androidConfig = mock(LocomotiveConfig.class);
-        when(androidConfig.platformName()).thenReturn(Platform.ANDROID);
-        when(androidConfig.udid()).thenReturn("qwerty");
-        when(androidConfig.appPackageName()).thenReturn("com.joss.conductor.mobile");
-        when(androidConfig.orientation()).thenReturn("vertical");
-        when(androidConfig.platformVersion()).thenReturn("6.0");
-        when(androidConfig.deviceName()).thenReturn("Pixelated Nexus");
+        when(androidConfig.getPlatformName()).thenReturn(Platform.ANDROID);
+        when(androidConfig.getUdid()).thenReturn("qwerty");
+        when(androidConfig.getAppPackageName()).thenReturn("com.joss.conductor.mobile");
+        when(androidConfig.getOrientation()).thenReturn("vertical");
+        when(androidConfig.getPlatformVersion()).thenReturn("6.0");
+        when(androidConfig.getDeviceName()).thenReturn("Pixelated Nexus");
         when(androidConfig.getAppFullPath()).thenReturn("/full/path/to/android.apk");
-        when(androidConfig.autoAcceptAlerts()).thenReturn(true);
-        when(androidConfig.autoGrantPermissions()).thenReturn(true);
-        when(androidConfig.fullReset()).thenReturn(true);
-        when(androidConfig.xcodeOrgId()).thenReturn(null);
-        when(androidConfig.xcodeSigningId()).thenReturn(null);
-        when(androidConfig.avd()).thenReturn("Nexus 13");
-        when(androidConfig.appActivity()).thenReturn("LaunchActivity");
-        when(androidConfig.appWaitActivity()).thenReturn("HomeActivity");
+        when(androidConfig.isAutoAcceptAlerts()).thenReturn(true);
+        when(androidConfig.isAutoGrantPermissions()).thenReturn(true);
+        when(androidConfig.isFullReset()).thenReturn(true);
+        when(androidConfig.getXcodeOrgId()).thenReturn(null);
+        when(androidConfig.getXcodeSigningId()).thenReturn(null);
+        when(androidConfig.getAvd()).thenReturn("Nexus 13");
+        when(androidConfig.getAppActivity()).thenReturn("LaunchActivity");
+        when(androidConfig.getAppWaitActivity()).thenReturn("HomeActivity");
 
         iosConfig = mock(LocomotiveConfig.class);
-        when(iosConfig.platformName()).thenReturn(Platform.IOS);
-        when(iosConfig.appPackageName()).thenReturn("com.joss.conductor.mobile");
-        when(iosConfig.orientation()).thenReturn("vertical");
-        when(iosConfig.platformVersion()).thenReturn("10.0.0");
-        when(iosConfig.deviceName()).thenReturn("Bravest Auxless Phone");
+        when(iosConfig.getPlatformName()).thenReturn(Platform.IOS);
+        when(iosConfig.getAppPackageName()).thenReturn("com.joss.conductor.mobile");
+        when(iosConfig.getOrientation()).thenReturn("vertical");
+        when(iosConfig.getPlatformVersion()).thenReturn("10.0.0");
+        when(iosConfig.getDeviceName()).thenReturn("Bravest Auxless Phone");
         when(iosConfig.getAppFullPath()).thenReturn("/full/path/to/ios.ipa");
-        when(iosConfig.autoAcceptAlerts()).thenReturn(true);
-        when(iosConfig.xcodeOrgId()).thenReturn("orgId");
-        when(iosConfig.xcodeSigningId()).thenReturn("signingId");
-        when(iosConfig.avd()).thenReturn(null);
-        when(iosConfig.appActivity()).thenReturn(null);
-        when(iosConfig.appWaitActivity()).thenReturn(null);
+        when(iosConfig.isAutoAcceptAlerts()).thenReturn(true);
+        when(iosConfig.getXcodeOrgId()).thenReturn("orgId");
+        when(iosConfig.getXcodeSigningId()).thenReturn("signingId");
+        when(iosConfig.getAvd()).thenReturn(null);
+        when(iosConfig.getAppActivity()).thenReturn(null);
+        when(iosConfig.getAppWaitActivity()).thenReturn(null);
     }
 
     @Test
@@ -74,8 +76,6 @@ public class LocomotiveTest {
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, "Nexus 13");
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, "LaunchActivity");
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, "HomeActivity");
-        capabilities.setCapability("xcodeOrgId", nul);
-        capabilities.setCapability("xcodeSigningId", nul);
         Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(androidConfig))
@@ -84,7 +84,7 @@ public class LocomotiveTest {
 
     @Test
     public void test_building_ios_capabilities_no_devices() {
-        when(iosConfig.udid()).thenReturn("qwerty");
+        when(iosConfig.getUdid()).thenReturn("qwerty");
         String nul = null;
 
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -92,14 +92,11 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Bravest Auxless Phone");
         capabilities.setCapability(MobileCapabilityType.APP, "/full/path/to/ios.ipa");
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
-        capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, true);
+        capabilities.setCapability("autoAcceptAlerts", true);
         capabilities.setCapability("autoGrantPermissions", false);
         capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.0.0");
-        capabilities.setCapability(AndroidMobileCapabilityType.AVD, nul);
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, nul);
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, nul);
         capabilities.setCapability("xcodeOrgId", "orgId");
         capabilities.setCapability("xcodeSigningId", "signingId");
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
@@ -124,10 +121,10 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_wait_for_ele_retries_and_fail() {
+    public void test_wait_for_elem_retries_and_fail() {
         int numberOfRetries = 5;
         LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        when(config.getRetries()).thenReturn(numberOfRetries);
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
@@ -146,7 +143,7 @@ public class LocomotiveTest {
     public void test_wait_for_ele_retries_and_find_item() {
         int numberOfRetries = 5;
         LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        when(config.getRetries()).thenReturn(numberOfRetries);
 
         WebElement foundElement = mock(WebElement.class);
         By id = mock(By.class);
@@ -182,7 +179,7 @@ public class LocomotiveTest {
     public void test_is_present_wait_retries_and_fail() {
         int numberOfRetries = 5;
         LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        when(config.getRetries()).thenReturn(numberOfRetries);
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
@@ -198,7 +195,7 @@ public class LocomotiveTest {
     public void test_is_present_wait_retries_and_find_item() {
         int numberOfRetries = 5;
         LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        when(config.getRetries()).thenReturn(numberOfRetries);
 
         WebElement foundElement = mock(WebElement.class);
         By id = mock(By.class);
@@ -392,15 +389,85 @@ public class LocomotiveTest {
     @Test
     public void test_auto_accept_alerts_are_on_compatibilities_ios() {
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
-        Assertions.assertThat(locomotive.buildCapabilities(iosConfig).getCapability(Constants.AUTO_ACCEPT_ALERTS))
+        Assertions.assertThat(locomotive.buildCapabilities(iosConfig).getCapability("autoAcceptAlerts"))
                 .isEqualTo(true);
     }
 
     @Test
     public void test_auto_accept_alerts_are_not_on_compatibilities_android() {
         Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
-        Assertions.assertThat(locomotive.buildCapabilities(androidConfig).getCapability(Constants.AUTO_ACCEPT_ALERTS))
+        Assertions.assertThat(locomotive.buildCapabilities(androidConfig).getCapability("autoAcceptAlerts"))
                 .isNull();
     }
 
+    @LocomotiveProperties(file = "/default.properties")
+    public class MockSingleAttributedLocomotive extends Locomotive {
+        public MockSingleAttributedLocomotive(AppiumDriver driver) {
+            super(driver);
+        }
+    }
+
+    @Test
+    public void test_attributed_locomotive_loads_properties() {
+        MockSingleAttributedLocomotive locomotive = new MockSingleAttributedLocomotive(mockDriver);
+        locomotive.init(locomotive);
+
+        Assertions.assertThat(locomotive.configuration.getTimeout()).isEqualTo(10);
+        Assertions.assertThat(locomotive.configuration.getRetries()).isEqualTo(8);
+        Assertions.assertThat(locomotive.configuration.shouldScreenshotOnFail()).isTrue();
+        Assertions.assertThat(locomotive.configuration.getPackageFile()).isEqualTo("/apps/android/app.apk");
+    }
+
+    @LocomotiveProperties(file = "/default.properties")
+    @LocomotiveProperties(platform = Platform.IOS, file = "/ios.properties")
+    @LocomotiveProperties(platform = Platform.ANDROID, file = "/android.properties")
+    public class MockAttributedOverridePlatformLocomotive extends Locomotive {
+        public MockAttributedOverridePlatformLocomotive(AppiumDriver driver) {
+            super(driver);
+        }
+    }
+
+    @Test
+    public void test_attributed_locomotive_loads_properties_with_matching_platform() {
+
+        System.setProperty("conductorPlatformName", "ANDROID");
+
+        {
+            MockAttributedOverridePlatformLocomotive locomotive = new MockAttributedOverridePlatformLocomotive(mockDriver);
+            locomotive.init(locomotive);
+
+            Assertions.assertThat(locomotive.configuration.getTimeout()).isEqualTo(4);
+            Assertions.assertThat(locomotive.configuration.getRetries()).isEqualTo(5);
+            Assertions.assertThat(locomotive.configuration.shouldScreenshotOnFail()).isTrue();
+            Assertions.assertThat(locomotive.configuration.getPackageFile()).isEqualTo("/apps/android/app.apk");
+            Assertions.assertThat(locomotive.configuration.getAvd()).isEqualTo("androidAvd");
+            Assertions.assertThat(locomotive.configuration.getAppActivity()).isEqualTo("MyAppActivity");
+            Assertions.assertThat(locomotive.configuration.getAppWaitActivity()).isEqualTo("MyAppWaitActivity");
+            Assertions.assertThat(locomotive.configuration.getUdid()).isEqualTo("AndroidDeviceUdid");
+
+            Assertions.assertThat(locomotive.configuration.getXcodeOrgId()).isNullOrEmpty();
+            Assertions.assertThat(locomotive.configuration.getXcodeSigningId()).isNullOrEmpty();
+        }
+
+        System.setProperty("conductorPlatformName", "IOS");
+
+        {
+            MockAttributedOverridePlatformLocomotive locomotive = new MockAttributedOverridePlatformLocomotive(mockDriver);
+            locomotive.init(locomotive);
+
+            Assertions.assertThat(locomotive.configuration.getTimeout()).isEqualTo(20);
+            Assertions.assertThat(locomotive.configuration.getRetries()).isEqualTo(15);
+            Assertions.assertThat(locomotive.configuration.shouldScreenshotOnFail()).isTrue();
+            Assertions.assertThat(locomotive.configuration.getPackageFile()).isEqualTo("/apps/android/app.apk");
+            Assertions.assertThat(locomotive.configuration.getUdid()).isEqualTo("mydeficeudid");
+            Assertions.assertThat(locomotive.configuration.getXcodeOrgId()).isEqualTo("teamId");
+            Assertions.assertThat(locomotive.configuration.getXcodeSigningId()).isEqualTo("signId");
+
+            Assertions.assertThat(locomotive.configuration.getAvd()).isNullOrEmpty();
+            Assertions.assertThat(locomotive.configuration.getAppActivity()).isNullOrEmpty();
+            Assertions.assertThat(locomotive.configuration.getAppWaitActivity()).isNullOrEmpty();
+            Assertions.assertThat(locomotive.configuration.getAppActivity()).isNullOrEmpty();
+        }
+
+    }
 }

@@ -1,13 +1,14 @@
 package com.joss.conductor.mobile;
 
 import com.google.common.base.Strings;
+import com.joss.conductor.mobile.config.LocomotiveConfig;
+import com.joss.conductor.mobile.config.LocomotiveProperties;
+import com.joss.conductor.mobile.config.LocomotivePropertiesCollection;
 import com.joss.conductor.mobile.util.PageUtil;
-import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
@@ -66,12 +67,48 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         init(configuration, driver);
     }
 
+    /**
+     * Constructor for Unit Tests
+     */
+    public Locomotive(AppiumDriver driver) {
+         this.driver = driver;
+    }
+
     @Before
     @BeforeMethod(alwaysRun = true)
     public void init() {
-        Properties props = PropertiesUtil.getDefaultProperties(this);
-        Config testConfiguration = this.getClass().getAnnotation(Config.class);
-        init(props, testConfiguration);
+        init(this);
+    }
+
+    public void init(Object testSuite) {
+        LocomotiveConfig config = new LocomotiveConfig();
+        config.loadProperties(testSuite,"/default.properties");
+
+        // Platform name needs to be pull from the environment early since it can be impact
+        // further decisions.
+        config.loadPlatformFromEnvironment();
+
+        LocomotivePropertiesCollection propertiesCollection = testSuite.getClass().getAnnotation(LocomotivePropertiesCollection.class);
+        if(propertiesCollection != null)
+        {
+            // If any properties exist for no platform, those get loaded first:
+            for(LocomotiveProperties properties : propertiesCollection.value()) {
+                if (properties.platform() == Platform.NONE) {
+                    config.loadProperties(testSuite, properties.file());
+                }
+            }
+
+            // Now platform specific
+            for(LocomotiveProperties properties : propertiesCollection.value()) {
+                if (properties.platform() == config.getPlatformName()) {
+                    config.loadProperties(testSuite, properties.file());
+                }
+            }
+        }
+        config = onConfigCreated(config);
+
+        config.loadEnvironment();
+        init(config, driver);
     }
 
     @AfterMethod(alwaysRun = true)
@@ -79,25 +116,21 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         driver.quit();
     }
 
-    private void init(Properties properties, Config testConfig) {
-        init(new LocomotiveConfig(testConfig, properties), /*AppiumDriver=*/null);
-    }
-
     private void init(LocomotiveConfig configuration, AppiumDriver driver) {
         this.configuration = configuration;
         if (driver != null) {
             this.driver = driver;
         } else {
-            boolean isLocal = StringUtils.isEmpty(configuration.hub());
+            boolean isLocal = StringUtils.isEmpty(configuration.getHub());
             URL url = getUrl(isLocal);
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
 
             AppiumServiceBuilder builder = new AppiumServiceBuilder()
-                    .withArgument(GeneralServerFlag.LOG_LEVEL, configuration.logLevel().equals("")
+                    .withArgument(GeneralServerFlag.LOG_LEVEL, configuration.getLogLevel().equals("")
                             ? "debug"
-                            : configuration.logLevel());
+                            : configuration.getLogLevel());
 
-            switch (configuration.platformName()) {
+            switch (configuration.getPlatformName()) {
                 case ANDROID:
                     this.driver = isLocal
                             ? new AndroidDriver(builder, capabilities)
@@ -110,7 +143,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                             : new IOSDriver(url, capabilities);
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown platform: " + configuration.platformName());
+                    throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
             }
         }
     }
@@ -120,12 +153,16 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         URL url = null;
         if (!isLocal) {
             try {
-                url = new URL(configuration.hub());
+                url = new URL(configuration.getHub());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
         return url;
+    }
+
+    protected LocomotiveConfig onConfigCreated(LocomotiveConfig config) {
+        return config;
     }
 
     protected DesiredCapabilities onCapabilitiesCreated(DesiredCapabilities desiredCapabilities) {
@@ -134,18 +171,19 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     private DesiredCapabilities getCapabilities(LocomotiveConfig configuration) {
         DesiredCapabilities capabilities;
-        switch (configuration.platformName()) {
+        switch (configuration.getPlatformName()) {
             case ANDROID:
             case IOS:
                 capabilities = buildCapabilities(configuration);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown platform: " + configuration.platformName());
+                throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
         }
 
         // If deviceName is empty replace it with something
         // noinspection Since15
-        if (capabilities.getCapability(MobileCapabilityType.DEVICE_NAME).toString().isEmpty()) {
+        if (capabilities.getCapability(MobileCapabilityType.DEVICE_NAME) == null ||
+                capabilities.getCapability(MobileCapabilityType.DEVICE_NAME).toString().isEmpty()) {
             capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Empty Device Name");
         }
 
@@ -153,28 +191,35 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public DesiredCapabilities buildCapabilities(LocomotiveConfig config) {
+
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(MobileCapabilityType.UDID, config.udid());
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.deviceName());
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.getDeviceName());
         capabilities.setCapability(MobileCapabilityType.APP, config.getAppFullPath());
-        capabilities.setCapability(MobileCapabilityType.ORIENTATION, config.orientation());
-        capabilities.setCapability("autoGrantPermissions", config.autoGrantPermissions());
-        capabilities.setCapability(MobileCapabilityType.FULL_RESET, config.fullReset());
-        capabilities.setCapability(MobileCapabilityType.NO_RESET, config.noReset());
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.platformVersion());
-        capabilities.setCapability("xcodeSigningId", config.xcodeSigningId());
-        capabilities.setCapability("xcodeOrgId", config.xcodeOrgId());
-        capabilities.setCapability(AndroidMobileCapabilityType.AVD, config.avd());
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, config.appActivity());
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, config.appWaitActivity());
+        capabilities.setCapability(MobileCapabilityType.ORIENTATION, config.getOrientation());
+        capabilities.setCapability("autoGrantPermissions", config.isAutoGrantPermissions());
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, config.isFullReset());
+        capabilities.setCapability(MobileCapabilityType.NO_RESET, config.isNoReset());
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.getPlatformVersion());
+        capabilities.setCapability(MobileCapabilityType.UDID, config.getUdid());
 
-        if (StringUtils.isNotEmpty(config.automationName())) {
-            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.automationName());
+        switch(config.getPlatformName()) {
+            case ANDROID:
+                capabilities.setCapability(AndroidMobileCapabilityType.AVD, config.getAvd());
+                capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, config.getAppActivity());
+                capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, config.getAppWaitActivity());
+                break;
+            case IOS:
+                capabilities.setCapability("xcodeSigningId", config.getXcodeSigningId());
+                capabilities.setCapability("xcodeOrgId", config.getXcodeOrgId());
+                capabilities.setCapability("autoAcceptAlerts", config.isAutoAcceptAlerts());
+                break;
+
         }
 
-        if (config.platformName() == Platform.IOS) {
-            capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, config.autoAcceptAlerts());
+        if (config.getAutomationName() != null && StringUtils.isNotEmpty(config.getAutomationName())) {
+            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
         }
+
         return capabilities;
     }
 
@@ -197,7 +242,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
         if (size == 0) {
             int attempts = 1;
-            while (attempts <= configuration.retries()) {
+            while (attempts <= configuration.getRetries()) {
                 try {
                     Thread.sleep(1000); // sleep for 1 second.
                 } catch (Exception x) {
@@ -214,7 +259,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             if (size == 0) {
                 Assert.fail(String.format("Could not find %s after %d attempts",
                         by.toString(),
-                        configuration.retries()));
+                        configuration.getRetries()));
             }
         }
 
@@ -304,7 +349,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
         if (size == 0) {
             int attempts = 1;
-            while (attempts <= configuration.retries()) {
+            while (attempts <= configuration.getRetries()) {
                 try {
                     Thread.sleep(1000); // sleep for 1 second.
                 } catch (Exception x) {
@@ -705,7 +750,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
      * @return The implementing class for fluency
      */
     public Locomotive waitForCondition(ExpectedCondition<?> condition) {
-        return waitForCondition(condition, configuration.timeout());
+        return waitForCondition(condition, configuration.getTimeout());
     }
 
     /**

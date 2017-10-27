@@ -20,7 +20,7 @@ public class TestListener implements ITestListener {
 
     public void onTestFailure(ITestResult result) {
         Locomotive locomotive = (Locomotive) result.getInstance();
-        if (locomotive.configuration.screenshotsOnFail()) {
+        if (locomotive.configuration.shouldScreenshotOnFail()) {
                 ScreenShotUtil.take(locomotive,
                         result.getTestClass().getName() + "." + result.getMethod().getMethodName(),
                         result.getThrowable().getMessage());
