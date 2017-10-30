@@ -9,6 +9,7 @@ import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -58,6 +59,13 @@ public class LocomotiveTest {
         when(iosConfig.getAvd()).thenReturn(null);
         when(iosConfig.getAppActivity()).thenReturn(null);
         when(iosConfig.getAppWaitActivity()).thenReturn(null);
+    }
+
+    @AfterMethod
+    public void teardown() {
+        System.clearProperty("conductorPlatformName");
+        System.clearProperty("conductorRetries");
+        System.clearProperty("conductorTimeout");
     }
 
     @Test
