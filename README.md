@@ -86,6 +86,16 @@ The ```AutomationTest``` class extends on this concept by implenting a sort of `
 # Pull requests
 If you have an idea for the framework, fork it and submit a pull-request!
 
+# Release process
+ We follow gitflow branch management [reference graphic](http://nvie.com/posts/a-successful-git-branching-model/). The
+ steps to make a new release are:
+ 1. Create a release branch from the develop branch named `release/x.x.x`.
+ 2. Create a new pull request from the release branch to the master branch.
+ 3. If approved merge release branch into master.
+ 4. Tag the merge (with release notes) in the master branch with `x.x.x` (this will make this version available in jitpack).
+ 5. Create a new pull request from master to develop so all changes are back in develop.
+ 6. If approved merge master branch into develop.
+
 License
 -------
 
