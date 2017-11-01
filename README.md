@@ -58,6 +58,7 @@ Same as the original conductor, the primary goals of this project are to...
 - `screenshotsOnFail` = {boolean: true or false}
 - `autoGrantPermissions` = {boolean: true or false}
 - `automationName` = {string: i.e. uiautomator2 or xcuitest}
+- `intentCategory` = {string: i.e. android.intent.category.LEANBACK_LAUNCHER}
 
 # Inline Actions
 - ```click(By)```

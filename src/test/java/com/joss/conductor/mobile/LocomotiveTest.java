@@ -5,6 +5,7 @@ import com.joss.conductor.mobile.config.LocomotiveProperties;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.apache.xpath.operations.And;
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
 import org.openqa.selenium.*;
@@ -105,6 +106,7 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.0.0");
+        capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, nul);
         capabilities.setCapability("xcodeOrgId", "orgId");
         capabilities.setCapability("xcodeSigningId", "signingId");
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
