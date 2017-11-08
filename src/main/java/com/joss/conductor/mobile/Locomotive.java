@@ -7,7 +7,6 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
@@ -93,7 +92,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
 
             AppiumServiceBuilder builder = new AppiumServiceBuilder()
-                    .withArgument(GeneralServerFlag.LOG_LEVEL, configuration.logLevel().equals("")
+                    .withArgument(GeneralServerFlag.LOG_LEVEL, "".equals(configuration.logLevel())
                             ? "debug"
                             : configuration.logLevel());
 
