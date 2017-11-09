@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,14 +18,20 @@ import java.util.Map;
 public class ConductorConfig {
     private static final String DefaultConfigFile = "/config.yaml";
 
-    private Platform platformName = Platform.NONE;
+    // Conductor properties
     private String[] currentSchemes;
+    private int timeout = 5;
+    private int retries = 5;
+    private boolean screenshotOnFail = true;
+
+    // Appium Properties
+    private Platform platformName = Platform.NONE;
+    private String deviceName;
+    private boolean autoGrantPermissions = true;
     private boolean noReset = true;
     private boolean fullReset = false;
     private String appiumVersion;
     private String platformVersion;
-    private int timeout = 5;
-    private int retries = 5;
     private String appFile;
     private String language;
     private String locale;
@@ -29,10 +39,14 @@ public class ConductorConfig {
     private String hub;
     private String udid;
     private String automationName;
+    private String appPackageName;
 
+    // iOS specific
     private String xcodeSigningId;
     private String xcodeOrgId;
 
+    // Android specific
+    private String avd;
     private String appActivity;
     private String appWaitActivity;
     private String intentCategory;
@@ -60,6 +74,18 @@ public class ConductorConfig {
     public String[] getCurrentSchemes()
     {
         return currentSchemes;
+    }
+
+    public String getFullAppPath() {
+        if(appFile == null)
+            return null;
+
+        Path path = Paths.get(appFile);
+        if(appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
+            return appFile;
+        }
+
+        return Paths.get(System.getProperty("user.dir"), path.normalize().toString()).normalize().toString();
     }
 
     private void readConfig(InputStream is) {
@@ -230,8 +256,17 @@ public class ConductorConfig {
         this.orientation = orientation;
     }
 
-    public String getHub() {
-        return hub;
+    public URL getHub() {
+        URL url = null;
+        if(hub != null) {
+            try {
+                url = new URL(hub);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return url;
     }
 
     public void setHub(String hub) {
@@ -300,5 +335,45 @@ public class ConductorConfig {
 
     public void setPlatformVersion(String platformVersion) {
         this.platformVersion = platformVersion;
+    }
+
+    public String getAppPackageName() {
+        return appPackageName;
+    }
+
+    public void setAppPackageName(String appPackageName) {
+        this.appPackageName = appPackageName;
+    }
+
+    public boolean isScreenshotOnFail() {
+        return screenshotOnFail;
+    }
+
+    public void setScreenshotOnFail(boolean screenshotOnFail) {
+        this.screenshotOnFail = screenshotOnFail;
+    }
+
+    public String getAvd() {
+        return avd;
+    }
+
+    public void setAvd(String avd) {
+        this.avd = avd;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public boolean isAutoGrantPermissions() {
+        return autoGrantPermissions;
+    }
+
+    public void setAutoGrantPermissions(boolean autoGrantPermissions) {
+        this.autoGrantPermissions = autoGrantPermissions;
     }
 }

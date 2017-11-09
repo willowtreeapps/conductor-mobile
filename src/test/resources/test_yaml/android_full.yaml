@@ -1,0 +1,18 @@
+
+platformName: ANDROID
+
+defaults:
+  fullReset: true
+  noReset: false
+  orientation: vertical
+
+  android:
+    appFile: /full/path/to/android.apk
+    udid: qwerty
+    appPackageName: com.joss.conductor.mobile
+    platformVersion: 6.0
+    deviceName: Pixelated Nexus
+    avd: Nexus 13
+    appActivity: LaunchActivity
+    appWaitActivity: HomeActivity
+    intentCategory: android.intent.category.LEANBACK_LAUNCHER

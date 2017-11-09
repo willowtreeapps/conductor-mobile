@@ -152,6 +152,24 @@ public class ConductorConfigTest {
                 .isEqualTo(5);
         Assertions.assertThat(config.getUdid())
                 .isEqualTo("auto");
+    }
 
+    @Test
+    public void full_app_path_expands_relative() {
+        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig(is);
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo(System.getProperty("user.dir") + "/apps/android.apk");
+    }
+
+    @Test
+    public void with_scheme_does_not_resolve() {
+        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig(is);
+        config.setAppFile("sauce-storage:app.zip");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo("sauce-storage:app.zip");
     }
 }
