@@ -284,6 +284,7 @@ public class LocomotiveConfig implements Config {
             default:
                 throw new IllegalArgumentException("Unknown platform: " + platformName());
         }
+        // Only add the full path for local tests.
         return (StringUtils.isEmpty(hub())) ? System.getProperty("user.dir") + app : app;
     }
 }
