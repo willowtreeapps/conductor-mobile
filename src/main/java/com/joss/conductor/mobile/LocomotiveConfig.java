@@ -200,7 +200,7 @@ public class LocomotiveConfig implements Config {
     }
 
     private String getStringValue(String defaultPropertyKey, String testConfigValue, String jvmParamKey) {
-        String value = "";
+        String value = null;
         String defaultValue = getProperty(defaultPropertyKey);
         String jvmValue = JvmUtil.getJvmProperty(jvmParamKey);
 
@@ -284,6 +284,7 @@ public class LocomotiveConfig implements Config {
             default:
                 throw new IllegalArgumentException("Unknown platform: " + platformName());
         }
-        return System.getProperty("user.dir") + app;
+        // Only add the full path for local tests.
+        return (StringUtils.isEmpty(hub())) ? System.getProperty("user.dir") + app : app;
     }
 }

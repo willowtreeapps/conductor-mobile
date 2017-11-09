@@ -186,6 +186,28 @@ public class LocomotiveConfigTest {
     }
 
     @Test
+    public void test_apk_full_path_remote() {
+        Config androidConfig = mock(Config.class);
+        when(androidConfig.apk()).thenReturn("sauce-storage:QAInternal.zip");
+        when(androidConfig.hub()).thenReturn("https://qa.login:SAUCE_LABS_API-TOKEN@ondemand.saucelabs.com:443/wd/hub");
+        when(androidConfig.platformName()).thenReturn(Platform.ANDROID);
+
+        LocomotiveConfig config = new LocomotiveConfig(androidConfig, null);
+        Assertions.assertThat(config.getAppFullPath()).isEqualTo("sauce-storage:QAInternal.zip");
+    }
+
+    @Test
+    public void test_ipa_full_path_remote() {
+        Config iosConfig = mock(Config.class);
+        when(iosConfig.ipa()).thenReturn("sauce-storage:QAInternal.zip");
+        when(iosConfig.hub()).thenReturn("https://qa.login:SAUCE_LABS_API-TOKEN@ondemand.saucelabs.com:443/wd/hub");
+        when(iosConfig.platformName()).thenReturn(Platform.IOS);
+
+        LocomotiveConfig config = new LocomotiveConfig(iosConfig, null);
+        Assertions.assertThat(config.getAppFullPath()).isEqualTo("sauce-storage:QAInternal.zip");
+    }
+
+    @Test
     public void test_platform_none_throws_on_full_path() {
         assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
             public void call() throws Throwable {
