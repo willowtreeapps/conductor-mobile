@@ -1,5 +1,7 @@
 package com.joss.conductor.mobile;
 
+import org.junit.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import org.assertj.core.api.Assertions;
 import org.testng.asserts.Assertion;
@@ -8,6 +10,12 @@ import java.io.InputStream;
 import java.io.StringReader;
 
 public class ConductorConfigTest {
+
+    @AfterMethod
+    public void teardown() {
+        System.clearProperty("conductorPlatformName");
+        System.clearProperty("conductorCurrentSchemes");
+    }
 
     @Test
     public void no_config_reads_default_yaml()  {
@@ -117,5 +125,33 @@ public class ConductorConfigTest {
         Assertions.assertThat(config.getAppFile())
                 .isEqualTo("sauce-storage:mock.zip");
     }
-    
+
+    @Test
+    public void environment_platform_name_overrides_config() {
+        System.setProperty("conductorPlatformName", "IOS");
+        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig(is);
+
+        Assertions.assertThat(config.getPlatformName())
+                .isEqualByComparingTo(Platform.IOS);
+        Assertions.assertThat(config.getAppFile())
+                .isEqualTo("./apps/ios.app");
+    }
+
+    @Test
+    public void environment_schemes_overrides_config() {
+        System.setProperty("conductorCurrentSchemes", "shorter_timeouts,android_device");
+        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig(is);
+
+        Assertions.assertThat(config.getPlatformName())
+                .isEqualByComparingTo(Platform.ANDROID);
+        Assertions.assertThat(config.getRetries())
+                .isEqualTo(8);
+        Assertions.assertThat(config.getTimeout())
+                .isEqualTo(5);
+        Assertions.assertThat(config.getUdid())
+                .isEqualTo("auto");
+
+    }
 }

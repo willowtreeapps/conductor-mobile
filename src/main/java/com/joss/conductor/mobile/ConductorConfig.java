@@ -66,7 +66,10 @@ public class ConductorConfig {
         Yaml yaml = new Yaml();
         Map<String, Object> config = (Map<String, Object>)yaml.load(is);
 
-        if(config.containsKey("platformName")) {
+        String environmentPlatformName = System.getProperty("conductorPlatformName");
+        if(environmentPlatformName != null) {
+            platformName = Platform.valueOf(environmentPlatformName);
+        } else if(config.containsKey("platformName")) {
             platformName = Platform.valueOf((String)config.get("platformName"));
         }
 
@@ -88,10 +91,18 @@ public class ConductorConfig {
             }
         }
 
-        List<String> schemes = (List<String>)config.get("currentSchemes");
-        if(schemes != null) {
-            currentSchemes = new String[schemes.size()];
-            schemes.toArray(currentSchemes);
+        String environmentSchemes = System.getProperty("conductorCurrentSchemes");
+        if(environmentSchemes != null) {
+            currentSchemes = environmentSchemes.split(",");
+        } else {
+            List<String> schemesList = (List<String>)config.get("currentSchemes");
+            if(schemesList != null) {
+                currentSchemes = new String[schemesList.size()];
+                schemesList.toArray(currentSchemes);
+            }
+        }
+
+        if(currentSchemes != null) {
 
             for(String scheme : currentSchemes) {
                 Map<String, Object> schemeData = (Map<String, Object>)config.get(scheme);
