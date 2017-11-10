@@ -39,27 +39,86 @@ Same as the original conductor, the primary goals of this project are to...
 - Provide a free to use framework for any starting enterprise, or individual programmer.
 - Automatic detection of connected iOS devices
 
-# Default Properties
+# Configuration
+Conductor can be configured using a [yaml](https://en.wikipedia.org/wiki/YAML) file. By default, Conductor looks for a "config.yaml" at the root of embedded resources.
+
+The file has 3 sections: `current configuration`, `defaults`, and `schemes`.
+
+## General Configuration
+The general configuration only has two properties: `platformName` (which must be either IOS or ANDROID) and optionally `currentSchemes`, which will be discussed later
+
+## Defaults
+The defaults section contains both general defaults and defaults per platform. It looks like this:
+```yaml
+defaults:
+  retries: 3
+  timeout: 10
+  screenshotOnFail: false
+  autoGrantPermissions: true
+
+  ios:
+    platformVersion: 11.0
+    deviceName: iPhone 8
+
+  android:
+    timeout: 15
+    platformVersion: 8.0
+```
+Platforms can override defaults just be re-specifying them in the platform section
+
+## Schemes
+
+Sometimes it is useful to specify properties under specific circumstances, and this is what "schemes" are for.  Schemes override properties in the configuarion *in the order they are specified in the `currentSchemes` section of the configuration file.*
+
+You might, for example, have a scheme for running on a specific device or specific remote testing tool. It's a pain to have to re-specify these so, Conductor makes this easy with schemes. Some example schemes:
+
+```yaml
+ios_sauce_labs:
+  hub: http://saucelabs-hub
+  appFile: sauce-storage:app.zip
+  automationName: XCUITest
+  platformVersion: 11.1
+  deviceName: iPhone 8
+
+shorter_timeouts:
+  timeout: 1
+  retries: 2
+```
+You can see a variety of example configuration files in the unit tests for conductor [here](src/test/resources/test_yaml)
+
+# Supported Properties
+## General (Common)
+- `platformName` = {string: ANDROID or IOS} (note all capps)
 - `deviceName` = {name of the device}
-- `appPackageName` = {android app package name}
-- `apk` = {path to apk}
-- `ipa` = {path to ipa}
-- `platformName` = {string: android or ios}
-- `platformVersion` = {string: appium platform version}
-- `udid` = {string: iOS device's UDID or Android's device name from ADB}
-- `language` = {string: }
-- `locale` = {string: }
-- `orientation` = {string: portrait or landscape}
-- `autoWebview` = {boolean: true or false}
+- `appPackageName` = {android app package name or iOS bundle id}
+- `appFile` = {path to apk, ipa, or app}
+- `platformVersion` = {string: version iOS or Android}
+- `udid` = {string: iOS device's UDID or Android's device name from ADB, or auto to use the first connected device}
 - `noReset` = {boolean: true or false}
 - `fullReset` = {boolean: true or false}
-- `hub` = {string: url}
 - `timeout` = {int: default equals 5 seconds per call}
 - `retries` = {int: default equals 5 retries}
 - `screenshotsOnFail` = {boolean: true or false}
 - `autoGrantPermissions` = {boolean: true or false}
+
+
+## General (less common, usually not required)
+- `language` = {string: }
+- `locale` = {string: }
+- `orientation` = {string: portrait or landscape}
+- `hub` = {string: url}
 - `automationName` = {string: i.e. uiautomator2 or xcuitest}
+
+## Android specific
+- `avd` = {string: the name of the avd to boot}
+- `appActivity` = {string: the name of the activity that starts the app}
+- `appWaitActivity` = {string: the name of the activity to wait for}
 - `intentCategory` = {string: i.e. android.intent.category.LEANBACK_LAUNCHER}
+
+## iOS specific
+- `xcodeSigningId` = {string: the signing id to use to load the app on a device, usually "iPhone Developer"}
+- `xcodeOrgId` = {string: the org id to use to sign the app}
+
 
 # Inline Actions
 - ```click(By)```
@@ -98,10 +157,12 @@ If you have an idea for the framework, fork it and submit a pull-request!
  6. If approved merge master branch into develop.
 
 # Use with Sauce Labs
+*Note: it is recommended you create a scheme for sauce labs testing when possible*
+
  1. get an API token for your sauce labs account
  2. upload the .app file as a zip to temporary [sauce storage](https://wiki.saucelabs.com/display/DOCS/Uploading+Mobile+Applications+to+Sauce+Storage+for+Testing)
  3. set the hub property to connect to saucelabs `https://<login-name>:<API-token>@ondemand.saucelabs.com:443/wd/hub`
- 4. set the ipa/apk property to `sauce-storage:<zip-filename>.zip`
+ 4. set the appFile property to `sauce-storage:<zip-filename>.zip`
  5. run the test
 
 License
