@@ -17,7 +17,8 @@ Using maven, add jitpack.io to your repositories and include it as a dependency:
     </repository>
     
 </repositories>
-
+```
+```xml
 <dependencies>
 
     <dependency>
@@ -95,6 +96,13 @@ If you have an idea for the framework, fork it and submit a pull-request!
  4. Tag the merge (with release notes) in the master branch with `x.x.x` (this will make this version available in jitpack).
  5. Create a new pull request from master to develop so all changes are back in develop.
  6. If approved merge master branch into develop.
+
+# Use with Sauce Labs
+ 1. get an API token for your sauce labs account
+ 2. upload the .app file as a zip to temporary [sauce storage](https://wiki.saucelabs.com/display/DOCS/Uploading+Mobile+Applications+to+Sauce+Storage+for+Testing)
+ 3. set the hub property to connect to saucelabs `https://<login-name>:<API-token>@ondemand.saucelabs.com:443/wd/hub`
+ 4. set the ipa/apk property to `sauce-storage:<zip-filename>.zip`
+ 5. run the test
 
 License
 -------
