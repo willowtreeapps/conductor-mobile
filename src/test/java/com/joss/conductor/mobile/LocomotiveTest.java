@@ -1,5 +1,6 @@
 package com.joss.conductor.mobile;
 
+import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -11,6 +12,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.InputStream;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
@@ -21,44 +23,17 @@ import static org.mockito.Mockito.*;
 public class LocomotiveTest {
 
     private AppiumDriver mockDriver;
-    private LocomotiveConfig androidConfig;
-    private LocomotiveConfig iosConfig;
+    private ConductorConfig androidConfig;
+    private ConductorConfig iosConfig;
 
     @BeforeMethod
     public void setup() {
         mockDriver = mock(AppiumDriver.class);
-        androidConfig = mock(LocomotiveConfig.class);
-        when(androidConfig.platformName()).thenReturn(Platform.ANDROID);
-        when(androidConfig.udid()).thenReturn("qwerty");
-        when(androidConfig.appPackageName()).thenReturn("com.joss.conductor.mobile");
-        when(androidConfig.orientation()).thenReturn("vertical");
-        when(androidConfig.platformVersion()).thenReturn("6.0");
-        when(androidConfig.deviceName()).thenReturn("Pixelated Nexus");
-        when(androidConfig.getAppFullPath()).thenReturn("/full/path/to/android.apk");
-        when(androidConfig.autoAcceptAlerts()).thenReturn(true);
-        when(androidConfig.autoGrantPermissions()).thenReturn(true);
-        when(androidConfig.fullReset()).thenReturn(true);
-        when(androidConfig.xcodeOrgId()).thenReturn(null);
-        when(androidConfig.xcodeSigningId()).thenReturn(null);
-        when(androidConfig.avd()).thenReturn("Nexus 13");
-        when(androidConfig.appActivity()).thenReturn("LaunchActivity");
-        when(androidConfig.appWaitActivity()).thenReturn("HomeActivity");
-        when(androidConfig.intentCategory()).thenReturn("android.intent.category.LEANBACK_LAUNCHER");
+        InputStream is = this.getClass().getResourceAsStream("/test_yaml/android_full.yaml");
+        androidConfig = new ConductorConfig(is);
 
-        iosConfig = mock(LocomotiveConfig.class);
-        when(iosConfig.platformName()).thenReturn(Platform.IOS);
-        when(iosConfig.appPackageName()).thenReturn("com.joss.conductor.mobile");
-        when(iosConfig.orientation()).thenReturn("vertical");
-        when(iosConfig.platformVersion()).thenReturn("10.0.0");
-        when(iosConfig.deviceName()).thenReturn("Bravest Auxless Phone");
-        when(iosConfig.getAppFullPath()).thenReturn("/full/path/to/ios.ipa");
-        when(iosConfig.autoAcceptAlerts()).thenReturn(true);
-        when(iosConfig.xcodeOrgId()).thenReturn("orgId");
-        when(iosConfig.xcodeSigningId()).thenReturn("signingId");
-        when(iosConfig.avd()).thenReturn(null);
-        when(iosConfig.appActivity()).thenReturn(null);
-        when(iosConfig.appWaitActivity()).thenReturn(null);
-        when(iosConfig.intentCategory()).thenReturn(null);
+        is = this.getClass().getResourceAsStream("/test_yaml/ios_full.yaml");
+        iosConfig = new ConductorConfig(is);
     }
 
     @Test
@@ -88,7 +63,7 @@ public class LocomotiveTest {
 
     @Test
     public void test_building_ios_capabilities_no_devices() {
-        when(iosConfig.udid()).thenReturn("qwerty");
+        iosConfig.setUdid("qwerty");
         String nul = null;
 
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -96,11 +71,10 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Bravest Auxless Phone");
         capabilities.setCapability(MobileCapabilityType.APP, "/full/path/to/ios.ipa");
         capabilities.setCapability(MobileCapabilityType.ORIENTATION, "vertical");
-        capabilities.setCapability(Constants.AUTO_ACCEPT_ALERTS, true);
         capabilities.setCapability("autoGrantPermissions", false);
         capabilities.setCapability(MobileCapabilityType.NO_RESET, false);
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, false);
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.0.0");
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "11.0");
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, nul);
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, nul);
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, nul);
@@ -131,12 +105,11 @@ public class LocomotiveTest {
     @Test
     public void test_wait_for_ele_retries_and_fail() {
         int numberOfRetries = 5;
-        LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        iosConfig.setRetries(numberOfRetries);
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
-        final Locomotive locomotive = new Locomotive(config, mockDriver);
+        final Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
             public void call() throws Throwable {
@@ -150,8 +123,7 @@ public class LocomotiveTest {
     @Test
     public void test_wait_for_ele_retries_and_find_item() {
         int numberOfRetries = 5;
-        LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        iosConfig.setRetries(numberOfRetries);
 
         WebElement foundElement = mock(WebElement.class);
         By id = mock(By.class);
@@ -160,7 +132,7 @@ public class LocomotiveTest {
                 Collections.emptyList(),
                 Collections.singletonList(foundElement));
         when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive(config, mockDriver);
+        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.waitForElement(id))
                 .isEqualTo(foundElement);
@@ -186,12 +158,11 @@ public class LocomotiveTest {
     @Test
     public void test_is_present_wait_retries_and_fail() {
         int numberOfRetries = 5;
-        LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        iosConfig.setRetries(numberOfRetries);
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
-        final Locomotive locomotive = new Locomotive(config, mockDriver);
+        final Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.isPresentWait(id))
                 .isEqualTo(false);
@@ -202,8 +173,7 @@ public class LocomotiveTest {
     @Test
     public void test_is_present_wait_retries_and_find_item() {
         int numberOfRetries = 5;
-        LocomotiveConfig config = mock(LocomotiveConfig.class);
-        when(config.retries()).thenReturn(numberOfRetries);
+        iosConfig.setRetries(numberOfRetries);
 
         WebElement foundElement = mock(WebElement.class);
         By id = mock(By.class);
@@ -212,7 +182,7 @@ public class LocomotiveTest {
                 Collections.emptyList(),
                 Collections.singletonList(foundElement));
         when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive(config, mockDriver);
+        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.isPresentWait(id))
                 .isEqualTo(true);
@@ -393,19 +363,4 @@ public class LocomotiveTest {
             }
         }).isInstanceOf(IllegalArgumentException.class);
     }
-
-    @Test
-    public void test_auto_accept_alerts_are_on_compatibilities_ios() {
-        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
-        Assertions.assertThat(locomotive.buildCapabilities(iosConfig).getCapability(Constants.AUTO_ACCEPT_ALERTS))
-                .isEqualTo(true);
-    }
-
-    @Test
-    public void test_auto_accept_alerts_are_not_on_compatibilities_android() {
-        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
-        Assertions.assertThat(locomotive.buildCapabilities(androidConfig).getCapability(Constants.AUTO_ACCEPT_ALERTS))
-                .isNull();
-    }
-
 }
