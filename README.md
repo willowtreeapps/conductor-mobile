@@ -100,6 +100,7 @@ You can see a variety of example configuration files in the unit tests for condu
 - `retries` = {int: default equals 5 retries}
 - `screenshotsOnFail` = {boolean: true or false}
 - `autoGrantPermissions` = {boolean: true or false}
+- `automationName` = {string: i.e. uiautomator2 or xcuitest}
 
 
 ## General (less common, usually not required)
@@ -107,7 +108,6 @@ You can see a variety of example configuration files in the unit tests for condu
 - `locale` = {string: }
 - `orientation` = {string: portrait or landscape}
 - `hub` = {string: url}
-- `automationName` = {string: i.e. uiautomator2 or xcuitest}
 
 ## Android specific
 - `avd` = {string: the name of the avd to boot}

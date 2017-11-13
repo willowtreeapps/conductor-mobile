@@ -2,7 +2,6 @@ package com.joss.conductor.mobile;
 
 import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.PageUtil;
-import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -12,7 +11,6 @@ import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
-import org.assertj.swing.dependency.jsr305.Nullable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,7 +24,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.NoSuchElementException;
@@ -463,10 +460,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return this;
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts){
+    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
         int i;
 
-        if (isPresentWait(by)){
+        if (isPresentWait(by)) {
             return driver.findElement(by);
         } else {
             for (i = 0; i < attempts; i++) {
@@ -483,20 +480,20 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return null;
     }
 
-    public WebElement swipeTo(By by){
+    public WebElement swipeTo(By by) {
         SwipeElementDirection s = SwipeElementDirection.UP;
-        int attempts = 3;
-
-       return swipeTo(s, by, attempts );
-    }
-
-    public WebElement swipeTo(SwipeElementDirection s, By by){
         int attempts = 3;
 
         return swipeTo(s, by, attempts);
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts){
+    public WebElement swipeTo(SwipeElementDirection s, By by) {
+        int attempts = 3;
+
+        return swipeTo(s, by, attempts);
+    }
+
+    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts) {
         return swipeTo(s, By.id(id), attempts);
     }
 

@@ -54,10 +54,10 @@ public class ConductorConfig {
     public ConductorConfig() {
         try {
             InputStream is = this.getClass().getResourceAsStream(DefaultConfigFile);
-            if(is != null) {
+            if (is != null) {
                 readConfig(is);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.fatal("Couldn't load default conductor config! " + e.toString());
         }
     }
@@ -66,73 +66,82 @@ public class ConductorConfig {
         readConfig(yamlStream);
     }
 
-    public Platform getPlatformName()
-    {
+    public Platform getPlatformName() {
         return platformName;
     }
 
-    public String[] getCurrentSchemes()
-    {
+    public String[] getCurrentSchemes() {
         return currentSchemes;
     }
 
     public String getFullAppPath() {
-        if(appFile == null)
+        if (appFile == null) {
             return null;
+        }
 
         Path path = Paths.get(appFile);
-        if(appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
+        if (appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
             return appFile;
+        }
+        try {
+            URL url = new URL(appFile);
+            return appFile;
+        } catch(MalformedURLException e) {
+            // Ignore, this is expected to happen, parse as a regular path
         }
 
         return Paths.get(System.getProperty("user.dir"), path.normalize().toString()).normalize().toString();
     }
 
     private void readConfig(InputStream is) {
-        Yaml yaml = new Yaml();
-        Map<String, Object> config = (Map<String, Object>)yaml.load(is);
-
-        String environmentPlatformName = System.getProperty("conductorPlatformName");
-        if(environmentPlatformName != null) {
-            platformName = Platform.valueOf(environmentPlatformName);
-        } else if(config.containsKey("platformName")) {
-            platformName = Platform.valueOf((String)config.get("platformName"));
+        if(is == null) {
+            throw new NullPointerException("InputStream parameter to readConfig cannot be null");
         }
 
-        Map<String, Object> defaults = (Map<String, Object>)config.get("defaults");
-        if(defaults != null) {
+        Yaml yaml = new Yaml();
+        Map<String, Object> config = (Map<String, Object>) yaml.load(is);
+
+        String environmentPlatformName = System.getProperty("conductorPlatformName");
+        if (environmentPlatformName != null) {
+            platformName = Platform.valueOf(environmentPlatformName);
+        } else if (config.containsKey("platformName")) {
+            platformName = Platform.valueOf((String) config.get("platformName"));
+        }
+
+        Map<String, Object> defaults = (Map<String, Object>) config.get("defaults");
+        if (defaults != null) {
             readProperties(defaults);
 
             Map<String, Object> platformDefaults = null;
             switch (platformName) {
                 case IOS:
-                    platformDefaults = (Map<String, Object>)defaults.get("ios");
+                    platformDefaults = (Map<String, Object>) defaults.get("ios");
                     break;
                 case ANDROID:
-                    platformDefaults = (Map<String, Object>)defaults.get("android");
+                    platformDefaults = (Map<String, Object>) defaults.get("android");
                     break;
             }
-            if(platformDefaults != null) {
+            if (platformDefaults != null) {
                 readProperties(platformDefaults);
             }
         }
 
         String environmentSchemes = System.getProperty("conductorCurrentSchemes");
-        if(environmentSchemes != null) {
+        if (environmentSchemes != null) {
             currentSchemes = environmentSchemes.split(",");
         } else {
-            List<String> schemesList = (List<String>)config.get("currentSchemes");
-            if(schemesList != null) {
+            List<String> schemesList = (List<String>) config.get("currentSchemes");
+            if (schemesList != null) {
                 currentSchemes = new String[schemesList.size()];
                 schemesList.toArray(currentSchemes);
             }
         }
 
-        if(currentSchemes != null) {
+        if (currentSchemes != null) {
 
-            for(String scheme : currentSchemes) {
-                Map<String, Object> schemeData = (Map<String, Object>)config.get(scheme);
-                if(schemeData != null) {
+            for (String scheme : currentSchemes) {
+                Map<String, Object> schemeData = (Map<String, Object>) config.get(scheme);
+                if (schemeData != null) {
                     readProperties(schemeData);
                 }
             }
@@ -140,14 +149,14 @@ public class ConductorConfig {
     }
 
     private void readProperties(Map<String, Object> properties) {
-        for(String key : properties.keySet()) {
-            if(key.equals("ios") || key.equals("android")) {
+        for (String key : properties.keySet()) {
+            if (key.equals("ios") || key.equals("android")) {
                 // These keys are the start of platform specific options
                 // and should be ignored
                 continue;
             }
 
-            setProperty(key, (String)properties.get(key).toString());
+            setProperty(key, (String) properties.get(key).toString());
         }
     }
 
@@ -157,14 +166,14 @@ public class ConductorConfig {
         String capPropertyKey = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
         String methodName = "set" + capPropertyKey;
         Method foundMethod = null;
-        for(Method method : methods) {
-            if(method.getName().equals(methodName)) {
+        for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
                 foundMethod = method;
                 break;
             }
         }
 
-        if(foundMethod != null) {
+        if (foundMethod != null) {
             try {
                 if (foundMethod.getParameterTypes()[0] == String.class) {
                     foundMethod.invoke(this, propertyValue);
@@ -178,7 +187,7 @@ public class ConductorConfig {
                     Platform value = Platform.valueOf(propertyValue);
                     foundMethod.invoke(this, value);
                 }
-            } catch(IllegalAccessException | InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 Log.log.warning("Could not invoke method '" + methodName + "': " + e.toString());
             }
         }
@@ -258,11 +267,11 @@ public class ConductorConfig {
 
     public URL getHub() {
         URL url = null;
-        if(hub != null) {
+        if (hub != null) {
             try {
                 url = new URL(hub);
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                Log.fatal("Failure parsing url: " + e.toString());
             }
         }
 

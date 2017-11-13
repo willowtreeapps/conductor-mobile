@@ -164,12 +164,32 @@ public class ConductorConfigTest {
     }
 
     @Test
-    public void with_scheme_does_not_resolve() {
+    public void sauce_storage_scheme_does_not_resolve_path() {
         InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
         ConductorConfig config = new ConductorConfig(is);
         config.setAppFile("sauce-storage:app.zip");
 
         Assertions.assertThat(config.getFullAppPath())
                 .isEqualTo("sauce-storage:app.zip");
+    }
+
+    @Test
+    public void absolute_paths_are_kept() {
+        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig(is);
+        config.setAppFile("/Users/username/code/path/app.ipa");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo("/Users/username/code/path/app.ipa");
+    }
+
+    @Test
+    public void urls_do_not_resolve_path() {
+        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig(is);
+        config.setAppFile("https://willowtreeapps.com/app.zip");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo("https://willowtreeapps.com/app.zip");
     }
 }
