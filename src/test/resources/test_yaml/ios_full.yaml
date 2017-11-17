@@ -1,0 +1,17 @@
+
+platformName: IOS
+
+defaults:
+  fullReset: false
+  noReset: false
+  orientation: vertical
+
+  ios:
+    autoGrantPermissions: false
+    udid: querty
+    appPackageName: com.joss.conductor.mobild
+    platformVersion: 11.0
+    deviceName: Bravest Auxless Phone
+    xcodeOrgId: orgId
+    xcodeSigningId: signingId
+    appFile: /full/path/to/ios.ipa
