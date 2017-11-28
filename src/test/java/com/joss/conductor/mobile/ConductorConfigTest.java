@@ -1,13 +1,10 @@
 package com.joss.conductor.mobile;
 
-import org.junit.Assert;
+import org.assertj.core.api.Assertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
-import org.assertj.core.api.Assertions;
-import org.testng.asserts.Assertion;
 
 import java.io.InputStream;
-import java.io.StringReader;
 
 public class ConductorConfigTest {
 

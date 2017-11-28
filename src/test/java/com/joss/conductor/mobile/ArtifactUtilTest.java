@@ -1,14 +1,11 @@
 package com.joss.conductor.mobile;
 
 import com.joss.conductor.mobile.util.ArtifactUtil;
-import com.joss.conductor.mobile.util.ScreenShotUtil;
 import com.joss.conductor.mobile.util.WaitUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.testng.annotations.Test;
-import org.testng.asserts.Assertion;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;

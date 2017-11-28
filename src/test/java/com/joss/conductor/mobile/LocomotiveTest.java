@@ -1,10 +1,8 @@
 package com.joss.conductor.mobile;
 
-import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
-import org.apache.xpath.operations.And;
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
 import org.openqa.selenium.*;

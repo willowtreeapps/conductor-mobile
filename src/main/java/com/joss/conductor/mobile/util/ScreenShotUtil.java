@@ -4,6 +4,7 @@ import com.joss.conductor.mobile.Locomotive;
 import io.appium.java_client.AppiumDriver;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
+import org.pmw.tinylog.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class ScreenShotUtil {
         try {
             FileUtils.copyFile(appiumDriver.getScreenshotAs(OutputType.FILE), new File(filePathAndName));
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 }

@@ -1,9 +1,8 @@
 package com.joss.conductor.mobile;
 
-import com.joss.conductor.mobile.util.Log;
+import org.pmw.tinylog.Logger;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +56,7 @@ public class ConductorConfig {
                 readConfig(is);
             }
         } catch (Exception e) {
-            Log.fatal("Couldn't load default conductor config! " + e.toString());
+            Logger.error("Couldn't load default conductor config! ", e);
         }
     }
 
@@ -188,7 +186,7 @@ public class ConductorConfig {
                     foundMethod.invoke(this, value);
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
-                Log.log.warning("Could not invoke method '" + methodName + "': " + e.toString());
+                Logger.warn(e, "Could not invoke method: $s", methodName);
             }
         }
     }
@@ -271,7 +269,7 @@ public class ConductorConfig {
             try {
                 url = new URL(hub);
             } catch (MalformedURLException e) {
-                Log.fatal("Failure parsing url: " + e.toString());
+                Logger.error("Failure parsing Hub Url", e);
             }
         }
 
