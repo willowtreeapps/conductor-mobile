@@ -26,7 +26,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -151,6 +153,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
         if (StringUtils.isNotEmpty(config.getAutomationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
+        }
+
+
+        // Set custom capabilities if there are any
+        for (String key : config.getCustomCapabilities().keySet()) {
+            capabilities.setCapability(key, config.getCustomCapabilities().get(key));
         }
 
         return capabilities;

@@ -10,7 +10,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.InputStream;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
@@ -27,11 +26,8 @@ public class LocomotiveTest {
     @BeforeMethod
     public void setup() {
         mockDriver = mock(AppiumDriver.class);
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/android_full.yaml");
-        androidConfig = new ConductorConfig(is);
-
-        is = this.getClass().getResourceAsStream("/test_yaml/ios_full.yaml");
-        iosConfig = new ConductorConfig(is);
+        androidConfig = new ConductorConfig("/test_yaml/android_full.yaml");
+        iosConfig = new ConductorConfig("/test_yaml/ios_full.yaml");
     }
 
     @Test
@@ -83,6 +79,22 @@ public class LocomotiveTest {
 
         Assertions.assertThat(locomotive.buildCapabilities(iosConfig))
                 .isEqualToIgnoringNullFields(capabilities);
+    }
+
+    @Test
+    public void test_custom_capabilities() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/android_defaults_custom_caps.yaml");
+        Locomotive locomotive = new Locomotive(config, mockDriver);
+
+        DesiredCapabilities caps = locomotive.buildCapabilities(config);
+        Assertions.assertThat(caps.getCapability("foo"))
+                .isEqualTo("bar");
+        Assertions.assertThat(caps.getCapability("fizz"))
+                .isEqualTo("buzz");
+        Assertions.assertThat(caps.getCapability(AndroidMobileCapabilityType.APP_ACTIVITY))
+                .isEqualTo("com.android.activity");
+        Assertions.assertThat(caps.getCapability(MobileCapabilityType.NO_RESET))
+                .isEqualTo(false);
     }
 
     @Test
