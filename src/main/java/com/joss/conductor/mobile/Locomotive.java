@@ -477,7 +477,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         } else {
             for (i = 0; i < attempts; i++) {
 
-                swipeCenter(s);
+                swipeCenterLong(s);
                 if (isPresentWait(by)) {
                     return driver.findElement(by);
                 }
