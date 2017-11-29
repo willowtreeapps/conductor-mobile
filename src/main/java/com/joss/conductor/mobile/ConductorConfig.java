@@ -1,9 +1,8 @@
 package com.joss.conductor.mobile;
 
-import com.joss.conductor.mobile.util.Log;
+import org.pmw.tinylog.Logger;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,12 +10,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ConductorConfig {
-    private static final String DefaultConfigFile = "/config.yaml";
+    private static final String DEFAULT_CONFIG_FILE = "/config.yaml";
+    private static final String CUSTOM_CAPABILITIES = "customCapabilities";
 
     // Conductor properties
     private String[] currentSchemes;
@@ -40,6 +40,7 @@ public class ConductorConfig {
     private String udid;
     private String automationName;
     private String appPackageName;
+    private Map<String, Object> customCapabilities = new HashMap<>();
 
     // iOS specific
     private String xcodeSigningId;
@@ -52,13 +53,22 @@ public class ConductorConfig {
     private String intentCategory;
 
     public ConductorConfig() {
+        this(DEFAULT_CONFIG_FILE);
+    }
+
+    /**
+     * Constructor method that takes in a relative path to a local resource config file
+     *
+     * @param localResourcesConfigPath Relative path to local config resource
+     */
+    public ConductorConfig(String localResourcesConfigPath) {
         try {
-            InputStream is = this.getClass().getResourceAsStream(DefaultConfigFile);
+            InputStream is = this.getClass().getResourceAsStream(localResourcesConfigPath);
             if (is != null) {
                 readConfig(is);
             }
         } catch (Exception e) {
-            Log.fatal("Couldn't load default conductor config! " + e.toString());
+            Logger.error("Couldn't load default conductor config! ", e);
         }
     }
 
@@ -66,40 +76,13 @@ public class ConductorConfig {
         readConfig(yamlStream);
     }
 
-    public Platform getPlatformName() {
-        return platformName;
-    }
-
-    public String[] getCurrentSchemes() {
-        return currentSchemes;
-    }
-
-    public String getFullAppPath() {
-        if (appFile == null) {
-            return null;
-        }
-
-        Path path = Paths.get(appFile);
-        if (appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
-            return appFile;
-        }
-        try {
-            URL url = new URL(appFile);
-            return appFile;
-        } catch(MalformedURLException e) {
-            // Ignore, this is expected to happen, parse as a regular path
-        }
-
-        return Paths.get(System.getProperty("user.dir"), path.normalize().toString()).normalize().toString();
-    }
-
     private void readConfig(InputStream is) {
-        if(is == null) {
+        if (is == null) {
             throw new NullPointerException("InputStream parameter to readConfig cannot be null");
         }
 
         Yaml yaml = new Yaml();
-        Map<String, Object> config = (Map<String, Object>) yaml.load(is);
+        Map<String, Object> config = yaml.load(is);
 
         String environmentPlatformName = System.getProperty("conductorPlatformName");
         if (environmentPlatformName != null) {
@@ -156,7 +139,11 @@ public class ConductorConfig {
                 continue;
             }
 
-            setProperty(key, (String) properties.get(key).toString());
+            if (key.equals(CUSTOM_CAPABILITIES)) {
+                putCustomCapabilities(properties.get(key));
+            } else {
+                setProperty(key, properties.get(key).toString());
+            }
         }
     }
 
@@ -188,7 +175,7 @@ public class ConductorConfig {
                     foundMethod.invoke(this, value);
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
-                Log.log.warning("Could not invoke method '" + methodName + "': " + e.toString());
+                Logger.warn(e, "Could not invoke method: $s", methodName);
             }
         }
     }
@@ -271,7 +258,7 @@ public class ConductorConfig {
             try {
                 url = new URL(hub);
             } catch (MalformedURLException e) {
-                Log.fatal("Failure parsing url: " + e.toString());
+                Logger.error("Failure parsing Hub Url", e);
             }
         }
 
@@ -384,5 +371,61 @@ public class ConductorConfig {
 
     public void setAutoGrantPermissions(boolean autoGrantPermissions) {
         this.autoGrantPermissions = autoGrantPermissions;
+    }
+
+    public Platform getPlatformName() {
+        return platformName;
+    }
+
+    public String[] getCurrentSchemes() {
+        return currentSchemes;
+    }
+
+    public String getFullAppPath() {
+        if (appFile == null) {
+            return null;
+        }
+
+        Path path = Paths.get(appFile);
+        if (appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
+            return appFile;
+        }
+        try {
+            URL url = new URL(appFile);
+            return appFile;
+        } catch (MalformedURLException e) {
+            // Ignore, this is expected to happen, parse as a regular path
+        }
+
+        return Paths.get(System.getProperty("user.dir"), path.normalize().toString()).normalize().toString();
+    }
+
+    public void setCustomCapabilities(Map<String, Object> customCapabilities) {
+        this.customCapabilities = customCapabilities;
+    }
+
+    public Map<String, Object> getCustomCapabilities() {
+        return customCapabilities;
+    }
+
+    private void putCustomCapabilities(Object keyCustomCapabilities) {
+        Map<String, Object> custom = new HashMap<>();
+        if (keyCustomCapabilities instanceof Map) {
+            for (String key : ((Map<String, Object>) keyCustomCapabilities).keySet()) {
+                Object value = ((Map) keyCustomCapabilities).get(key);
+                if (!(value instanceof Map)) {
+                    custom.put(key, value);
+                } else {
+                    throw new ClassCastException(String.format("%s cannot be of type Map", value));
+                }
+            }
+        } else {
+            throw new ClassCastException(String.format("%s is expected to be a String list of key/value pairs", CUSTOM_CAPABILITIES));
+        }
+        putCustomCapabilities(custom);
+    }
+
+    private void putCustomCapabilities(Map<String, Object> customCapabilities) {
+        this.customCapabilities.putAll(customCapabilities);
     }
 }

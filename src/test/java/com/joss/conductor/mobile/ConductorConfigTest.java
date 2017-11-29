@@ -1,13 +1,11 @@
 package com.joss.conductor.mobile;
 
-import org.junit.Assert;
+import org.assertj.core.api.Assertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
-import org.assertj.core.api.Assertions;
-import org.testng.asserts.Assertion;
 
-import java.io.InputStream;
-import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConductorConfigTest {
 
@@ -31,8 +29,7 @@ public class ConductorConfigTest {
 
     @Test
     public void config_supplied_reads_supplied_config() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/simple.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/simple.yaml");
 
         String[] expectedSchemes = {"test_scheme1", "test_scheme2"};
 
@@ -44,8 +41,7 @@ public class ConductorConfigTest {
 
     @Test
     public void config_reads_defaults() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/simple_defaults.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/simple_defaults.yaml");
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.IOS);
@@ -61,8 +57,7 @@ public class ConductorConfigTest {
 
     @Test
     public void config_reads_defaults_for_android() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/android_defaults.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/android_defaults.yaml");
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.ANDROID);
@@ -77,8 +72,7 @@ public class ConductorConfigTest {
 
     @Test
     public void config_reads_defaults_for_ios() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/ios_defaults.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/ios_defaults.yaml");
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.IOS);
@@ -94,8 +88,7 @@ public class ConductorConfigTest {
 
     @Test
     public void config_overrides_with_current_schemes() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/schemes.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/schemes.yaml");
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.IOS);
@@ -111,8 +104,7 @@ public class ConductorConfigTest {
 
     @Test
     public void config_overrides_schemes_in_order() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/override_schemes.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/override_schemes.yaml");
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.IOS);
@@ -129,8 +121,7 @@ public class ConductorConfigTest {
     @Test
     public void environment_platform_name_overrides_config() {
         System.setProperty("conductorPlatformName", "IOS");
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.IOS);
@@ -141,8 +132,7 @@ public class ConductorConfigTest {
     @Test
     public void environment_schemes_overrides_config() {
         System.setProperty("conductorCurrentSchemes", "shorter_timeouts,android_device");
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.ANDROID);
@@ -156,8 +146,7 @@ public class ConductorConfigTest {
 
     @Test
     public void full_app_path_expands_relative() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
 
         Assertions.assertThat(config.getFullAppPath())
                 .isEqualTo(System.getProperty("user.dir") + "/apps/android.apk");
@@ -165,8 +154,7 @@ public class ConductorConfigTest {
 
     @Test
     public void sauce_storage_scheme_does_not_resolve_path() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
         config.setAppFile("sauce-storage:app.zip");
 
         Assertions.assertThat(config.getFullAppPath())
@@ -175,8 +163,7 @@ public class ConductorConfigTest {
 
     @Test
     public void absolute_paths_are_kept() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
         config.setAppFile("/Users/username/code/path/app.ipa");
 
         Assertions.assertThat(config.getFullAppPath())
@@ -185,11 +172,35 @@ public class ConductorConfigTest {
 
     @Test
     public void urls_do_not_resolve_path() {
-        InputStream is = this.getClass().getResourceAsStream("/test_yaml/all_platforms.yaml");
-        ConductorConfig config = new ConductorConfig(is);
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
         config.setAppFile("https://willowtreeapps.com/app.zip");
 
         Assertions.assertThat(config.getFullAppPath())
                 .isEqualTo("https://willowtreeapps.com/app.zip");
+    }
+
+    @Test
+    public void custom_capabilities_defaults() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/android_defaults_custom_caps.yaml");
+
+        Map<String, Object> customCapabilities = new HashMap<>();
+        customCapabilities.put("foo", "bar");
+        customCapabilities.put("fizz", "buzz");
+        customCapabilities.put("truty", true);
+
+        Assertions.assertThat(config.getCustomCapabilities())
+                .containsAllEntriesOf(customCapabilities);
+    }
+
+    @Test
+    public void custom_capabilities_defaults_overridden_by_scheme() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/android_defaults_custom_caps_schemes.yaml");
+
+        Map<String, Object> customCapabilities = new HashMap<>();
+        customCapabilities.put("foo", "foo");
+        customCapabilities.put("fizz", "fizz");
+
+        Assertions.assertThat(config.getCustomCapabilities())
+                .containsAllEntriesOf(customCapabilities);
     }
 }
