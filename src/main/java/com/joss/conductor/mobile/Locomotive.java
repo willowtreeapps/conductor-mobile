@@ -375,6 +375,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE_SUPER_LONG);
     }
 
+    public Locomotive swipeCornerLong(ScreenCorner corner, SwipeElementDirection direction, int duration) {
+        return performCornerSwipe(corner, direction, SWIPE_DISTANCE_LONG, duration);
+    }
+
+    public Locomotive swipeCornerSuperLong(ScreenCorner corner, SwipeElementDirection direction, int duration) {
+        return performCornerSwipe(corner, direction, SWIPE_DISTANCE_SUPER_LONG, duration);
+    }
+
     public Locomotive swipeLong(SwipeElementDirection direction, String id) {
         return swipeLong(direction, PageUtil.buildBy(configuration, id));
     }
@@ -485,6 +493,75 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             throw new IllegalArgumentException("Swipe Direction not specified");
         }
         driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), SWIPE_DURATION_MILLIS);
+        return this;
+    }
+
+    private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
+        Dimension screen = driver.manage().window().getSize();
+
+        Point from;
+        if(corner != null) {
+            int x;
+            int y;
+            switch(corner) {
+                case TOP_LEFT:
+                    x = screen.getWidth() - 100;
+                    y = screen.getHeight() - 10;
+                    from = new Point(x,y);
+                    break;
+                case TOP_RIGHT:
+                    x = screen.getWidth() - 10;
+                    y = screen.getHeight() - 10;
+                    from = new Point(x,y);
+                    break;
+                case BOTTOM_LEFT:
+                    x = screen.getWidth() - 100;
+                    y = screen.getHeight() - 100;
+                    from = new Point(x,y);
+                    break;
+                case BOTTOM_RIGHT:
+                    x = screen.getWidth() - 10;
+                    y = screen.getHeight() - 100;
+                    from = new Point(x,y);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Corner not specified: " + corner.name());
+            }
+        } else {
+            throw new IllegalArgumentException("Corner not specified");
+        }
+
+        Point to = null;
+        if(direction != null) {
+            switch(direction) {
+                case UP:
+                    int toYUp = (int) (from.getY() - (screen.getHeight() * percentage));
+                    toYUp = toYUp <= 0 ? 1 : toYUp;
+                    to = new Point(from.getX(), toYUp);
+                    break;
+                case RIGHT:
+                    int toXRight = (int) (from.getX() + (screen.getWidth() * percentage));
+                    toXRight = toXRight >= screen.getWidth() ? screen.getWidth() - 1 : toXRight; // toXRight cannot be longer than screen width;
+                    to = new Point(toXRight, from.getY());
+                    break;
+                case DOWN:
+                    int toYDown = (int) (from.getY() + (screen.getWidth() * percentage));
+                    toYDown = toYDown >= screen.getHeight() ? screen.getHeight() - 1 : toYDown; // toYDown cannot be longer than screen height;
+                    to = new Point(from.getX(), toYDown);
+                    break;
+                case LEFT:
+                    int toXLeft = (int) (from.getX() - (screen.getWidth() * percentage));
+                    toXLeft = toXLeft <= 0 ? 1 : toXLeft; // toXLeft cannot be less than 0
+                    to = new Point(toXLeft, from.getY());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Swipe Direction not specified: " + direction.name());
+
+            }
+        } else {
+            throw new IllegalArgumentException("Swipe Direction not specified");
+        }
+        driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), duration);
         return this;
     }
 
