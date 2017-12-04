@@ -1,0 +1,19 @@
+
+platformName: ANDROID
+
+defaults:
+  noReset: false
+  appiumVersion: 1.7.1
+  timeout: 8
+  retries: 10
+
+  android:
+    retries: 4
+    appFile: ./apps/android.apk
+    appActivity: com.android.activity
+
+  ios:
+    retries: 4
+    appFile: ./apps/ios.app
+    xcodeSigningId: iPhone Developer
+    xcodeOrgId: TEAMID
