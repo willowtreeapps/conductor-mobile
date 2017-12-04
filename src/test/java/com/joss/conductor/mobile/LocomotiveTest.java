@@ -319,6 +319,52 @@ public class LocomotiveTest {
     }
 
     @Test
+    public void test_perform_corner_swipe() {
+        WebDriver.Window window = mock(WebDriver.Window.class);
+        when(window.getSize()).thenReturn(new Dimension(100, 100));
+
+        WebDriver.Options options = mock(WebDriver.Options.class);
+        when(options.window()).thenReturn(window);
+
+        when(mockDriver.manage()).thenReturn(options);
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+
+        // Swipe Up Bottom Right Corner
+        locomotive.swipeCornerLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
+        verify(mockDriver, times(1))
+                .swipe(90, 10, 90, 50, 2000);
+        verify(mockDriver, times(1))
+                .swipe(90, 10, 90, /* ~ x - 1 to avoid going off screen ~ */99, 2000 );
+
+        // Swipe Up Bottom Left Corner
+        locomotive.swipeCornerLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 10,10, 50, 2000);
+        verify(mockDriver, times(1))
+                .swipe(10, 10, 10, 99, 2000);
+
+        // Swipe Down Top Right Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+        verify(mockDriver, times(1))
+                .swipe(90, 90, 90, 50, 2000);
+        verify(mockDriver, times(1))
+                .swipe(90, 90, 90, 1, 2000);
+
+        // Swipe Down Top Left Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 90, 10, 50, 2000);
+        verify(mockDriver, times(1))
+                .swipe(10, 90, 10, 1, 2000);
+
+    }
+
+    @Test
     public void perform_swipe_on_element() {
         final WebElement element = mock(WebElement.class);
         when(element.getLocation()).thenReturn(new Point(0, 0));
