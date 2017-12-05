@@ -501,27 +501,27 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
         Point from;
         if(corner != null) {
-            int x;
-            int y;
+            int x = 0;
+            int y = 0;
             switch(corner) {
                 case TOP_LEFT:
-                    x = screen.getWidth() - 100;
-                    y = screen.getHeight() - 10;
+                    x = screen.getWidth() - 90;
+                    y = screen.getHeight() - 90;
                     from = new Point(x,y);
                     break;
                 case TOP_RIGHT:
                     x = screen.getWidth() - 10;
-                    y = screen.getHeight() - 10;
+                    y = screen.getHeight() - 90;
                     from = new Point(x,y);
                     break;
                 case BOTTOM_LEFT:
-                    x = screen.getWidth() - 100;
-                    y = screen.getHeight() - 100;
+                    x = screen.getWidth() - 90;
+                    y = screen.getHeight() - 10;
                     from = new Point(x,y);
                     break;
                 case BOTTOM_RIGHT:
                     x = screen.getWidth() - 10;
-                    y = screen.getHeight() - 100;
+                    y = screen.getHeight() - 10;
                     from = new Point(x,y);
                     break;
                 default:
@@ -531,7 +531,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             throw new IllegalArgumentException("Corner not specified");
         }
 
-        Point to = null;
+        Point to;
         if(direction != null) {
             switch(direction) {
                 case UP:
