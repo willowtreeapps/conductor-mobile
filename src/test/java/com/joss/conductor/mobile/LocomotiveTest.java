@@ -317,9 +317,9 @@ public class LocomotiveTest {
 
         // Swipe Up Bottom Right Corner
         locomotive.swipeCornerLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
         verify(mockDriver, times(1))
                 .swipe(90, 90, 90, 40, 100);
-        locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
         verify(mockDriver, times(1))
                 .swipe(90, 90, 90, /* ~ x - 1 to avoid going off screen ~ */1, 100 );
 
@@ -346,6 +346,22 @@ public class LocomotiveTest {
                 .swipe(10, 10, 10, 60, 100);
         verify(mockDriver, times(1))
                 .swipe(10, 10, 10, 99, 100);
+
+        // Swipe Right Top Left Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 10, 60, 10, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 10, 99, 10, 100);
+
+        // Swipe Left Top Right Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
+        verify(mockDriver, times(1))
+                .swipe(90, 10, 40, 10, 100);
+        verify(mockDriver, times(1))
+                .swipe(90, 10, 1, 10, 100);
 
     }
 
