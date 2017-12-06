@@ -4,9 +4,12 @@ import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.PageUtil;
 import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.CommandExecutionHelper;
+import io.appium.java_client.MobileCommand;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.PerformsTouchID;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
@@ -114,6 +117,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     throw new IllegalArgumentException("Unknown platform: " + configuration.platformName());
             }
         }
+
+        // TODO: Added to support biometrics on android until java-client PR #473 is pulled in
+        MobileCommand.commandRepository.put("fingerPrint",
+                MobileCommand.postC("/session/:sessionId/appium/device/finger_print"));
     }
 
     @Nullable
@@ -700,6 +707,59 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return Strings.isNullOrEmpty(vars.get(key))
                 ? defaultValue
                 : vars.get(key);
+    }
+
+    /**
+     * Enroll biometrics. This command is ignored on Android.
+     *
+     * @return The implementing class for fluency
+     */
+    public Locomotive enrollBiometrics(int id) {
+        switch (configuration.platformName()) {
+            case ANDROID:
+                // Don't do anything for now
+                break;
+
+            case IOS:
+                PerformsTouchID performsTouchID = (PerformsTouchID)driver;
+                performsTouchID.toggleTouchIDEnrollment(true);
+                break;
+
+            case NONE:
+                break;
+        }
+
+        return this;
+    }
+
+    /**
+     * Perform a biometric scan, either forcing a match (iOS) or by supplying the id of an enrolled
+     * fingerprint (Android)
+     *
+     * @param match Whether or not the finger should match. This parameter is ignored on Android
+     * @param id The id of the enrolled finger. This parameter is ignored on iOS
+     * @return The implementing class for fluency
+     */
+    public Locomotive performBiometric(boolean match, int id) {
+
+        switch (configuration.platformName()) {
+            case ANDROID:
+                // TODO: Restructure when the Java-client supports biometrics (PR #473 on appium/java-client)
+                Map.Entry<String, Map<String, ?>> paramMap = new AbstractMap.SimpleEntry<>("fingerPrint",
+                        MobileCommand.prepareArguments("fingerprintId", id));
+                CommandExecutionHelper.execute(driver, paramMap);
+                break;
+
+            case IOS:
+                PerformsTouchID performsTouchID = (PerformsTouchID)driver;
+                performsTouchID.performTouchID(match);
+                break;
+
+            case NONE:
+                break;
+        }
+
+        return this;
     }
 
     /**
