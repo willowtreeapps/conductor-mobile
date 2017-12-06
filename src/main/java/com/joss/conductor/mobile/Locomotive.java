@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.PageUtil;
 import com.joss.conductor.mobile.util.PropertiesUtil;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -28,6 +29,7 @@ import org.testng.annotations.Listeners;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.*;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
@@ -479,7 +481,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         } else {
             throw new IllegalArgumentException("Swipe Direction not specified");
         }
-        driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), SWIPE_DURATION_MILLIS);
+        TouchAction swipe = new TouchAction(driver).press(from.getX(), from.getY())
+                .waitAction(Duration.ofMillis(SWIPE_DURATION_MILLIS)).moveTo(to.getX(), to.getY()).release();
+        swipe.perform();
         return this;
     }
 
