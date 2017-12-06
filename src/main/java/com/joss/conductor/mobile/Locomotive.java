@@ -485,7 +485,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = driver.manage().window().getSize();
 
-        int MARGINPX_10 = 10;
+        int X_MIN_MARGIN = 10;
+        int X_MAX_MARGIN = screen.getWidth() - 10;
+
+        int Y_MIN_MARGIN = 10;
+        int Y_MAX_MARGIN = screen.getHeight() - 10;
 
         Point from;
         if(corner != null) {
@@ -493,23 +497,23 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             int y = 0;
             switch(corner) {
                 case TOP_LEFT:
-                    x = MARGINPX_10;
-                    y = screen.getHeight() - (screen.getHeight() - 10);
+                    x = X_MIN_MARGIN;
+                    y = Y_MIN_MARGIN;
                     from = new Point(x,y);
                     break;
                 case TOP_RIGHT:
-                    x = screen.getWidth() - 10;
-                    y = MARGINPX_10;
+                    x = X_MAX_MARGIN;
+                    y = Y_MIN_MARGIN;
                     from = new Point(x,y);
                     break;
                 case BOTTOM_LEFT:
-                    x = MARGINPX_10;
-                    y = screen.getHeight() - 10;
+                    x = X_MIN_MARGIN;
+                    y = Y_MAX_MARGIN;
                     from = new Point(x,y);
                     break;
                 case BOTTOM_RIGHT:
-                    x = screen.getWidth() - 10;
-                    y = screen.getHeight() - 10;
+                    x = X_MAX_MARGIN;
+                    y = Y_MAX_MARGIN;
                     from = new Point(x,y);
                     break;
                 default:
