@@ -485,11 +485,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = driver.manage().window().getSize();
 
-        int X_MIN_MARGIN = 10;
-        int X_MAX_MARGIN = screen.getWidth() - 10;
-
-        int Y_MIN_MARGIN = 10;
-        int Y_MAX_MARGIN = screen.getHeight() - 10;
+        int SCREEN_MARGIN = 10;
 
         Point from;
         if(corner != null) {
@@ -497,24 +493,16 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             int y = 0;
             switch(corner) {
                 case TOP_LEFT:
-                    x = X_MIN_MARGIN;
-                    y = Y_MIN_MARGIN;
-                    from = new Point(x,y);
+                    from = new Point(SCREEN_MARGIN, SCREEN_MARGIN);
                     break;
                 case TOP_RIGHT:
-                    x = X_MAX_MARGIN;
-                    y = Y_MIN_MARGIN;
-                    from = new Point(x,y);
+                    from = new Point(screen.getWidth() - SCREEN_MARGIN, SCREEN_MARGIN);
                     break;
                 case BOTTOM_LEFT:
-                    x = X_MIN_MARGIN;
-                    y = Y_MAX_MARGIN;
-                    from = new Point(x,y);
+                    from = new Point(SCREEN_MARGIN, screen.getHeight() - SCREEN_MARGIN);
                     break;
                 case BOTTOM_RIGHT:
-                    x = X_MAX_MARGIN;
-                    y = Y_MAX_MARGIN;
-                    from = new Point(x,y);
+                    from = new Point(screen.getWidth() - SCREEN_MARGIN, screen.getHeight() - SCREEN_MARGIN);
                     break;
                 default:
                     throw new IllegalArgumentException("Corner not specified: " + corner.name());
