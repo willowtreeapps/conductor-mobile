@@ -108,6 +108,7 @@ public class LocomotiveTest {
     public void test_wait_for_elem_found_on_first_try() {
         By id = mock(By.class);
         WebElement foundElement = mock(WebElement.class);
+        androidConfig.setTimeout(0);
 
         when(mockDriver.findElements(id)).thenReturn(Collections.singletonList(foundElement));
         when(mockDriver.findElement(id)).thenReturn(foundElement);
@@ -123,6 +124,7 @@ public class LocomotiveTest {
     public void test_wait_for_ele_retries_and_fail() {
         int numberOfRetries = 5;
         iosConfig.setRetries(numberOfRetries);
+        iosConfig.setTimeout(0);
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
@@ -142,6 +144,7 @@ public class LocomotiveTest {
     public void test_wait_for_ele_retries_and_find_item() {
         int numberOfRetries = 5;
         iosConfig.setRetries(numberOfRetries);
+        iosConfig.setTimeout(0);
 
         WebElement foundElement = mock(WebElement.class);
         By id = mock(By.class);
@@ -177,6 +180,7 @@ public class LocomotiveTest {
     public void test_is_present_wait_retries_and_fail() {
         int numberOfRetries = 5;
         iosConfig.setRetries(numberOfRetries);
+        iosConfig.setTimeout(0);
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
@@ -191,8 +195,8 @@ public class LocomotiveTest {
 
     @Test
     public void test_is_present_wait_retries_and_find_item() {
-        int numberOfRetries = 5;
-        iosConfig.setRetries(numberOfRetries);
+        iosConfig.setRetries(5);
+        iosConfig.setTimeout(0);
 
         WebElement foundElement = mock(WebElement.class);
         By id = mock(By.class);
