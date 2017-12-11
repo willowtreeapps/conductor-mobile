@@ -700,7 +700,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
      * @return The implementing class for fluency
      */
     public Locomotive enrollBiometrics(int id) {
-        switch (configuration.platformName()) {
+        switch (configuration.getPlatformName()) {
             case ANDROID:
                 // Don't do anything for now
                 break;
@@ -727,7 +727,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
      */
     public Locomotive performBiometric(boolean match, int id) {
 
-        switch (configuration.platformName()) {
+        switch (configuration.getPlatformName()) {
             case ANDROID:
                 // TODO: Restructure when the Java-client supports biometrics (PR #473 on appium/java-client)
                 Map.Entry<String, Map<String, ?>> paramMap = new AbstractMap.SimpleEntry<>("fingerPrint",
