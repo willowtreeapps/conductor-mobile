@@ -1,5 +1,6 @@
 package com.joss.conductor.mobile;
 
+import io.appium.java_client.CommandExecutionHelper;
 import org.pmw.tinylog.Logger;
 import org.yaml.snakeyaml.Yaml;
 
@@ -13,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConductorConfig {
     private static final String DEFAULT_CONFIG_FILE = "/config.yaml";
@@ -149,6 +152,18 @@ public class ConductorConfig {
 
     private void setProperty(String propertyName, String propertyValue) {
         Method[] methods = this.getClass().getMethods();
+
+        Pattern envPattern = Pattern.compile("\\$\\{(.+?)\\}");
+        Matcher envMatcher = envPattern.matcher(propertyValue);
+        while(envMatcher.find()) {
+            String env = envMatcher.group(1);
+            String val = System.getProperty(env);
+            if(val != null) {
+                propertyValue = propertyValue.replaceAll("\\$\\{" + env + "\\}", val);
+            } else {
+                Logger.warn("Could not find environment variable \"{}\" specified in config", env);
+            }
+        }
 
         String capPropertyKey = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
         String methodName = "set" + capPropertyKey;
