@@ -203,4 +203,27 @@ public class ConductorConfigTest {
         Assertions.assertThat(config.getCustomCapabilities())
                 .containsAllEntriesOf(customCapabilities);
     }
+
+    @Test
+    public void environment_variables_complete_by_environment() {
+        System.setProperty("FOO_PROPERTY", "foobar");
+        ConductorConfig config = new ConductorConfig("/test_yaml/environment_vars.yaml");
+
+        Assertions.assertThat(config.getUdid())
+                .isEqualTo("foobar");
+        System.clearProperty("FOO_PROPERTY");
+    }
+
+    @Test
+    public void multiple_environment_variables_replaced_by_environment() {
+        System.setProperty("PLATFORM_MAJOR", "12");
+        System.setProperty("PLATFORM_MINOR", "3");
+
+        ConductorConfig config = new ConductorConfig("/test_yaml/environment_vars.yaml");
+
+        Assertions.assertThat(config.getPlatformVersion())
+                .isEqualTo("12.3");
+        System.clearProperty("PLATFORM_MAJOR");
+        System.clearProperty("PLATFORM_MINOR");
+    }
 }
