@@ -3,7 +3,10 @@ package com.joss.conductor.mobile;
 import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.PageUtil;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.CommandExecutionHelper;
+import io.appium.java_client.MobileCommand;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidMobileCommandHelper;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -20,6 +23,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
@@ -152,6 +156,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
         }
 
+
+        // Set custom capabilities if there are any
+        for (String key : config.getCustomCapabilities().keySet()) {
+            capabilities.setCapability(key, config.getCustomCapabilities().get(key));
+        }
+
         return capabilities;
     }
 
@@ -167,7 +177,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         try {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         } catch (Exception e) {
-            System.out.println("WaitForElement: Eat exception thrown waiting for condition");
+            Logger.info("WaitForElement: Eat exception thrown waiting for condition");
         }
 
         int size = driver.findElements(by).size();
@@ -179,7 +189,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     Thread.sleep(1000); // sleep for 1 second.
                 } catch (Exception x) {
                     Assert.fail("Failed due to an exception during Thread.sleep!");
-                    x.printStackTrace();
+                    Logger.error(x);
                 }
 
                 size = driver.findElements(by).size();
@@ -196,7 +206,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         }
 
         if (size > 1) {
-            System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
         }
 
         return driver.findElement(by);
@@ -253,7 +263,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
 
         } catch (Exception e) {
-            System.err.println(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
+            Logger.error(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
 
             if (stackTraceElements != null) {
 
@@ -264,17 +274,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     for (int i = 0; i < traceSize; i++) {
 
                         if (stackTraceElements[i] != null) {
-                            System.err.print(stackTraceElements[i] + newLine);
+                            Logger.error(stackTraceElements[i] + newLine);
                         }
                     }
 
                 } catch (ArrayIndexOutOfBoundsException exception) {
-                    System.err.print(exception);
+                    Logger.error(exception);
                 }
             }
 
 
-            System.err.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
+            Logger.error(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
         }
 
         int size = driver.findElements(by).size();
@@ -297,7 +307,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         }
 
         if (size > 1) {
-            System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
         }
 
         return size > 0;
@@ -411,7 +421,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         try {
             driver.hideKeyboard();
         } catch (WebDriverException e) {
-            System.err.println("WARN:" + e.getMessage());
+            Logger.error("WARN:" + e.getMessage());
         }
         return this;
     }
@@ -467,16 +477,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             return driver.findElement(by);
         } else {
             for (i = 0; i < attempts; i++) {
-
                 swipeCenter(s);
                 if (isPresent(by)) {
                     return driver.findElement(by);
                 }
-
             }
-
         }
-        System.err.println("WARN: Element" + by.toString() + "does not exist!");
+        Logger.error("WARN: Element" + by.toString() + "does not exist!");
         return null;
     }
 
