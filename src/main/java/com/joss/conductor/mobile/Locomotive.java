@@ -3,7 +3,10 @@ package com.joss.conductor.mobile;
 import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.PageUtil;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.CommandExecutionHelper;
+import io.appium.java_client.MobileCommand;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidMobileCommandHelper;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -20,6 +23,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
@@ -38,6 +42,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     private static final float SWIPE_DISTANCE = 0.25f;
     private static final float SWIPE_DISTANCE_LONG = 0.50f;
+    private static final float SWIPE_DISTANCE_SUPER_LONG = 1.0f;
     private static final int SWIPE_DURATION_MILLIS = 2000;
 
     public ConductorConfig configuration;
@@ -152,6 +157,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
         }
 
+
+        // Set custom capabilities if there are any
+        for (String key : config.getCustomCapabilities().keySet()) {
+            capabilities.setCapability(key, config.getCustomCapabilities().get(key));
+        }
+
         return capabilities;
     }
 
@@ -167,7 +178,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         try {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         } catch (Exception e) {
-            System.out.println("WaitForElement: Eat exception thrown waiting for condition");
+            Logger.info("WaitForElement: Eat exception thrown waiting for condition");
         }
 
         int size = driver.findElements(by).size();
@@ -179,7 +190,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     Thread.sleep(1000); // sleep for 1 second.
                 } catch (Exception x) {
                     Assert.fail("Failed due to an exception during Thread.sleep!");
-                    x.printStackTrace();
+                    Logger.error(x);
                 }
 
                 size = driver.findElements(by).size();
@@ -196,7 +207,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         }
 
         if (size > 1) {
-            System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
         }
 
         return driver.findElement(by);
@@ -253,7 +264,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
 
         } catch (Exception e) {
-            System.err.println(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
+            Logger.error(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
 
             if (stackTraceElements != null) {
 
@@ -264,17 +275,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     for (int i = 0; i < traceSize; i++) {
 
                         if (stackTraceElements[i] != null) {
-                            System.err.print(stackTraceElements[i] + newLine);
+                            Logger.error(stackTraceElements[i] + newLine);
                         }
                     }
 
                 } catch (ArrayIndexOutOfBoundsException exception) {
-                    System.err.print(exception);
+                    Logger.error(exception);
                 }
             }
 
 
-            System.err.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
+            Logger.error(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
         }
 
         int size = driver.findElements(by).size();
@@ -297,7 +308,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         }
 
         if (size > 1) {
-            System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
         }
 
         return size > 0;
@@ -345,6 +356,18 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     public Locomotive swipeCenterLong(SwipeElementDirection direction) {
         return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE_LONG);
+    }
+
+    public Locomotive swipeCenterSuperLong(SwipeElementDirection direction) {
+        return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE_SUPER_LONG);
+    }
+
+    public Locomotive swipeCornerLong(ScreenCorner corner, SwipeElementDirection direction, int duration) {
+        return performCornerSwipe(corner, direction, SWIPE_DISTANCE_LONG, duration);
+    }
+
+    public Locomotive swipeCornerSuperLong(ScreenCorner corner, SwipeElementDirection direction, int duration) {
+        return performCornerSwipe(corner, direction, SWIPE_DISTANCE_SUPER_LONG, duration);
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, String id) {
@@ -411,7 +434,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         try {
             driver.hideKeyboard();
         } catch (WebDriverException e) {
-            System.err.println("WARN:" + e.getMessage());
+            Logger.error("WARN:" + e.getMessage());
         }
         return this;
     }
@@ -459,6 +482,67 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), SWIPE_DURATION_MILLIS);
         return this;
     }
+  
+    private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
+        Dimension screen = driver.manage().window().getSize();
+
+         final int SCREEN_MARGIN = 10;
+
+        Point from;
+        if(corner != null) {
+            switch(corner) {
+                case TOP_LEFT:
+                    from = new Point(SCREEN_MARGIN, SCREEN_MARGIN);
+                    break;
+                case TOP_RIGHT:
+                    from = new Point(screen.getWidth() - SCREEN_MARGIN, SCREEN_MARGIN);
+                    break;
+                case BOTTOM_LEFT:
+                    from = new Point(SCREEN_MARGIN, screen.getHeight() - SCREEN_MARGIN);
+                    break;
+                case BOTTOM_RIGHT:
+                    from = new Point(screen.getWidth() - SCREEN_MARGIN, screen.getHeight() - SCREEN_MARGIN);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Corner not specified: " + corner.name());
+            }
+        } else {
+            throw new IllegalArgumentException("Corner not specified");
+        }
+
+        Point to;
+        if(direction != null) {
+            switch(direction) {
+                case UP:
+                    int toYUp = (int) (from.getY() - (screen.getHeight() * percentage));
+                    toYUp = toYUp <= 0 ? 1 : toYUp;
+                    to = new Point(from.getX(), toYUp);
+                    break;
+                case RIGHT:
+                    int toXRight = (int) (from.getX() + (screen.getWidth() * percentage));
+                    toXRight = toXRight >= screen.getWidth() ? screen.getWidth() - 1 : toXRight; // toXRight cannot be longer than screen width;
+                    to = new Point(toXRight, from.getY());
+                    break;
+                case DOWN:
+                    int toYDown = (int) (from.getY() + (screen.getWidth() * percentage));
+                    toYDown = toYDown >= screen.getHeight() ? screen.getHeight() - 1 : toYDown; // toYDown cannot be longer than screen height;
+                    to = new Point(from.getX(), toYDown);
+                    break;
+                case LEFT:
+                    int toXLeft = (int) (from.getX() - (screen.getWidth() * percentage));
+                    toXLeft = toXLeft <= 0 ? 1 : toXLeft; // toXLeft cannot be less than 0
+                    to = new Point(toXLeft, from.getY());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Swipe Direction not specified: " + direction.name());
+
+            }
+        } else {
+            throw new IllegalArgumentException("Swipe Direction not specified");
+        }
+        driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), duration);
+        return this;
+    }
 
     public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
         int i;
@@ -467,16 +551,18 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             return driver.findElement(by);
         } else {
             for (i = 0; i < attempts; i++) {
+<<<<<<< HEAD
 
                 swipeCenterLong(s);
+=======
+                swipeCenter(s);
+>>>>>>> 31238cdf8f595a5ac5cda1a49d30f2c08593ad1c
                 if (isPresent(by)) {
                     return driver.findElement(by);
                 }
-
             }
-
         }
-        System.err.println("WARN: Element" + by.toString() + "does not exist!");
+        Logger.error("WARN: Element" + by.toString() + "does not exist!");
         return null;
     }
 
