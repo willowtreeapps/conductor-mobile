@@ -84,6 +84,11 @@ public interface Conductor<Test> {
      * @return The implementing class for fluency
      */
     Test swipeCenterLong(SwipeElementDirection direction);
+
+
+    Test swipeCornerLong(ScreenCorner corner, SwipeElementDirection direction, int duration);
+    Test swipeCornerSuperLong(ScreenCorner corner, SwipeElementDirection direction, int duration);
+
     /**
      * Swipe on specified direction from element 25 percent of the screen
      * @param id/by/element The element to swipe from.
