@@ -551,14 +551,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             return driver.findElement(by);
         } else {
             for (i = 0; i < attempts; i++) {
-
-                swipeCenterLong(s);
-                if (isPresentWait(by)) {
+                swipeCenter(s);
+                if (isPresent(by)) {
                     return driver.findElement(by);
                 }
-
             }
-
         }
         Logger.error("WARN: Element" + by.toString() + "does not exist!");
         return null;
