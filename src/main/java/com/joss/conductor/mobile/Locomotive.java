@@ -549,7 +549,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         } else {
             throw new IllegalArgumentException("Swipe Direction not specified");
         }
-        driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), duration);
+        new TouchAction(driver).press(from.getX(), from.getY())
+                .waitAction(Duration.ofMillis(duration))
+                .moveTo(to.getX(), to.getY())
+                .release()
+                .perform();
         return this;
     }
 

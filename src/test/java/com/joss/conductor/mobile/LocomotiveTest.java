@@ -440,65 +440,153 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_perform_corner_swipe() {
-        WebDriver.Window window = mock(WebDriver.Window.class);
-        when(window.getSize()).thenReturn(new Dimension(414, 736)); // iPhone 6 Plus
-
-        WebDriver.Options options = mock(WebDriver.Options.class);
-        when(options.window()).thenReturn(window);
-
-        when(mockDriver.manage()).thenReturn(options);
+    public void test_perform_corner_swipe_bottom_right() {
+        initMockDriverSizes();
 
         final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
-
-        // Swipe Up Bottom Right Corner
         locomotive.swipeCornerLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
+        verify(mockDriver, times(1))
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(90, 90)
+                        .waitAction(Duration.ofMillis(100)).moveTo(90, 40)
+                        .release());
+    }
+
+    @Test
+    public void test_perform_corner_swipe_long_bottom_right() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
         verify(mockDriver, times(1))
-                .swipe(404, 726, 404, 358, 100);
-        verify(mockDriver, times(1))
-                .swipe(404, 726, 404, /* ~ x - 1 to avoid going off screen ~ */1, 100 );
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(90, 90)
+                        .waitAction(Duration.ofMillis(100)).moveTo(90, 1)
+                        .release());
+    }
 
-        // Swipe Up Bottom Left Corner
+    @Test
+    public void test_perform_corner_swipe_bottom_left() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
+        verify(mockDriver, times(1))
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(10, 90)
+                        .waitAction(Duration.ofMillis(100)).moveTo(10, 40)
+                        .release());
+    }
+
+    @Test
+    public void test_perform_corner_swipe_long_bottom_left() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
         verify(mockDriver, times(1))
-                .swipe(10, 726,10, 358, 100);
-        verify(mockDriver, times(1))
-                .swipe(10, 726, 10, 1, 100);
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(10, 90)
+                        .waitAction(Duration.ofMillis(100)).moveTo(10, 1)
+                        .release());
+    }
 
-        // Swipe Down Top Right Corner
+    @Test
+    public void test_perform_corner_swipe_top_right() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
+        verify(mockDriver, times(1))
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(90, 10)
+                        .waitAction(Duration.ofMillis(100)).moveTo(90, 60)
+                        .release());
+    }
+
+    @Test
+    public void test_perform_corner_swipe_long_top_right() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
         verify(mockDriver, times(1))
-                .swipe(404, 10, 404, 217, 100);
-        verify(mockDriver, times(1))
-                .swipe(404, 10, 404, 424, 100);
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(90, 10)
+                        .waitAction(Duration.ofMillis(100)).moveTo(90, 99)
+                        .release());
+    }
 
-        // Swipe Down Top Left Corner
+    @Test
+    public void test_perform_corner_swipe_top_left() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
+        verify(mockDriver, times(1))
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(10, 10)
+                        .waitAction(Duration.ofMillis(100)).moveTo(10, 60)
+                        .release());
+    }
+
+    @Test
+    public void test_perform_corner_swipe_long_top_left() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
         verify(mockDriver, times(1))
-                .swipe(10, 10, 10, 217, 100);
-        verify(mockDriver, times(1))
-                .swipe(10, 10, 10, 424, 100);
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(10, 10)
+                        .waitAction(Duration.ofMillis(100)).moveTo(10, 99)
+                        .release());
+    }
 
-        // Swipe Right Top Left Corner
+    @Test
+    public void test_perform_corner_swipe_right_top_left() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
-        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
         verify(mockDriver, times(1))
-                .swipe(10, 10, 217, 10, 100);
-        verify(mockDriver, times(1))
-                .swipe(10, 10, 413, 10, 100);
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(10, 10)
+                        .waitAction(Duration.ofMillis(100)).moveTo(60, 10)
+                        .release());
+    }
 
-        // Swipe Left Top Right Corner
+    @Test
+    public void test_perform_corner_swipe_left_top_right() {
+        initMockDriverSizes();
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
         locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
-        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
+        ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
         verify(mockDriver, times(1))
-                .swipe(404, 10, 197, 10, 100);
-        verify(mockDriver, times(1))
-                .swipe(404, 10, 1, 10, 100);
-
+                .performTouchAction(touchCapture.capture());
+        assertThatActionMatches(touchCapture.getValue(),
+                new TouchAction(mockDriver).press(90, 10)
+                        .waitAction(Duration.ofMillis(100)).moveTo(40, 10)
+                        .release());
     }
 
     @Test
