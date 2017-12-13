@@ -482,11 +482,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), SWIPE_DURATION_MILLIS);
         return this;
     }
-  
+
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = driver.manage().window().getSize();
 
-         final int SCREEN_MARGIN = 10;
+        final int SCREEN_MARGIN = 10;
 
         Point from;
         if(corner != null) {
@@ -551,12 +551,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             return driver.findElement(by);
         } else {
             for (i = 0; i < attempts; i++) {
-<<<<<<< HEAD
-
                 swipeCenterLong(s);
-=======
-                swipeCenter(s);
->>>>>>> 31238cdf8f595a5ac5cda1a49d30f2c08593ad1c
                 if (isPresent(by)) {
                     return driver.findElement(by);
                 }
