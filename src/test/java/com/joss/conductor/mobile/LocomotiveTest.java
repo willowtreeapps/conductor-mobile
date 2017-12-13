@@ -440,6 +440,68 @@ public class LocomotiveTest {
     }
 
     @Test
+    public void test_perform_corner_swipe() {
+        WebDriver.Window window = mock(WebDriver.Window.class);
+        when(window.getSize()).thenReturn(new Dimension(414, 736)); // iPhone 6 Plus
+
+        WebDriver.Options options = mock(WebDriver.Options.class);
+        when(options.window()).thenReturn(window);
+
+        when(mockDriver.manage()).thenReturn(options);
+
+        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+
+        // Swipe Up Bottom Right Corner
+        locomotive.swipeCornerLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
+        verify(mockDriver, times(1))
+                .swipe(404, 726, 404, 358, 100);
+        verify(mockDriver, times(1))
+                .swipe(404, 726, 404, /* ~ x - 1 to avoid going off screen ~ */1, 100 );
+
+        // Swipe Up Bottom Left Corner
+        locomotive.swipeCornerLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 726,10, 358, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 726, 10, 1, 100);
+
+        // Swipe Down Top Right Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+        verify(mockDriver, times(1))
+                .swipe(404, 10, 404, 217, 100);
+        verify(mockDriver, times(1))
+                .swipe(404, 10, 404, 424, 100);
+
+        // Swipe Down Top Left Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 10, 10, 217, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 10, 10, 424, 100);
+
+        // Swipe Right Top Left Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 10, 217, 10, 100);
+        verify(mockDriver, times(1))
+                .swipe(10, 10, 413, 10, 100);
+
+        // Swipe Left Top Right Corner
+        locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
+        locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
+        verify(mockDriver, times(1))
+                .swipe(404, 10, 197, 10, 100);
+        verify(mockDriver, times(1))
+                .swipe(404, 10, 1, 10, 100);
+
+    }
+
+    @Test
     public void test_perform_swipe_on_element_down()  {
         final WebElement element = mock(WebElement.class);
         initMockDriverSizes(element);
