@@ -486,6 +486,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         } else {
             throw new IllegalArgumentException("Swipe Direction not specified");
         }
+
+        // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
+        // does not. As a result we have to check if we're on iOS and perform the relativization manually
+        if(configuration.getPlatformName() == Platform.IOS) {
+            to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
+        }
+
         TouchAction swipe = new TouchAction(driver).press(from.getX(), from.getY())
                 .waitAction(Duration.ofMillis(SWIPE_DURATION_MILLIS)).moveTo(to.getX(), to.getY()).release();
         swipe.perform();
@@ -549,6 +556,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         } else {
             throw new IllegalArgumentException("Swipe Direction not specified");
         }
+
+        // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
+        // does not. As a result we have to check if we're on iOS and perform the relativization manually
+        if(configuration.getPlatformName() == Platform.IOS) {
+            to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
+        }
+
         new TouchAction(driver).press(from.getX(), from.getY())
                 .waitAction(Duration.ofMillis(duration))
                 .moveTo(to.getX(), to.getY())
