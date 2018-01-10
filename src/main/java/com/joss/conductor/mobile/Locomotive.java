@@ -461,21 +461,22 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
-        int i;
-
-        if (isPresentWait(by)) {
-            return driver.findElement(by);
-        } else {
-            for (i = 0; i < attempts; i++) {
-
-                swipeCenter(s);
-                if (isPresentWait(by)) {
-                    return driver.findElement(by);
+        WebElement element;
+        for (int i = 0; i < attempts; i++) {
+            swipeCenterLong(s);
+            try {
+                element = driver.findElement(by);
+                // element was found, check for visibility
+                if (element.isDisplayed()) {
+                    // element is in view, exit the loop
+                    return element;
                 }
-
+                // element was not visible, continue scrolling
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                // element could not be found, continue scrolling
             }
-
         }
+        // element could not be found or was not visible, return null
         System.err.println("WARN: Element" + by.toString() + "does not exist!");
         return null;
     }
