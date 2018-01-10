@@ -461,10 +461,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return this;
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
+    public WebElement swipeTo(SwipeElementDirection direction, By by, int attempts) {
         WebElement element;
         for (int i = 0; i < attempts; i++) {
-            swipeCenterLong(s);
+            swipeCenterLong(direction);
             try {
                 element = driver.findElement(by);
                 // element was found, check for visibility
@@ -489,14 +489,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return swipeTo(s, by, attempts);
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, By by) {
+    public WebElement swipeTo(SwipeElementDirection direction, By by) {
         int attempts = 3;
 
-        return swipeTo(s, by, attempts);
+        return swipeTo(direction, by, attempts);
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts) {
-        return swipeTo(s, By.id(id), attempts);
+    public WebElement swipeTo(SwipeElementDirection direction, String id, int attempts) {
+        return swipeTo(direction, By.id(id), attempts);
     }
 
     /**
