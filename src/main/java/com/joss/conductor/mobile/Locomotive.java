@@ -20,13 +20,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.NoSuchElementException;
+import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
 import java.net.URL;
 import java.util.*;
-import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -472,12 +473,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     return element;
                 }
                 // element was not visible, continue scrolling
-            } catch (org.openqa.selenium.NoSuchElementException e) {
+            } catch (NoSuchElementException exception) {
                 // element could not be found, continue scrolling
             }
         }
         // element could not be found or was not visible, return null
-        System.err.println("WARN: Element" + by.toString() + "does not exist!");
+        Logger.warn("WARN: Element" + by.toString() + "does not exist!");
         return null;
     }
 
