@@ -587,7 +587,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             }
         }
         // element could not be found or was not visible, return null
-        Logger.warn("WARN: Element" + by.toString() + "does not exist!");
+        Logger.warn("Element " + by.toString() + " does not exist!");
         return null;
     }
 
