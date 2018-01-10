@@ -25,15 +25,11 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-<<<<<<< HEAD
 import org.openqa.selenium.NoSuchElementException;
-=======
->>>>>>> 75fb65c28ac8d30267340658859f5b36f84567de
 import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
-
 import java.net.URL;
 import java.time.Duration;
 import java.util.*;
