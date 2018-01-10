@@ -614,6 +614,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
      * @param element The element to get the center point form
      * @return Point centered on the provided element or screen.
      */
+
     public Point getCenter(WebElement element) {
         int x, y;
         if (element == null) {
