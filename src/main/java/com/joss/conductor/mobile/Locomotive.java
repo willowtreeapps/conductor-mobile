@@ -25,15 +25,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.NoSuchElementException;
 import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
-
 import java.net.URL;
 import java.time.Duration;
 import java.util.*;
-import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -571,20 +570,24 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return this;
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
-        int i;
-
-        if (isPresentWait(by)) {
-            return driver.findElement(by);
-        } else {
-            for (i = 0; i < attempts; i++) {
-                swipeCenterLong(s);
-                if (isPresent(by)) {
-                    return driver.findElement(by);
+    public WebElement swipeTo(SwipeElementDirection direction, By by, int attempts) {
+        WebElement element;
+        for (int i = 0; i < attempts; i++) {
+            swipeCenterLong(direction);
+            try {
+                element = driver.findElement(by);
+                // element was found, check for visibility
+                if (element.isDisplayed()) {
+                    // element is in view, exit the loop
+                    return element;
                 }
+                // element was not visible, continue scrolling
+            } catch (NoSuchElementException exception) {
+                // element could not be found, continue scrolling
             }
         }
-        Logger.error("WARN: Element" + by.toString() + "does not exist!");
+        // element could not be found or was not visible, return null
+        Logger.warn("Element " + by.toString() + " does not exist!");
         return null;
     }
 
@@ -595,14 +598,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return swipeTo(s, by, attempts);
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, By by) {
+    public WebElement swipeTo(SwipeElementDirection direction, By by) {
         int attempts = 3;
 
-        return swipeTo(s, by, attempts);
+        return swipeTo(direction, by, attempts);
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts) {
-        return swipeTo(s, By.id(id), attempts);
+    public WebElement swipeTo(SwipeElementDirection direction, String id, int attempts) {
+        return swipeTo(direction, By.id(id), attempts);
     }
 
     /**
@@ -611,6 +614,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
      * @param element The element to get the center point form
      * @return Point centered on the provided element or screen.
      */
+
     public Point getCenter(WebElement element) {
         int x, y;
         if (element == null) {
