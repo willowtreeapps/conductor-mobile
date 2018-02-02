@@ -1,0 +1,70 @@
+user-guide:
+  - title: Getting Started
+    url: /user-guide/getting-started
+    grouping: getting-started-user
+    children:
+      - title: Installation and Usage
+        url: /user-guide/getting-started#installation-and-usage
+      - title: Configuration
+        url: /user-guide/getting-started#configuration
+  - title: Command Line Interface
+    url: /user-guide/command-line-interface
+    grouping: cli
+    children:
+      - title: Usage
+        url: /user-guide/command-line-interface#usage
+      - title: Formatting options
+        url: /user-guide/command-line-interface#formatting-options
+  - title: Rules Engine
+    url: /user-guide/rules-engine
+    grouping: rules-engine
+    children:
+      - title: Setup
+        url: /user-guide/rules-engine#setup
+      - title: Configuring
+        url: /user-guide/rules-engine#configuring
+  - title: Rules
+    url: /user-guide/rules
+    grouping: rules
+    children:
+      - title: camel-case-func
+        url: /user-guide/rules/camel-case-func  
+      - title: comma-separated-arrays
+        url: /user-guide/rules/comma-separated-arrays
+      - title: function-return-statement
+        url: /user-guide/rules/function-return-statement
+      - title: no-print
+        url: /user-guide/rules/no-print
+      - title: no-private-func
+        url: /user-guide/rules/no-private-func
+      - title: no-shorthand-if
+        url: /user-guide/rules/no-shorthand-if
+      - title: no-stop
+        url: /user-guide/rules/no-stop
+      - title: no-void-func
+        url: /user-guide/rules/no-void-func
+developer-guide:
+  - title: Getting Started
+    url: /developer-guide/getting-started
+    grouping: getting-started-developer
+    children:
+      - title: Prerequisites
+        url: /developer-guide/getting-started#prerequisites
+      - title: Running the Docs
+        url: /developer-guide/getting-started#running-the-docs
+      - title: Directory Structure
+        url: /developer-guide/getting-started#directory-structure
+  - title: Contributing
+    url: /developer-guide/contributing
+    grouping: contributing
+    children:
+      - title: Code of Conduct
+        url: /developer-guide/contributing/code-of-conduct
+      - title: Reporting Bugs
+        url: /developer-guide/contributing#reporting-bugs
+      - title: License Grant
+        url: /developer-guide/contributing#license-grant
+about:
+  - title: About
+    url: /about
+    grouping: about

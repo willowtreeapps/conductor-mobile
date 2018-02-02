@@ -1,0 +1,32 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    {%- if page.title -%}
+      {{ page.title }} &middot; {{ site.title }}
+    {%- else -%}
+      {{ site.title }} &middot; {{ site.description }}
+    {%- endif -%}
+  </title>
+  
+  <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+
+  <link rel="icon" href="{{ "/favicon.png" | relative_url }}">
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | absolute_url }}">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+  
+  {% for p in site.pages %}
+    {% assign scss_ext = p.path | slice: -5, 5 %}
+    {% assign css_ext = p.path | slice: -4, 4 %}
+    {% assign folder_path = p.path | slice: 0, 4 %}
+
+    {% if folder_path == 'css/' and scss_ext == '.scss' %}
+      <link rel="stylesheet" href="{{ p.path | replace: '.scss', '.css' | relative_url }}">
+    {% elsif folder_path == '/css/' and css_ext == '.css' %}
+      <link rel="stylesheet" href="{{ p.path | relative_url }}">
+    {% endif %}
+  {% endfor %}
+</head>

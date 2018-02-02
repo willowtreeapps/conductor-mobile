@@ -1,0 +1,14 @@
+title: Conductor
+description: An open source testing framwork built on top of Selenium for awesome Web UI testing experiences.
+baseurl: "/conductor"
+url: https://willowtreeapps.github.io
+twitter_username: willowtreeapps
+github_username:  willowtreeapps
+markdown: kramdown
+includes_dir: resources/_includes
+layouts_dir: resources/_layouts
+sass:
+  sass_dir: resources/_assets/stylesheets
+  style: compressed
+logo: wist-logo
+repository: willowtreeapps/conductor
