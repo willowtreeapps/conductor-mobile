@@ -1,29 +1,27 @@
 ---
 title: Command Line Interface
 layout: doc
-edit_link: https://github.com/willowtreeapps/wist/edit/master/docs/user-guide/command-line-interface.md
+edit_link: https://github.com/willowtreeapps/conductor-mobile/edit/master/docs/user-guide/command-line-interface.md
 sidebar: "user-guide"
 grouping: "cli"
 ---
 
 # Command Line Interface
 
-To run Wist on Node.js, you must have npm installed. If npm is not installed, follow the instructions here: https://www.npmjs.com/
+TODO... To run tests...
 
-Once npm is installed, run the following
+    $ mvn test
 
-    $ npm i -g wist
-
-This installs the Wist CLI from the npm repository. To run Wist, use the following format:
-
-    $ wist [options] [file]*
+## Environment Variables
+TODO... You can specify environment variables..
 
 Such as:
 
-    $ wist file1.js file2.js
+    $ mvn test ...
 
+## Surefire 
 
-## Usage
+TODO...
 
 The command line utility has several options. You can view the options by running `wist -h`.
 

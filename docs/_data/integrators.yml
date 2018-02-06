@@ -1,9 +1,9 @@
-- name: Ukor
-  description: A build management tool for Roku channels. Ukor supports build flavors, automated unit test runs, and linting.
-  url: https://github.com/willowtreeapps/ukor
+- name: Conductor
+  description: An open source testing framwork built on top of Selenium for awesome Web UI testing experiences.
+  url: https://github.com/willowtreeapps/conductor
   icon: ukor-logo
 
-- name: Hinoki
-  description: A <a href="http://langserver.org" title="Language Server Protocol">Language Server Protocol</a> implementation that provides features like autocomplete, go to definition, find all references, and more for BrightScript.
-  url: https://github.com/willowtreeapps/hinoki
+- name: Conductor Mobile
+  description: An open source testing framwork built on top of Appium for awesome Android & iOS UI testing experiences.
+  url: https://github.com/willowtreeapps/conductor-mobile
   icon: hinoki-logo

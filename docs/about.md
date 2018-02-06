@@ -1,7 +1,7 @@
 ---
 title: About
 layout: doc
-edit_link: https://github.com/willowtreeapps/wist/edit/master/docs/about.md
+edit_link: https://github.com/willowtreeapps/conductor-mobile/edit/master/docs/about.md
 grouping: about
 navigation: true
 order: 3
@@ -9,11 +9,12 @@ order: 3
 
 # About
 
-Wist was created at [WillowTree](https://willowtreeapps.com/), the mobile product agency. 
+~~Wist~~ Conductor Mobile was created at [WillowTree](https://willowtreeapps.com/), the mobile product agency. 
 It started in August 2017 as a way to bring the robust linting capabilities of other languages to the larger community of BrightScript developers.
 
 
 ## Philosophy
+TODO...
 
 While not a direct fork, Wist shares themes, principles, and in some cases, code, with [ESLint](https://eslint.org).
 

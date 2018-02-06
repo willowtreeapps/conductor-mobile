@@ -1,6 +1,6 @@
-title: Conductor
-description: An open source testing framwork built on top of Selenium for awesome Web UI testing experiences.
-baseurl: "/conductor"
+title: Conductor Mobile
+description: An open source testing framwork built on top of Appium for awesome Android & iOS UI testing experiences.
+baseurl: "/conductor-mobile"
 url: https://willowtreeapps.github.io
 twitter_username: willowtreeapps
 github_username:  willowtreeapps
@@ -11,4 +11,4 @@ sass:
   sass_dir: resources/_assets/stylesheets
   style: compressed
 logo: wist-logo
-repository: willowtreeapps/conductor
+repository: willowtreeapps/conductor-mobile

@@ -1,5 +1,17 @@
-- name: Matt VanNuys
-  github_login: vannuysm
+- name: Jossay Jaocbo
+  github_login: jossjacobo
   
-- name: Nish Tahir
-  github_login: nishtahir
+- name: Jeff Ward
+  github_login: fuzzybinary
+
+- name: Konrad Winkler
+  github_login: konwinkler
+
+- name: Andrew Owen
+  github_login: andrewowen
+
+- name: Jared owen
+  github_login: Jared1048
+
+- name: Matt Hess
+  github_login: matthess91

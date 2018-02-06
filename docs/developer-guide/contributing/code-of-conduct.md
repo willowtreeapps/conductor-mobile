@@ -1,7 +1,7 @@
 ---
 title: Code of Conduct
 layout: doc
-edit_link: https://github.com/willowtreeapps/wist/edit/master/docs/developer-guide/contributing/code-of-conduct.md
+edit_link: https://github.com/willowtreeapps/conductor-mobile/edit/master/docs/developer-guide/contributing/code-of-conduct.md
 sidebar: "developer-guide"
 grouping: "contributing"
 ---

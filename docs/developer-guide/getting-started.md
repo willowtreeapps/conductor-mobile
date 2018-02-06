@@ -1,14 +1,15 @@
 ---
 title: Developer Guide
 layout: doc
-edit_link: https://github.com/willowtreeapps/wist/edit/master/docs/developer-guide/getting-started.md
+edit_link: https://github.com/willowtreeapps/conductor-mobile/edit/master/docs/developer-guide/getting-started.md
 sidebar: "developer-guide"
 grouping: "getting-started-developer"
 navigation: true
 order: 2
 ---
 
-# Getting Started Developing with Wist
+# Getting Started Developing with ~~Wist~~ Conductor Mobile
+# TODO...
 
 Wist is hosted at [GitHub](https://github.com/willowtreeapps/wist) and uses [Git](http://git-scm.com/) for source control. In order to obtain the source code, you must first install Git on your system. Instructions for installing and setting up Git can be found at [http://help.github.com/set-up-git-redirect](http://help.github.com/set-up-git-redirect).
 
