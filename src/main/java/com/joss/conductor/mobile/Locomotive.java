@@ -3,8 +3,13 @@ package com.joss.conductor.mobile;
 import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.PageUtil;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.CommandExecutionHelper;
+import io.appium.java_client.MobileCommand;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidMobileCommandHelper;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.PerformsTouchID;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
@@ -20,13 +25,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.NoSuchElementException;
+import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
-
 import java.net.URL;
+import java.time.Duration;
 import java.util.*;
-import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +44,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     private static final float SWIPE_DISTANCE = 0.25f;
     private static final float SWIPE_DISTANCE_LONG = 0.50f;
+    private static final float SWIPE_DISTANCE_SUPER_LONG = 1.0f;
     private static final int SWIPE_DURATION_MILLIS = 2000;
 
     public ConductorConfig configuration;
@@ -105,6 +112,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
             }
         }
+
+        // TODO: Added to support biometrics on android until java-client PR #473 is pulled in
+        MobileCommand.commandRepository.put("fingerPrint",
+                MobileCommand.postC("/session/:sessionId/appium/device/finger_print"));
     }
 
     protected DesiredCapabilities onCapabilitiesCreated(DesiredCapabilities desiredCapabilities) {
@@ -152,6 +163,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
         }
 
+
+        // Set custom capabilities if there are any
+        for (String key : config.getCustomCapabilities().keySet()) {
+            capabilities.setCapability(key, config.getCustomCapabilities().get(key));
+        }
+
         return capabilities;
     }
 
@@ -167,7 +184,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         try {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         } catch (Exception e) {
-            System.out.println("WaitForElement: Eat exception thrown waiting for condition");
+            Logger.info("WaitForElement: Eat exception thrown waiting for condition");
         }
 
         int size = driver.findElements(by).size();
@@ -179,7 +196,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     Thread.sleep(1000); // sleep for 1 second.
                 } catch (Exception x) {
                     Assert.fail("Failed due to an exception during Thread.sleep!");
-                    x.printStackTrace();
+                    Logger.error(x);
                 }
 
                 size = driver.findElements(by).size();
@@ -196,7 +213,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         }
 
         if (size > 1) {
-            System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
         }
 
         return driver.findElement(by);
@@ -253,7 +270,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
 
         } catch (Exception e) {
-            System.err.println(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
+            Logger.error(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
 
             if (stackTraceElements != null) {
 
@@ -264,17 +281,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
                     for (int i = 0; i < traceSize; i++) {
 
                         if (stackTraceElements[i] != null) {
-                            System.err.print(stackTraceElements[i] + newLine);
+                            Logger.error(stackTraceElements[i] + newLine);
                         }
                     }
 
                 } catch (ArrayIndexOutOfBoundsException exception) {
-                    System.err.print(exception);
+                    Logger.error(exception);
                 }
             }
 
 
-            System.err.println(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
+            Logger.error(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
         }
 
         int size = driver.findElements(by).size();
@@ -297,7 +314,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         }
 
         if (size > 1) {
-            System.err.println("WARN: There are more than 1 " + by.toString() + " 's!");
+            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
         }
 
         return size > 0;
@@ -345,6 +362,18 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     public Locomotive swipeCenterLong(SwipeElementDirection direction) {
         return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE_LONG);
+    }
+
+    public Locomotive swipeCenterSuperLong(SwipeElementDirection direction) {
+        return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE_SUPER_LONG);
+    }
+
+    public Locomotive swipeCornerLong(ScreenCorner corner, SwipeElementDirection direction, int duration) {
+        return performCornerSwipe(corner, direction, SWIPE_DISTANCE_LONG, duration);
+    }
+
+    public Locomotive swipeCornerSuperLong(ScreenCorner corner, SwipeElementDirection direction, int duration) {
+        return performCornerSwipe(corner, direction, SWIPE_DISTANCE_SUPER_LONG, duration);
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, String id) {
@@ -411,7 +440,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         try {
             driver.hideKeyboard();
         } catch (WebDriverException e) {
-            System.err.println("WARN:" + e.getMessage());
+            Logger.error("WARN:" + e.getMessage());
         }
         return this;
     }
@@ -456,27 +485,109 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         } else {
             throw new IllegalArgumentException("Swipe Direction not specified");
         }
-        driver.swipe(from.getX(), from.getY(), to.getX(), to.getY(), SWIPE_DURATION_MILLIS);
+
+        // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
+        // does not. As a result we have to check if we're on iOS and perform the relativization manually
+        if(configuration.getPlatformName() == Platform.IOS) {
+            to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
+        }
+
+        TouchAction swipe = new TouchAction(driver).press(from.getX(), from.getY())
+                .waitAction(Duration.ofMillis(SWIPE_DURATION_MILLIS)).moveTo(to.getX(), to.getY()).release();
+        swipe.perform();
+        return this;
+    }
+  
+    private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
+        Dimension screen = driver.manage().window().getSize();
+
+         final int SCREEN_MARGIN = 10;
+
+        Point from;
+        if(corner != null) {
+            switch(corner) {
+                case TOP_LEFT:
+                    from = new Point(SCREEN_MARGIN, SCREEN_MARGIN);
+                    break;
+                case TOP_RIGHT:
+                    from = new Point(screen.getWidth() - SCREEN_MARGIN, SCREEN_MARGIN);
+                    break;
+                case BOTTOM_LEFT:
+                    from = new Point(SCREEN_MARGIN, screen.getHeight() - SCREEN_MARGIN);
+                    break;
+                case BOTTOM_RIGHT:
+                    from = new Point(screen.getWidth() - SCREEN_MARGIN, screen.getHeight() - SCREEN_MARGIN);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Corner not specified: " + corner.name());
+            }
+        } else {
+            throw new IllegalArgumentException("Corner not specified");
+        }
+
+        Point to;
+        if(direction != null) {
+            switch(direction) {
+                case UP:
+                    int toYUp = (int) (from.getY() - (screen.getHeight() * percentage));
+                    toYUp = toYUp <= 0 ? 1 : toYUp;
+                    to = new Point(from.getX(), toYUp);
+                    break;
+                case RIGHT:
+                    int toXRight = (int) (from.getX() + (screen.getWidth() * percentage));
+                    toXRight = toXRight >= screen.getWidth() ? screen.getWidth() - 1 : toXRight; // toXRight cannot be longer than screen width;
+                    to = new Point(toXRight, from.getY());
+                    break;
+                case DOWN:
+                    int toYDown = (int) (from.getY() + (screen.getWidth() * percentage));
+                    toYDown = toYDown >= screen.getHeight() ? screen.getHeight() - 1 : toYDown; // toYDown cannot be longer than screen height;
+                    to = new Point(from.getX(), toYDown);
+                    break;
+                case LEFT:
+                    int toXLeft = (int) (from.getX() - (screen.getWidth() * percentage));
+                    toXLeft = toXLeft <= 0 ? 1 : toXLeft; // toXLeft cannot be less than 0
+                    to = new Point(toXLeft, from.getY());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Swipe Direction not specified: " + direction.name());
+
+            }
+        } else {
+            throw new IllegalArgumentException("Swipe Direction not specified");
+        }
+
+        // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
+        // does not. As a result we have to check if we're on iOS and perform the relativization manually
+        if(configuration.getPlatformName() == Platform.IOS) {
+            to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
+        }
+
+        new TouchAction(driver).press(from.getX(), from.getY())
+                .waitAction(Duration.ofMillis(duration))
+                .moveTo(to.getX(), to.getY())
+                .release()
+                .perform();
         return this;
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, By by, int attempts) {
-        int i;
-
-        if (isPresentWait(by)) {
-            return driver.findElement(by);
-        } else {
-            for (i = 0; i < attempts; i++) {
-
-                swipeCenter(s);
-                if (isPresentWait(by)) {
-                    return driver.findElement(by);
+    public WebElement swipeTo(SwipeElementDirection direction, By by, int attempts) {
+        WebElement element;
+        for (int i = 0; i < attempts; i++) {
+            swipeCenterLong(direction);
+            try {
+                element = driver.findElement(by);
+                // element was found, check for visibility
+                if (element.isDisplayed()) {
+                    // element is in view, exit the loop
+                    return element;
                 }
-
+                // element was not visible, continue scrolling
+            } catch (NoSuchElementException exception) {
+                // element could not be found, continue scrolling
             }
-
         }
-        System.err.println("WARN: Element" + by.toString() + "does not exist!");
+        // element could not be found or was not visible, return null
+        Logger.warn("Element " + by.toString() + " does not exist!");
         return null;
     }
 
@@ -487,14 +598,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return swipeTo(s, by, attempts);
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, By by) {
+    public WebElement swipeTo(SwipeElementDirection direction, By by) {
         int attempts = 3;
 
-        return swipeTo(s, by, attempts);
+        return swipeTo(direction, by, attempts);
     }
 
-    public WebElement swipeTo(SwipeElementDirection s, String id, int attempts) {
-        return swipeTo(s, By.id(id), attempts);
+    public WebElement swipeTo(SwipeElementDirection direction, String id, int attempts) {
+        return swipeTo(direction, By.id(id), attempts);
     }
 
     /**
@@ -503,6 +614,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
      * @param element The element to get the center point form
      * @return Point centered on the provided element or screen.
      */
+
     public Point getCenter(WebElement element) {
         int x, y;
         if (element == null) {
@@ -673,6 +785,59 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return Strings.isNullOrEmpty(vars.get(key))
                 ? defaultValue
                 : vars.get(key);
+    }
+
+    /**
+     * Enroll biometrics. This command is ignored on Android.
+     *
+     * @return The implementing class for fluency
+     */
+    public Locomotive enrollBiometrics(int id) {
+        switch (configuration.getPlatformName()) {
+            case ANDROID:
+                // Don't do anything for now
+                break;
+
+            case IOS:
+                PerformsTouchID performsTouchID = (PerformsTouchID)driver;
+                performsTouchID.toggleTouchIDEnrollment(true);
+                break;
+
+            case NONE:
+                break;
+        }
+
+        return this;
+    }
+
+    /**
+     * Perform a biometric scan, either forcing a match (iOS) or by supplying the id of an enrolled
+     * fingerprint (Android)
+     *
+     * @param match Whether or not the finger should match. This parameter is ignored on Android
+     * @param id The id of the enrolled finger. This parameter is ignored on iOS
+     * @return The implementing class for fluency
+     */
+    public Locomotive performBiometric(boolean match, int id) {
+
+        switch (configuration.getPlatformName()) {
+            case ANDROID:
+                // TODO: Restructure when the Java-client supports biometrics (PR #473 on appium/java-client)
+                Map.Entry<String, Map<String, ?>> paramMap = new AbstractMap.SimpleEntry<>("fingerPrint",
+                        MobileCommand.prepareArguments("fingerprintId", id));
+                CommandExecutionHelper.execute(driver, paramMap);
+                break;
+
+            case IOS:
+                PerformsTouchID performsTouchID = (PerformsTouchID)driver;
+                performsTouchID.performTouchID(match);
+                break;
+
+            case NONE:
+                break;
+        }
+
+        return this;
     }
 
     /**
