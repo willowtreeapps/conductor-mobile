@@ -30,6 +30,8 @@ import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
+
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.time.Duration;
 import java.util.*;
@@ -51,6 +53,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     public AppiumDriver driver;
 
     private Map<String, String> vars = new HashMap<String, String>();
+    private String testName;
 
     @Rule
     public TestRule watchman = this;
@@ -71,7 +74,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
 
     @Before
     @BeforeMethod(alwaysRun = true)
-    public void init() {
+    public void init(Method method) {
+        this.testName = method.getName();
+
         ConductorConfig config = new ConductorConfig();
         init(config);
     }
@@ -865,5 +870,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds, sleepInMillis);
         wait.until(condition);
         return this;
+    }
+
+    public String getTestName() {
+        return testName;
     }
 }
