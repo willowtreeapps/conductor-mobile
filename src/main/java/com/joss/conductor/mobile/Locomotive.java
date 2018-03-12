@@ -7,6 +7,7 @@ import io.appium.java_client.CommandExecutionHelper;
 import io.appium.java_client.MobileCommand;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidMobileCommandHelper;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.PerformsTouchID;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
