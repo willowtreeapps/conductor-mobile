@@ -7,7 +7,6 @@ import io.appium.java_client.CommandExecutionHelper;
 import io.appium.java_client.MobileCommand;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidMobileCommandHelper;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.PerformsTouchID;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -53,7 +52,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     public AppiumDriver driver;
 
     private Map<String, String> vars = new HashMap<String, String>();
-    private String testName;
+    private String testMethodName;
 
     @Rule
     public TestRule watchman = this;
@@ -75,7 +74,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     @Before
     @BeforeMethod(alwaysRun = true)
     public void init(Method method) {
-        this.testName = method.getName();
+        this.testMethodName = method.getName();
 
         ConductorConfig config = new ConductorConfig();
         init(config);
@@ -872,7 +871,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
         return this;
     }
 
-    public String getTestName() {
-        return testName;
+    public String getTestMethodName() {
+        return testMethodName;
     }
 }
