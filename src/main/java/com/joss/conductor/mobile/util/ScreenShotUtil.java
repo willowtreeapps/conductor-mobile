@@ -18,12 +18,12 @@ public class ScreenShotUtil {
 
     public static void take(Locomotive locomotive, String testName) {
         String artifactName = ArtifactUtil.artifactPathForTest(testName, SCREENSHOT_EXT);
-        writeFile(locomotive.driver, artifactName);
+        writeFile(locomotive.getDriver(), artifactName);
     }
 
     public static void take(Locomotive locomotive, String path, String testName) {
         String artifactName = ArtifactUtil.artifactPathForTest(path, testName, SCREENSHOT_EXT);
-        writeFile(locomotive.driver, artifactName);
+        writeFile(locomotive.getDriver(), artifactName);
     }
 
     private static void writeFile(AppiumDriver appiumDriver, String filePathAndName) {

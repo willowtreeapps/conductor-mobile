@@ -1,6 +1,8 @@
 package com.joss.conductor.mobile;
 
+import com.saucelabs.common.SauceOnDemandAuthentication;
 import io.appium.java_client.CommandExecutionHelper;
+import org.openqa.selenium.InvalidArgumentException;
 import org.pmw.tinylog.Logger;
 import org.yaml.snakeyaml.Yaml;
 
@@ -54,6 +56,9 @@ public class ConductorConfig {
     private String appActivity;
     private String appWaitActivity;
     private String intentCategory;
+
+    // SauceLabs Authentication
+    private SauceOnDemandAuthentication authentication;
 
     public ConductorConfig() {
         this(DEFAULT_CONFIG_FILE);
@@ -442,5 +447,19 @@ public class ConductorConfig {
 
     private void putCustomCapabilities(Map<String, Object> customCapabilities) {
         this.customCapabilities.putAll(customCapabilities);
+    }
+
+    public SauceOnDemandAuthentication getAuthentication() {
+        String sauceUserName = System.getProperty("SAUCE_USERNAME");
+        String sauceAccessKey = System.getProperty("SAUCE_ACCESS_KEY");
+
+        if (sauceUserName == null) {
+            throw new InvalidArgumentException("Env var for SAUCE_USERNAME cannot be null");
+        }
+        if (sauceAccessKey == null) {
+            throw new InvalidArgumentException("Env var for SAUCE_ACCESS_KEY cannot be null");
+        }
+
+        return new SauceOnDemandAuthentication(sauceUserName, sauceAccessKey);
     }
 }
