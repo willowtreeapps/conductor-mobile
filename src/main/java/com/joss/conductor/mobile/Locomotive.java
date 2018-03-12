@@ -18,6 +18,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -57,6 +58,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     @Rule
     public TestRule watchman = this;
 
+    @Rule
+    public TestName testNameRule = new TestName();
+
     public Locomotive getLocomotive() {
         return this;
     }
@@ -72,8 +76,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive> {
     }
 
     @Before
+    public void init() {
+        // For jUnit get the method name from a test rule.
+        this.testMethodName = testNameRule.getMethodName();
+
+        ConductorConfig config = new ConductorConfig();
+        init(config);
+    }
+
     @BeforeMethod(alwaysRun = true)
     public void init(Method method) {
+        // For testNG get the method name from an injected dependency.
         this.testMethodName = method.getName();
 
         ConductorConfig config = new ConductorConfig();
