@@ -26,7 +26,6 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -81,7 +80,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         init(configuration, driver);
     }
 
-    public AppiumDriver getDriver() {
+    public AppiumDriver getAppiumDriver() {
         return driver.get();
     }
 
@@ -109,7 +108,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @AfterMethod(alwaysRun = true)
     public void quit() {
-        getDriver().quit();
+        getAppiumDriver().quit();
     }
 
     private void init(ConductorConfig testConfig) {
@@ -145,7 +144,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         }
 
         // Set session ID after driver has been initialized
-        String id = getDriver().getSessionId().toString();
+        String id = getAppiumDriver().getSessionId().toString();
         sessionId.set(id);
 
         // TODO: Added to support biometrics on android until java-client PR #473 is pulled in
@@ -222,7 +221,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             Logger.info("WaitForElement: Eat exception thrown waiting for condition");
         }
 
-        int size = getDriver().findElements(by).size();
+        int size = getAppiumDriver().findElements(by).size();
 
         if (size == 0) {
             int attempts = 1;
@@ -234,7 +233,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     Logger.error(x);
                 }
 
-                size = getDriver().findElements(by).size();
+                size = getAppiumDriver().findElements(by).size();
                 if (size > 0) {
                     break;
                 }
@@ -251,7 +250,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
         }
 
-        return getDriver().findElement(by);
+        return getAppiumDriver().findElement(by);
     }
 
 
@@ -287,7 +286,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public boolean isPresent(By by) {
-        return getDriver().findElements(by).size() > 0;
+        return getAppiumDriver().findElements(by).size() > 0;
     }
 
     public boolean isPresentWait(String id) {
@@ -329,7 +328,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             Logger.error(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
         }
 
-        int size = getDriver().findElements(by).size();
+        int size = getAppiumDriver().findElements(by).size();
 
         if (size == 0) {
             int attempts = 1;
@@ -340,7 +339,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     Assertions.fail(x.getMessage(), x);
                 }
 
-                size = getDriver().findElements(by).size();
+                size = getAppiumDriver().findElements(by).size();
                 if (size > 0) {
                     break;
                 }
@@ -473,7 +472,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     public Locomotive hideKeyboard() {
         try {
-            getDriver().hideKeyboard();
+            getAppiumDriver().hideKeyboard();
         } catch (WebDriverException e) {
             Logger.error("WARN:" + e.getMessage());
         }
@@ -490,7 +489,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             from = getCenter(/*element=*/null);
         }
 
-        Dimension screen = getDriver().manage().window().getSize();
+        Dimension screen = getAppiumDriver().manage().window().getSize();
         Point to = null;
         if (direction != null) {
             switch (direction) {
@@ -527,14 +526,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
-        TouchAction swipe = new TouchAction(getDriver()).press(from.getX(), from.getY())
+        TouchAction swipe = new TouchAction(getAppiumDriver()).press(from.getX(), from.getY())
                 .waitAction(Duration.ofMillis(SWIPE_DURATION_MILLIS)).moveTo(to.getX(), to.getY()).release();
         swipe.perform();
         return this;
     }
   
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
-        Dimension screen = getDriver().manage().window().getSize();
+        Dimension screen = getAppiumDriver().manage().window().getSize();
 
          final int SCREEN_MARGIN = 10;
 
@@ -597,7 +596,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
-        new TouchAction(getDriver()).press(from.getX(), from.getY())
+        new TouchAction(getAppiumDriver()).press(from.getX(), from.getY())
                 .waitAction(Duration.ofMillis(duration))
                 .moveTo(to.getX(), to.getY())
                 .release()
@@ -610,7 +609,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         for (int i = 0; i < attempts; i++) {
             swipeCenterLong(direction);
             try {
-                element = getDriver().findElement(by);
+                element = getAppiumDriver().findElement(by);
                 // element was found, check for visibility
                 if (element.isDisplayed()) {
                     // element is in view, exit the loop
@@ -653,8 +652,8 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     public Point getCenter(WebElement element) {
         int x, y;
         if (element == null) {
-            x = getDriver().manage().window().getSize().getWidth() / 2;
-            y = getDriver().manage().window().getSize().getHeight() / 2;
+            x = getAppiumDriver().manage().window().getSize().getWidth() / 2;
+            y = getAppiumDriver().manage().window().getSize().getHeight() / 2;
         } else {
             x = element.getLocation().getX() + (element.getSize().getWidth() / 2);
             y = element.getLocation().getY() + (element.getSize().getHeight() / 2);
@@ -668,7 +667,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     public List<WebElement> getElements(By by) {
         waitForElement(by);
-        return getDriver().findElements(by);
+        return getAppiumDriver().findElements(by);
     }
 
     /**
@@ -754,12 +753,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive validateTextPresent(String text) {
-        Assert.assertTrue(getDriver().getPageSource().contains(text));
+        Assert.assertTrue(getAppiumDriver().getPageSource().contains(text));
         return this;
     }
 
     public Locomotive validateTextNotPresent(String text) {
-        Assert.assertFalse(getDriver().getPageSource().contains(text));
+        Assert.assertFalse(getAppiumDriver().getPageSource().contains(text));
         return this;
     }
 
@@ -860,11 +859,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                 // TODO: Restructure when the Java-client supports biometrics (PR #473 on appium/java-client)
                 Map.Entry<String, Map<String, ?>> paramMap = new AbstractMap.SimpleEntry<>("fingerPrint",
                         MobileCommand.prepareArguments("fingerprintId", id));
-                CommandExecutionHelper.execute(getDriver(), paramMap);
+                CommandExecutionHelper.execute(getAppiumDriver(), paramMap);
                 break;
 
             case IOS:
-                PerformsTouchID performsTouchID = (PerformsTouchID) getDriver();
+                PerformsTouchID performsTouchID = (PerformsTouchID) getAppiumDriver();
                 performsTouchID.performTouchID(match);
                 break;
 
@@ -897,7 +896,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive waitForCondition(ExpectedCondition<?> condition, long timeOutInSeconds, long sleepInMillis) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), timeOutInSeconds, sleepInMillis);
+        WebDriverWait wait = new WebDriverWait(getAppiumDriver(), timeOutInSeconds, sleepInMillis);
         wait.until(condition);
         return this;
     }
