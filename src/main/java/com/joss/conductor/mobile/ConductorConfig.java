@@ -462,10 +462,10 @@ public class ConductorConfig {
     public SauceOnDemandAuthentication getSauceAuthentication(String sauceUserName, String sauceAccessKey) {
 
         if (sauceUserName == null) {
-            throw new InvalidArgumentException("Env var for SAUCE_USERNAME cannot be null");
+            throw new InvalidArgumentException("sauceUserName cannot be null");
         }
         if (sauceAccessKey == null) {
-            throw new InvalidArgumentException("Env var for SAUCE_ACCESS_KEY cannot be null");
+            throw new InvalidArgumentException("sauceAccessKey cannot be null");
         }
 
         return new SauceOnDemandAuthentication(sauceUserName, sauceAccessKey);
