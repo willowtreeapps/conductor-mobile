@@ -59,6 +59,8 @@ public class ConductorConfig {
 
     // SauceLabs Authentication
     private SauceOnDemandAuthentication authentication;
+    private String sauceUserName;
+    private String sauceAccessKey;
 
     public ConductorConfig() {
         this(DEFAULT_CONFIG_FILE);
@@ -393,6 +395,14 @@ public class ConductorConfig {
         this.autoGrantPermissions = autoGrantPermissions;
     }
 
+    public String getSauceUserName() {return this.sauceUserName; }
+
+    public String getSauceAccessKey() {return this.sauceAccessKey; }
+
+    public void setSauceUserName (String sauceUserName) {this.sauceUserName = sauceUserName; }
+
+    public void setSauceAccessKey (String sauceAccessKey) {this.sauceAccessKey = sauceAccessKey; }
+
     public Platform getPlatformName() {
         return platformName;
     }
@@ -449,9 +459,7 @@ public class ConductorConfig {
         this.customCapabilities.putAll(customCapabilities);
     }
 
-    public SauceOnDemandAuthentication getAuthentication() {
-        String sauceUserName = System.getProperty("SAUCE_USERNAME");
-        String sauceAccessKey = System.getProperty("SAUCE_ACCESS_KEY");
+    public SauceOnDemandAuthentication getSauceAuthentication(String sauceUserName, String sauceAccessKey) {
 
         if (sauceUserName == null) {
             throw new InvalidArgumentException("Env var for SAUCE_USERNAME cannot be null");

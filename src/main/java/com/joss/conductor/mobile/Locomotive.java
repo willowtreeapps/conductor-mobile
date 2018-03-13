@@ -84,7 +84,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return driver.get();
     }
 
-    public void setDriver(AppiumDriver d) {
+    public void setAppiumDriver(AppiumDriver d) {
         driver.set(d);
     }
 
@@ -118,7 +118,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     private void init(ConductorConfig configuration, AppiumDriver driver) {
         this.configuration = configuration;
         if (driver != null) {
-            setDriver(driver);
+            setAppiumDriver(driver);
         } else {
             URL hub = configuration.getHub();
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
@@ -128,13 +128,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
             switch (configuration.getPlatformName()) {
                 case ANDROID:
-                    setDriver(hub == null
+                    setAppiumDriver(hub == null
                             ? new AndroidDriver(builder, capabilities)
                             : new AndroidDriver(hub, capabilities));
 
                     break;
                 case IOS:
-                    setDriver(hub == null
+                    setAppiumDriver(hub == null
                             ? new IOSDriver(builder, capabilities)
                             : new IOSDriver(hub, capabilities));
                     break;
@@ -192,6 +192,8 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, config.getAppActivity());
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, config.getAppWaitActivity());
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, config.getIntentCategory());
+        capabilities.setCapability("sauceUserName", config.getSauceUserName());
+        capabilities.setCapability("sauceAccessKey", config.getSauceAccessKey());
 
         if (StringUtils.isNotEmpty(config.getAutomationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
@@ -912,6 +914,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
-        return configuration.getAuthentication();
+        return configuration.getSauceAuthentication(configuration.getSauceUserName(), configuration.getSauceAccessKey());
     }
 }
