@@ -9,6 +9,7 @@ import org.assertj.swing.assertions.Assertions;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -34,9 +35,11 @@ public class LocomotiveTest {
 
     @BeforeMethod
     public void setup() {
-        mockDriver = mock(AppiumDriver.class);
         androidConfig = new ConductorConfig("/test_yaml/android_full.yaml");
         iosConfig = new ConductorConfig("/test_yaml/ios_full.yaml");
+
+        mockDriver = mock(AppiumDriver.class);
+        when(mockDriver.getSessionId()).thenReturn(new SessionId("123456789"));
     }
 
     @Test

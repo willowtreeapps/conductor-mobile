@@ -1,6 +1,8 @@
 package com.joss.conductor.mobile;
 
+import com.saucelabs.common.SauceOnDemandAuthentication;
 import io.appium.java_client.CommandExecutionHelper;
+import org.openqa.selenium.InvalidArgumentException;
 import org.pmw.tinylog.Logger;
 import org.yaml.snakeyaml.Yaml;
 
@@ -54,6 +56,11 @@ public class ConductorConfig {
     private String appActivity;
     private String appWaitActivity;
     private String intentCategory;
+
+    // SauceLabs Authentication
+    private SauceOnDemandAuthentication authentication;
+    private String sauceUserName;
+    private String sauceAccessKey;
 
     public ConductorConfig() {
         this(DEFAULT_CONFIG_FILE);
@@ -388,6 +395,14 @@ public class ConductorConfig {
         this.autoGrantPermissions = autoGrantPermissions;
     }
 
+    public String getSauceUserName() {return this.sauceUserName; }
+
+    public String getSauceAccessKey() {return this.sauceAccessKey; }
+
+    public void setSauceUserName (String sauceUserName) {this.sauceUserName = sauceUserName; }
+
+    public void setSauceAccessKey (String sauceAccessKey) {this.sauceAccessKey = sauceAccessKey; }
+
     public Platform getPlatformName() {
         return platformName;
     }
@@ -442,5 +457,17 @@ public class ConductorConfig {
 
     private void putCustomCapabilities(Map<String, Object> customCapabilities) {
         this.customCapabilities.putAll(customCapabilities);
+    }
+
+    public SauceOnDemandAuthentication getSauceAuthentication(String sauceUserName, String sauceAccessKey) {
+
+        if (sauceUserName == null) {
+            throw new InvalidArgumentException("sauceUserName cannot be null");
+        }
+        if (sauceAccessKey == null) {
+            throw new InvalidArgumentException("sauceAccessKey cannot be null");
+        }
+
+        return new SauceOnDemandAuthentication(sauceUserName, sauceAccessKey);
     }
 }
