@@ -8,8 +8,9 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface AndroidId {
+public @interface AndroidFindBy {
 
+    //value() gets set By.id() by PlatformFindByHelper.
     String value() default "";
 
     String xpath() default "";

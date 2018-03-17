@@ -8,8 +8,9 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface IOSId {
+public @interface IOSFindBy {
 
+    //value() gets set By.name() by PlatformFindByHelper.
     String value() default "";
 
     String xpath() default "";

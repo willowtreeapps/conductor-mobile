@@ -7,16 +7,16 @@ import org.openqa.selenium.By;
  */
 public class StubPage {
 
-    @AndroidId("google")
-    @IOSId("apple")
+    @AndroidFindBy("google")
+    @IOSFindBy("apple")
     public By Item;
 
-    @AndroidId("elgoog")
-    @IOSId("elppa")
+    @AndroidFindBy("elgoog")
+    @IOSFindBy("elppa")
     public By SecondItem;
 
-    @AndroidId(xpath = "//*[@text='Knock Knock']")
-    @IOSId(xpath = "//*[@text='Who's there?']")
+    @AndroidFindBy(xpath = "//*[@text='Knock Knock']")
+    @IOSFindBy(xpath = "//*[@text='Who's there?']")
     public By XpathItem;
 }
 

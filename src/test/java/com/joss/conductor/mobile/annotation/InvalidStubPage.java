@@ -5,7 +5,7 @@ package com.joss.conductor.mobile.annotation;
  */
 public class InvalidStubPage {
 
-    @AndroidId("google2")
-    @IOSId("apple2")
+    @AndroidFindBy("google2")
+    @IOSFindBy("apple2")
     public String InvalidItem;
 }

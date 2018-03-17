@@ -9,19 +9,19 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created on 3/14/18.
  */
-public class PlatformIdHelperTest {
+public class PlatformFindByHelperTest {
 
     @Test(expected = ClassCastException.class)
     public void testIsByType() throws Exception {
         Platform platform = Platform.ANDROID;
-        PlatformIdHelper.initIds(new InvalidStubPage(), platform);
+        PlatformFindByHelper.initIds(new InvalidStubPage(), platform);
     }
 
     @Test
     public void testItemIdPopulatedAndroid() throws Exception {
         StubPage page = new StubPage();
         Platform platform = Platform.ANDROID;
-        PlatformIdHelper.initIds(page, platform);
+        PlatformFindByHelper.initIds(page, platform);
 
         assertEquals(page.Item, By.id("google"));
     }
@@ -30,7 +30,7 @@ public class PlatformIdHelperTest {
     public void testItemIdPopulatedIos() throws Exception {
         StubPage page = new StubPage();
         Platform platform = Platform.IOS;
-        PlatformIdHelper.initIds(page, platform);
+        PlatformFindByHelper.initIds(page, platform);
 
         assertEquals(page.Item, By.id("apple"));
     }
@@ -39,7 +39,7 @@ public class PlatformIdHelperTest {
     public void testItemIdPopulatedCorrectAndroid() throws Exception {
         StubPage page = new StubPage();
         Platform platform = Platform.ANDROID;
-        PlatformIdHelper.initIds(page, platform);
+        PlatformFindByHelper.initIds(page, platform);
 
         assertEquals(page.SecondItem, By.id("elgoog"));
     }
@@ -48,7 +48,7 @@ public class PlatformIdHelperTest {
     public void testItemIdPopulatedCorrectIos() throws Exception {
         StubPage page = new StubPage();
         Platform platform = Platform.IOS;
-        PlatformIdHelper.initIds(page, platform);
+        PlatformFindByHelper.initIds(page, platform);
 
         assertEquals(page.SecondItem, By.id("elppa"));
     }
@@ -57,7 +57,7 @@ public class PlatformIdHelperTest {
     public void testXpathAndroid() throws Exception {
         StubPage page = new StubPage();
         Platform platform = Platform.ANDROID;
-        PlatformIdHelper.initIds(page, platform);
+        PlatformFindByHelper.initIds(page, platform);
 
         assertEquals(page.XpathItem, By.xpath("//*[@text='Knock Knock']"));
     }
@@ -66,10 +66,11 @@ public class PlatformIdHelperTest {
     public void testXpathIos() throws Exception {
         StubPage page = new StubPage();
         Platform platform = Platform.IOS;
-        PlatformIdHelper.initIds(StubPage.class, platform);
+        PlatformFindByHelper.initIds(StubPage.class, platform);
 
         assertEquals(page.XpathItem, By.xpath("//*[@text='Who's there?']"));
     }
 
+    //TODO add test to ensure other annotations are respected
 
 }
