@@ -143,6 +143,30 @@ All of these methods are able to be called in-line, and fluently without ever ha
 # Implicit Waiting
 The ```AutomationTest``` class extends on this concept by implenting a sort of ```waitFor``` functionality which ensures that an object appears before interacting with it.  This rids of most ```ElementNotFound``` exceptions that Appium will cough up.
 
+# Platform Identifier Annotation
+Support for grouping your platform (android, ios) IDs into one place via annotations:
+```java 
+@AndroidId("google")
+@IOSId("apple")
+public By Item;
+```
+
+Default locator is `By.id` but there is also support for `By.xpath`: 
+```java 
+@AndroidId(xpath = "//*[@text='Knock Knock']")
+@IOSId(xpath = "//*[@text='Who's there?']")
+public By XpathItem;
+```
+String types are not supported, must be type `By`.
+
+Initialize once in the BasePage constructor i.e.:
+```java
+public BasePage(Locomotive driver) {
+    this.driver = driver;
+    PlatformFindByHelper.initIds(this, driver.configuration.getPlatformName());
+}   
+```
+
 # Pull requests
 If you have an idea for the framework, fork it and submit a pull-request!
 
