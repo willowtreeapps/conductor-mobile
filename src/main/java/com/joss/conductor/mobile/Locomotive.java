@@ -5,7 +5,6 @@ import com.joss.conductor.mobile.util.PageUtil;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
-import com.saucelabs.testng.SauceOnDemandTestListener;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.CommandExecutionHelper;
 import io.appium.java_client.MobileCommand;
@@ -45,7 +44,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 8/10/16.
  */
-@Listeners({TestListener.class, SauceOnDemandTestListener.class})
+@Listeners({TestListener.class, SauceLabsListener.class})
 public class Locomotive extends Watchman implements Conductor<Locomotive>, SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static final float SWIPE_DISTANCE = 0.25f;
@@ -54,7 +53,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     private static final int SWIPE_DURATION_MILLIS = 2000;
 
     private ThreadLocal<AppiumDriver> driver = new ThreadLocal<>();
-    private ThreadLocal<String> sessionId = new ThreadLocal<String>();
+    private ThreadLocal<String> sessionId = new ThreadLocal<>();
 
     public ConductorConfig configuration;
     private Map<String, String> vars = new HashMap<>();
