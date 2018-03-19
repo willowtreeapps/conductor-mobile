@@ -146,15 +146,15 @@ The ```AutomationTest``` class extends on this concept by implenting a sort of `
 # Platform Identifier Annotation
 Support for grouping your platform (android, ios) IDs into one place via annotations:
 ```java 
-@AndroidId("google")
-@IOSId("apple")
+@AndroidFindBy("google")
+@IOSFindBy("apple")
 public By Item;
 ```
 
 Default locator is `By.id` but there is also support for `By.xpath`: 
 ```java 
-@AndroidId(xpath = "//*[@text='Knock Knock']")
-@IOSId(xpath = "//*[@text='Who's there?']")
+@AndroidFindBy(xpath = "//*[@text='Knock Knock']")
+@IOSFindBy(xpath = "//*[@text='Who's there?']")
 public By XpathItem;
 ```
 String types are not supported, must be type `By`.
