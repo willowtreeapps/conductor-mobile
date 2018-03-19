@@ -163,7 +163,7 @@ Initialize once in the BasePage constructor i.e.:
 ```java
 public BasePage(Locomotive driver) {
     this.driver = driver;
-    PlatformIdHelper.initIds(this, driver.configuration.getPlatformName());
+    PlatformFindByHelper.initIds(this, driver.configuration.getPlatformName());
 }   
 ```
 
