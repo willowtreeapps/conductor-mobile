@@ -470,4 +470,8 @@ public class ConductorConfig {
 
         return new SauceOnDemandAuthentication(sauceUserName, sauceAccessKey);
     }
+
+    public boolean isLocal() {
+        return getHub() == null;
+    }
 }

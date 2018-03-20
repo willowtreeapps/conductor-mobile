@@ -28,6 +28,22 @@ public class ConductorConfigTest {
     }
 
     @Test
+    public void config_local()  {
+        ConductorConfig config = new ConductorConfig();
+
+        Assertions.assertThat(config.isLocal())
+                .isTrue();
+    }
+
+    @Test
+    public void config_remote()  {
+        ConductorConfig config = new ConductorConfig("/test_yaml/remote.yaml");
+
+        Assertions.assertThat(config.isLocal())
+                .isFalse();
+    }
+
+    @Test
     public void config_supplied_reads_supplied_config() {
         ConductorConfig config = new ConductorConfig("/test_yaml/simple.yaml");
 
