@@ -1,0 +1,4 @@
+
+platformName: ANDROID
+defaults:
+  hub: https://${SAUCE_USERNAME}:${SAUCE_ACCESS_TOKEN}@ondemand.saucelabs.com:443/wd/hub
