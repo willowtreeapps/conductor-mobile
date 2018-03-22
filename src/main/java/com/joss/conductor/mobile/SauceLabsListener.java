@@ -9,7 +9,7 @@ import org.testng.ITestResult;
 public class SauceLabsListener extends SauceOnDemandTestListener {
 
     private static final String SELENIUM_IS_LOCAL = "SELENIUM_IS_LOCAL";
-    private final boolean local;
+    private final ConductorConfig config;
 
     /**
      * Determine whether the tests are run locally before any other methods are run.
@@ -18,10 +18,9 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
      * have a value. For conductor we assume a test run is remote if and only if a hub property is set.
      */
     public SauceLabsListener() {
-        final ConductorConfig config = new ConductorConfig();
-        local = config.getHub() != null;
+        config = new ConductorConfig();
 
-        if (local) {
+        if (config.isLocal()) {
             System.setProperty(SELENIUM_IS_LOCAL, "true");
         } else {
             System.setProperty(SELENIUM_IS_LOCAL, "");
@@ -36,7 +35,7 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
      */
     @Override
     public void onTestSuccess(ITestResult testResult) {
-        if (!local) {
+        if (!config.isLocal()) {
             super.onTestSuccess(testResult);
         }
     }
