@@ -15,4 +15,7 @@ public @interface AndroidFindBy {
 
     String xpath() default "";
 
+    String className() default "";
+
+
 }

@@ -15,4 +15,7 @@ public @interface IOSFindBy {
 
     String xpath() default "";
 
+    String className() default "";
+
+
 }
