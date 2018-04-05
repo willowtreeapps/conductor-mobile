@@ -479,4 +479,7 @@ public class ConductorConfig {
         }
         return !sHub.contains("saucelabs") && ((url == null) || (sHub.contains("127.0.0.1")) || (sHub.contains("0.0.0.0")));
     }
+    public boolean isHub() {
+        return getHub() == null;
+    }
 }
