@@ -472,6 +472,11 @@ public class ConductorConfig {
     }
 
     public boolean isLocal() {
-        return getHub() == null;
+        URL url = getHub();
+        String sHub = "";
+        if (!(url == null)){
+            sHub = url.toString();
+        }
+        return !sHub.contains("saucelabs") && ((url == null) || (sHub.contains("127.0.0.1")) || (sHub.contains("0.0.0.0")));
     }
 }
