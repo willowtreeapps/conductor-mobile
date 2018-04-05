@@ -128,15 +128,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
             switch (configuration.getPlatformName()) {
                 case ANDROID:
-                    setAppiumDriver(configuration.isHub()
-                            ? new AndroidDriver(hub, capabilities)
-                            : new AndroidDriver(builder, capabilities));
-
+                    setAppiumDriver(configuration.isLocal()
+                            ? new AndroidDriver(builder, capabilities)
+                            : new AndroidDriver(hub, capabilities));
                     break;
                 case IOS:
-                    setAppiumDriver(configuration.isHub()
-                            ? new IOSDriver(hub, capabilities)
-                            : new IOSDriver(builder, capabilities));
+                    setAppiumDriver(configuration.isLocal()
+                            ? new IOSDriver(builder, capabilities)
+                            : new IOSDriver(hub, capabilities));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
