@@ -42,7 +42,7 @@ public class ConductorConfig {
     private String locale;
     private String orientation;
     private String hub;
-    private Boolean isLocalHub = true;
+    private Boolean islocalhub = true;
     private String udid;
     private String automationName;
     private String appPackageName;
@@ -293,7 +293,7 @@ public class ConductorConfig {
     }
 
     public void setIsLocalHub(boolean isLocalHubValue){
-        this.isLocalHub = isLocalHubValue;
+        this.islocalhub = isLocalHubValue;
     }
 
 
@@ -481,6 +481,6 @@ public class ConductorConfig {
         return getHub() == null;
     }
     public boolean isHubLocal() {
-        return !isLocal() && isLocalHub;
+        return islocalhub;
     }
 }
