@@ -42,6 +42,7 @@ public class ConductorConfig {
     private String locale;
     private String orientation;
     private String hub;
+    private Boolean isLocalHub = true;
     private String udid;
     private String automationName;
     private String appPackageName;
@@ -162,10 +163,10 @@ public class ConductorConfig {
 
         Pattern envPattern = Pattern.compile("\\$\\{(.+?)\\}");
         Matcher envMatcher = envPattern.matcher(propertyValue);
-        while(envMatcher.find()) {
+        while (envMatcher.find()) {
             String env = envMatcher.group(1);
             String val = System.getProperty(env);
-            if(val != null) {
+            if (val != null) {
                 propertyValue = propertyValue.replaceAll("\\$\\{" + env + "\\}", val);
             } else {
                 Logger.warn("Could not find environment variable \"{}\" specified in config", env);
@@ -290,6 +291,11 @@ public class ConductorConfig {
     public void setHub(String hub) {
         this.hub = hub;
     }
+
+    public void setIsLocalHub(boolean isLocalHubValue){
+        this.isLocalHub = isLocalHubValue;
+    }
+
 
     public String getUdid() {
         return udid;
@@ -475,11 +481,6 @@ public class ConductorConfig {
         return getHub() == null;
     }
     public boolean isHubLocal() {
-        URL url = getHub();
-        String sHub = "";
-        if (!(url == null)){
-            sHub = url.toString();
-        }
-        return !sHub.contains("saucelabs");
+        return !isLocal() && isLocalHub;
     }
 }
