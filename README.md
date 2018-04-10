@@ -107,7 +107,7 @@ You can see a variety of example configuration files in the unit tests for condu
 - `language` = {string: }
 - `locale` = {string: }
 - `orientation` = {string: portrait or landscape}
-- `hub` = {string: url}
+- `hub` = {string: url (local /cloud URL) - If local hub - value will be given in defaults section, if cloud specific then value given in scheme section'}
 
 ## Android specific
 - `avd` = {string: the name of the avd to boot}

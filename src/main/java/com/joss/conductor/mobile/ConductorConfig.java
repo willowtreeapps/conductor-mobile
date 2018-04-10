@@ -42,7 +42,7 @@ public class ConductorConfig {
     private String locale;
     private String orientation;
     private String hub;
-    private Boolean islocalhub = true;
+    private Boolean islocalhub = false;
     private String udid;
     private String automationName;
     private String appPackageName;
@@ -105,7 +105,9 @@ public class ConductorConfig {
         Map<String, Object> defaults = (Map<String, Object>) config.get("defaults");
         if (defaults != null) {
             readProperties(defaults);
-
+            if (defaults.get("hub") != null){
+                setIsLocalHub(true);
+            }
             Map<String, Object> platformDefaults = null;
             switch (platformName) {
                 case IOS:
