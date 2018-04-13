@@ -23,7 +23,12 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
         if (config.isLocal()) {
             System.setProperty(SELENIUM_IS_LOCAL, "true");
         } else {
-            System.setProperty(SELENIUM_IS_LOCAL, "");
+            if (config.isHubLocal()) {
+                System.setProperty(SELENIUM_IS_LOCAL, "true");
+            }
+            else{
+                System.setProperty(SELENIUM_IS_LOCAL, "");
+            }
         }
     }
 
@@ -39,5 +44,4 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
             super.onTestSuccess(testResult);
         }
     }
-
 }

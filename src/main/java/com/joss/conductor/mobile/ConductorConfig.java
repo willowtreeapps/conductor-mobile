@@ -42,6 +42,7 @@ public class ConductorConfig {
     private String locale;
     private String orientation;
     private String hub;
+    private Boolean islocalhub = false;
     private String udid;
     private String automationName;
     private String appPackageName;
@@ -104,7 +105,9 @@ public class ConductorConfig {
         Map<String, Object> defaults = (Map<String, Object>) config.get("defaults");
         if (defaults != null) {
             readProperties(defaults);
-
+            if (defaults.get("hub") != null){
+                setIsLocalHub(true);
+            }
             Map<String, Object> platformDefaults = null;
             switch (platformName) {
                 case IOS:
@@ -162,10 +165,10 @@ public class ConductorConfig {
 
         Pattern envPattern = Pattern.compile("\\$\\{(.+?)\\}");
         Matcher envMatcher = envPattern.matcher(propertyValue);
-        while(envMatcher.find()) {
+        while (envMatcher.find()) {
             String env = envMatcher.group(1);
             String val = System.getProperty(env);
-            if(val != null) {
+            if (val != null) {
                 propertyValue = propertyValue.replaceAll("\\$\\{" + env + "\\}", val);
             } else {
                 Logger.warn("Could not find environment variable \"{}\" specified in config", env);
@@ -290,6 +293,11 @@ public class ConductorConfig {
     public void setHub(String hub) {
         this.hub = hub;
     }
+
+    public void setIsLocalHub(boolean isLocalHubValue){
+        this.islocalhub = isLocalHubValue;
+    }
+
 
     public String getUdid() {
         return udid;
@@ -473,5 +481,8 @@ public class ConductorConfig {
 
     public boolean isLocal() {
         return getHub() == null;
+    }
+    public boolean isHubLocal() {
+        return islocalhub;
     }
 }

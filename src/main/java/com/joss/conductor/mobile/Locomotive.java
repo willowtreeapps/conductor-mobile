@@ -131,7 +131,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     setAppiumDriver(configuration.isLocal()
                             ? new AndroidDriver(builder, capabilities)
                             : new AndroidDriver(hub, capabilities));
-
                     break;
                 case IOS:
                     setAppiumDriver(configuration.isLocal()
