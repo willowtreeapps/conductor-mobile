@@ -6,7 +6,7 @@
 
     <groupId>com.github.willowtreeapps</groupId>
     <artifactId>conductor-mobile</artifactId>
-    <version>0.10.1</version>
+    <version>0.10.2</version>
 
     <repositories>
         <repository>
