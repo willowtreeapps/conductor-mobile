@@ -51,6 +51,7 @@ public class ConductorConfig {
     // iOS specific
     private String xcodeSigningId;
     private String xcodeOrgId;
+    private boolean waitForQuiescence = true;
 
     // Android specific
     private String avd;
@@ -401,6 +402,14 @@ public class ConductorConfig {
 
     public void setAutoGrantPermissions(boolean autoGrantPermissions) {
         this.autoGrantPermissions = autoGrantPermissions;
+    }
+
+    public boolean isWaitForQuiescence() {
+        return waitForQuiescence;
+    }
+
+    public void setWaitForQuiescence(boolean waitForQuiescence) {
+        this.waitForQuiescence = waitForQuiescence;
     }
 
     public String getSauceUserName() {return this.sauceUserName; }
