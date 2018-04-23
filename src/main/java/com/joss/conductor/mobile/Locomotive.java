@@ -192,6 +192,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, config.getIntentCategory());
         capabilities.setCapability("sauceUserName", config.getSauceUserName());
         capabilities.setCapability("sauceAccessKey", config.getSauceAccessKey());
+        capabilities.setCapability("waitForQuiescence", config.isWaitForQuiescence());
 
         if (StringUtils.isNotEmpty(config.getAutomationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
