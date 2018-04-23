@@ -61,6 +61,7 @@ public class LocomotiveTest {
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, "android.intent.category.LEANBACK_LAUNCHER");
         capabilities.setCapability("xcodeOrgId", nul);
         capabilities.setCapability("xcodeSigningId", nul);
+        capabilities.setCapability("waitForQuiescence", nul);
         Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(androidConfig))
@@ -87,6 +88,7 @@ public class LocomotiveTest {
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, nul);
         capabilities.setCapability("xcodeOrgId", "orgId");
         capabilities.setCapability("xcodeSigningId", "signingId");
+        capabilities.setCapability("waitForQuiescence", true);
         Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(iosConfig))
