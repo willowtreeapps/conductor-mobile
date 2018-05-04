@@ -103,7 +103,8 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     @AfterMethod(alwaysRun = true)
     public void quit() {
         getAppiumDriver().quit();
-    }
+        driver.remove();
+        }
 
     private void initialize() {
         if (this.configuration == null) {
@@ -609,7 +610,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     return element;
                 }
                 // element was not visible, continue scrolling
-            } catch (NoSuchElementException exception) {
+            } catch (WebDriverException exception) {
                 // element could not be found, continue scrolling
             }
         }
