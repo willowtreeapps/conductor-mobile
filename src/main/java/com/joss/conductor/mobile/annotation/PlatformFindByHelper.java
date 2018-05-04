@@ -32,6 +32,8 @@ public final class PlatformFindByHelper {
                                 field.set(page, By.id(androidFindByAnnotation.value()));
                             } else if (!androidFindByAnnotation.xpath().isEmpty()) {
                                 field.set(page, By.xpath(androidFindByAnnotation.xpath()));
+                            } else if (!androidFindByAnnotation.className().isEmpty()) {
+                                field.set(page, By.className(androidFindByAnnotation.className()));
                             }
                         }
 
@@ -41,6 +43,8 @@ public final class PlatformFindByHelper {
                                 field.set(page, By.name(iOSFindByAnnotation.value()));
                             } else if (!iOSFindByAnnotation.xpath().isEmpty()) {
                                 field.set(page, By.xpath(iOSFindByAnnotation.xpath()));
+                            } else if (!iOSFindByAnnotation.className().isEmpty()) {
+                                field.set(page, By.className(iOSFindByAnnotation.className()));
                             }
                         }
                     }
