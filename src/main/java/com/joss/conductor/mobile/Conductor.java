@@ -268,4 +268,11 @@ public interface Conductor<Test> {
      * @return The implementing class for fluency
      */
     Test waitForCondition(ExpectedCondition<?> condition, long timeOutInSeconds, long sleepInMillis);
+
+    /**
+     * Wait until an element is no longer present on the screen
+     * @param id
+     * @return
+     */
+    Test waitUntilNotPresent(String id);
 }

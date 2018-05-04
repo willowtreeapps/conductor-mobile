@@ -61,7 +61,10 @@ public class LocomotiveTest {
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, "android.intent.category.LEANBACK_LAUNCHER");
         capabilities.setCapability("xcodeOrgId", nul);
         capabilities.setCapability("xcodeSigningId", nul);
-        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+        capabilities.setCapability("waitForQuiescence", nul);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(androidConfig))
                 .isEqualToComparingFieldByField(capabilities);
@@ -87,7 +90,10 @@ public class LocomotiveTest {
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, nul);
         capabilities.setCapability("xcodeOrgId", "orgId");
         capabilities.setCapability("xcodeSigningId", "signingId");
-        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
+        capabilities.setCapability("waitForQuiescence", true);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(iosConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.buildCapabilities(iosConfig))
                 .isEqualToIgnoringNullFields(capabilities);
@@ -96,7 +102,9 @@ public class LocomotiveTest {
     @Test
     public void test_custom_capabilities() {
         ConductorConfig config = new ConductorConfig("/test_yaml/android_defaults_custom_caps.yaml");
-        Locomotive locomotive = new Locomotive(config, mockDriver);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(config)
+                .setAppiumDriver(mockDriver);
 
         DesiredCapabilities caps = locomotive.buildCapabilities(config);
         Assertions.assertThat(caps.getCapability("foo"))
@@ -117,7 +125,9 @@ public class LocomotiveTest {
 
         when(mockDriver.findElements(id)).thenReturn(Collections.singletonList(foundElement));
         when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+        Locomotive locomotive = new Locomotive();
+        locomotive.setConfiguration(androidConfig);
+        locomotive.setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.waitForElement(id))
                 .isEqualTo(foundElement);
@@ -133,13 +143,11 @@ public class LocomotiveTest {
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
-        final Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(iosConfig)
+                .setAppiumDriver(mockDriver);
 
-        Assertions.assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
-            public void call() throws Throwable {
-                locomotive.waitForElement(id);
-            }
-        }).isInstanceOf(AssertionError.class);
+        Assertions.assertThatThrownBy(() -> locomotive.waitForElement(id)).isInstanceOf(AssertionError.class);
         // First attempt to find elements plus 5 retries + one added from the driver
         verify(mockDriver, times(numberOfRetries + 2))
                 .findElements(id);
@@ -158,7 +166,9 @@ public class LocomotiveTest {
                 Collections.emptyList(),
                 Collections.singletonList(foundElement));
         when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(iosConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.waitForElement(id))
                 .isEqualTo(foundElement);
@@ -173,7 +183,9 @@ public class LocomotiveTest {
         when(foundElement.isDisplayed()).thenReturn(true);
 
         when(mockDriver.findElements(id)).thenReturn(Collections.singletonList(foundElement));
-        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.isPresentWait(id))
                 .isEqualTo(true);
@@ -189,7 +201,9 @@ public class LocomotiveTest {
 
         final By id = mock(By.class);
         when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
-        final Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(iosConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.isPresentWait(id))
                 .isEqualTo(false);
@@ -210,7 +224,9 @@ public class LocomotiveTest {
                 Collections.emptyList(),
                 Collections.singletonList(foundElement));
         when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive(iosConfig, mockDriver);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(iosConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.isPresentWait(id))
                 .isEqualTo(true);
@@ -225,7 +241,9 @@ public class LocomotiveTest {
         when(element.getSize()).thenReturn(new Dimension(10, 10));
 
         Point center = new Point(55, 5);
-        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.getCenter(element))
                 .isEqualToComparingFieldByField(center);
@@ -242,7 +260,9 @@ public class LocomotiveTest {
         when(mockDriver.manage()).thenReturn(options);
 
         Point center = new Point(50, 25);
-        Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+        Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
 
         Assertions.assertThat(locomotive.getCenter(/*webElement=*/null))
                 .isEqualToComparingFieldByField(center);
@@ -264,7 +284,7 @@ public class LocomotiveTest {
         Map<String, List<Object>> actualParameters = getTouchActionParameters(actual);
         Map<String, List<Object>> expectedParameters = getTouchActionParameters(expected);
 
-        assertThat((Map<String, List<Object>>)actualParameters, matchesEntriesIn((Map<String, List<Object>>)expectedParameters));
+        assertThat(actualParameters, matchesEntriesIn(expectedParameters));
     }
 
     private void initMockDriverSizes() {
@@ -294,7 +314,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(50, 75), new Point(0, 25) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenter(SwipeElementDirection.DOWN);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -316,7 +338,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(50, 99), new Point(0, 49) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenterLong(SwipeElementDirection.DOWN);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -337,7 +361,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(25, 50), new Point(-25, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenter(SwipeElementDirection.LEFT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -358,7 +384,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(1, 50), new Point(-49, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenterLong(SwipeElementDirection.LEFT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -379,7 +407,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(50, 25), new Point(0, -25) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenter(SwipeElementDirection.UP);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -400,7 +430,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(50, 1), new Point(0, -49) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenterLong(SwipeElementDirection.UP);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -421,7 +453,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(75, 50), new Point(25, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenter(SwipeElementDirection.RIGHT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -442,7 +476,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(99, 50), new Point(49, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenterLong(SwipeElementDirection.RIGHT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -459,30 +495,16 @@ public class LocomotiveTest {
     public void test_perform_swipe_none_asserts() {
         initMockDriverSizes();
 
-        final Locomotive locomotive = new Locomotive(androidConfig, mockDriver);
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
 
-        Assertions.assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
-            public void call() throws Throwable {
-                locomotive.swipeCenter(SwipeElementDirection.NONE);
-            }
-        }).isInstanceOf(IllegalArgumentException.class);
-        Assertions.assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
-            public void call() throws Throwable {
-                locomotive.swipeCenterLong(SwipeElementDirection.NONE);
-            }
-        }).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> locomotive.swipeCenter(SwipeElementDirection.NONE)).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> locomotive.swipeCenterLong(SwipeElementDirection.NONE)).isInstanceOf(IllegalArgumentException.class);
 
         // Swipe @null
-        Assertions.assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
-            public void call() throws Throwable {
-                locomotive.swipeCenter(null);
-            }
-        }).isInstanceOf(IllegalArgumentException.class);
-        Assertions.assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
-            public void call() throws Throwable {
-                locomotive.swipeCenterLong(null);
-            }
-        }).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> locomotive.swipeCenter(null)).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> locomotive.swipeCenterLong(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -493,7 +515,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(90, 40), new Point(0, -50) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -514,7 +538,10 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(90, 1), new Point(0, -89) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
+
             locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
             verify(mockDriver, times(i+1))
@@ -534,7 +561,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(10, 40), new Point(0, -50) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -555,7 +584,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(10, 1), new Point(0, -89) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -576,7 +607,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(90, 60), new Point(0, 50) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -597,7 +630,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(90, 99), new Point(0, 89) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -618,7 +653,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(10, 60), new Point(0, 50) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -639,7 +676,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(10, 99), new Point(0, 89) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -660,7 +699,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(60, 10), new Point(50, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -681,7 +722,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(40, 10), new Point(-50, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -703,7 +746,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(5, 30), new Point(0, 25) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipe(SwipeElementDirection.DOWN, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -725,7 +770,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(5, 55), new Point(0, 50) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeLong(SwipeElementDirection.DOWN, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -747,7 +794,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(1, 5), new Point(-4, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipe(SwipeElementDirection.LEFT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -769,7 +818,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(1, 5), new Point(-4, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeLong(SwipeElementDirection.LEFT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -791,7 +842,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(5, 1), new Point(0, -4) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipe(SwipeElementDirection.UP, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -813,7 +866,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(5, 1), new Point(0, -4) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeLong(SwipeElementDirection.UP, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -835,7 +890,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(30, 5), new Point(25, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipe(SwipeElementDirection.RIGHT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
@@ -857,7 +914,9 @@ public class LocomotiveTest {
         Point[] moveTo = { new Point(55, 5), new Point(50, 0) };
 
         for(int i = 0; i < 2; ++i) {
-            final Locomotive locomotive = new Locomotive(configs[i], mockDriver);
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
 
             locomotive.swipeLong(SwipeElementDirection.RIGHT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);

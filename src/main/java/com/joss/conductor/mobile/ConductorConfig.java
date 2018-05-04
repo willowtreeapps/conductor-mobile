@@ -42,6 +42,7 @@ public class ConductorConfig {
     private String locale;
     private String orientation;
     private String hub;
+    private Boolean islocalhub = false;
     private String udid;
     private String automationName;
     private String appPackageName;
@@ -50,6 +51,7 @@ public class ConductorConfig {
     // iOS specific
     private String xcodeSigningId;
     private String xcodeOrgId;
+    private Boolean waitForQuiescence;
 
     // Android specific
     private String avd;
@@ -104,7 +106,9 @@ public class ConductorConfig {
         Map<String, Object> defaults = (Map<String, Object>) config.get("defaults");
         if (defaults != null) {
             readProperties(defaults);
-
+            if (defaults.get("hub") != null){
+                setIsLocalHub(true);
+            }
             Map<String, Object> platformDefaults = null;
             switch (platformName) {
                 case IOS:
@@ -162,10 +166,10 @@ public class ConductorConfig {
 
         Pattern envPattern = Pattern.compile("\\$\\{(.+?)\\}");
         Matcher envMatcher = envPattern.matcher(propertyValue);
-        while(envMatcher.find()) {
+        while (envMatcher.find()) {
             String env = envMatcher.group(1);
             String val = System.getProperty(env);
-            if(val != null) {
+            if (val != null) {
                 propertyValue = propertyValue.replaceAll("\\$\\{" + env + "\\}", val);
             } else {
                 Logger.warn("Could not find environment variable \"{}\" specified in config", env);
@@ -291,6 +295,11 @@ public class ConductorConfig {
         this.hub = hub;
     }
 
+    public void setIsLocalHub(boolean isLocalHubValue){
+        this.islocalhub = isLocalHubValue;
+    }
+
+
     public String getUdid() {
         return udid;
     }
@@ -395,6 +404,14 @@ public class ConductorConfig {
         this.autoGrantPermissions = autoGrantPermissions;
     }
 
+    public Boolean isWaitForQuiescence() {
+        return waitForQuiescence;
+    }
+
+    public void setWaitForQuiescence(boolean waitForQuiescence) {
+        this.waitForQuiescence = waitForQuiescence;
+    }
+
     public String getSauceUserName() {return this.sauceUserName; }
 
     public String getSauceAccessKey() {return this.sauceAccessKey; }
@@ -473,5 +490,8 @@ public class ConductorConfig {
 
     public boolean isLocal() {
         return getHub() == null;
+    }
+    public boolean isHubLocal() {
+        return islocalhub;
     }
 }
