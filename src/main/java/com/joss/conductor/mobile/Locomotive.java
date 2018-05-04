@@ -1,5 +1,6 @@
 package com.joss.conductor.mobile;
 
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.google.common.base.Strings;
 import com.joss.conductor.mobile.util.PageUtil;
 import com.saucelabs.common.SauceOnDemandAuthentication;
@@ -103,6 +104,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     @AfterMethod(alwaysRun = true)
     public void quit() {
         getAppiumDriver().quit();
+        driver.remove();
     }
 
     private void initialize() {
@@ -515,7 +517,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
         // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
         // does not. As a result we have to check if we're on iOS and perform the relativization manually
-        if(configuration.getPlatformName() == Platform.IOS) {
+        if (configuration.getPlatformName() == Platform.IOS) {
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
@@ -524,15 +526,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         swipe.perform();
         return this;
     }
-  
+
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = getAppiumDriver().manage().window().getSize();
 
-         final int SCREEN_MARGIN = 10;
+        final int SCREEN_MARGIN = 10;
 
         Point from;
-        if(corner != null) {
-            switch(corner) {
+        if (corner != null) {
+            switch (corner) {
                 case TOP_LEFT:
                     from = new Point(SCREEN_MARGIN, SCREEN_MARGIN);
                     break;
@@ -553,8 +555,8 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         }
 
         Point to;
-        if(direction != null) {
-            switch(direction) {
+        if (direction != null) {
+            switch (direction) {
                 case UP:
                     int toYUp = (int) (from.getY() - (screen.getHeight() * percentage));
                     toYUp = toYUp <= 0 ? 1 : toYUp;
@@ -585,7 +587,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
         // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
         // does not. As a result we have to check if we're on iOS and perform the relativization manually
-        if(configuration.getPlatformName() == Platform.IOS) {
+        if (configuration.getPlatformName() == Platform.IOS) {
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
@@ -609,7 +611,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     return element;
                 }
                 // element was not visible, continue scrolling
-            } catch (NoSuchElementException exception) {
+            } catch (WebDriverException exception) {
                 // element could not be found, continue scrolling
             }
         }
@@ -826,7 +828,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                 break;
 
             case IOS:
-                PerformsTouchID performsTouchID = (PerformsTouchID)driver;
+                PerformsTouchID performsTouchID = (PerformsTouchID) driver;
                 performsTouchID.toggleTouchIDEnrollment(true);
                 break;
 
@@ -842,7 +844,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
      * fingerprint (Android)
      *
      * @param match Whether or not the finger should match. This parameter is ignored on Android
-     * @param id The id of the enrolled finger. This parameter is ignored on iOS
+     * @param id    The id of the enrolled finger. This parameter is ignored on iOS
      * @return The implementing class for fluency
      */
     public Locomotive performBiometric(boolean match, int id) {
@@ -906,6 +908,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     @Override
     public String getSessionId() {
         return sessionId.get();
+    }
+
+    public Locomotive setSessionId(String seshId) {
+        sessionId.set(seshId);
+        return this;
     }
 
     @Override
