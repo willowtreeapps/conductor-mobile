@@ -47,6 +47,7 @@ public class ConductorConfig {
     private String automationName;
     private String appPackageName;
     private Map<String, Object> customCapabilities = new HashMap<>();
+    private Boolean simpleIsVisibleCheck;
 
     // iOS specific
     private String xcodeSigningId;
@@ -63,6 +64,10 @@ public class ConductorConfig {
     private SauceOnDemandAuthentication authentication;
     private String sauceUserName;
     private String sauceAccessKey;
+
+    // Timeouts
+    private int newCommandTimeout;
+    private int idleTimeout;
 
     public ConductorConfig() {
         this(DEFAULT_CONFIG_FILE);
@@ -408,17 +413,32 @@ public class ConductorConfig {
         return waitForQuiescence;
     }
 
+    public Boolean isSimpleIsVisibleCheck() { return simpleIsVisibleCheck;}
+
     public void setWaitForQuiescence(boolean waitForQuiescence) {
         this.waitForQuiescence = waitForQuiescence;
     }
+
 
     public String getSauceUserName() {return this.sauceUserName; }
 
     public String getSauceAccessKey() {return this.sauceAccessKey; }
 
+    public int getNewCommandTimeout() {return this.newCommandTimeout;}
+
+    public int getIdleTimeout() {return this.idleTimeout;}
+
+
+
     public void setSauceUserName (String sauceUserName) {this.sauceUserName = sauceUserName; }
 
     public void setSauceAccessKey (String sauceAccessKey) {this.sauceAccessKey = sauceAccessKey; }
+
+    public void setNewCommandTimeout (int newCommandTimeout) {this.newCommandTimeout = newCommandTimeout;}
+
+    public void setIdleTimeout (int idleTimeout) {this.idleTimeout = idleTimeout;}
+
+    public void setSimpleIsVisibleCheck (boolean value) {this.simpleIsVisibleCheck = value;}
 
     public Platform getPlatformName() {
         return platformName;

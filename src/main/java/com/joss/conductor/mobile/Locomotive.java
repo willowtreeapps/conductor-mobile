@@ -186,6 +186,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         capabilities.setCapability("sauceUserName", config.getSauceUserName());
         capabilities.setCapability("sauceAccessKey", config.getSauceAccessKey());
         capabilities.setCapability("waitForQuiescence", config.isWaitForQuiescence());
+        capabilities.setCapability("newCommandTimeout", config.getNewCommandTimeout());
+        capabilities.setCapability("idleTimeout", config.getIdleTimeout());
+        capabilities.setCapability("simpleIsVisibleCheck", config.isSimpleIsVisibleCheck());
 
         if (StringUtils.isNotEmpty(config.getAutomationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
