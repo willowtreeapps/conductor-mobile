@@ -66,8 +66,8 @@ public class ConductorConfig {
     private String sauceAccessKey;
 
     // Timeouts
-    private int newCommandTimeout;
-    private int idleTimeout;
+    private String newCommandTimeout;
+    private String idleTimeout;
 
     public ConductorConfig() {
         this(DEFAULT_CONFIG_FILE);
@@ -424,9 +424,9 @@ public class ConductorConfig {
 
     public String getSauceAccessKey() {return this.sauceAccessKey; }
 
-    public int getNewCommandTimeout() {return this.newCommandTimeout;}
+    public String getNewCommandTimeout() {return this.newCommandTimeout;}
 
-    public int getIdleTimeout() {return this.idleTimeout;}
+    public String getIdleTimeout() {return this.idleTimeout;}
 
 
 
@@ -434,9 +434,9 @@ public class ConductorConfig {
 
     public void setSauceAccessKey (String sauceAccessKey) {this.sauceAccessKey = sauceAccessKey; }
 
-    public void setNewCommandTimeout (int newCommandTimeout) {this.newCommandTimeout = newCommandTimeout;}
+    public void setNewCommandTimeout (String newCommandTimeout) {this.newCommandTimeout = newCommandTimeout;}
 
-    public void setIdleTimeout (int idleTimeout) {this.idleTimeout = idleTimeout;}
+    public void setIdleTimeout (String idleTimeout) {this.idleTimeout = idleTimeout;}
 
     public void setSimpleIsVisibleCheck (boolean value) {this.simpleIsVisibleCheck = value;}
 
