@@ -532,7 +532,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = getAppiumDriver().manage().window().getSize();
 
-         final int SCREEN_MARGIN = 10;
+         final int SCREEN_MARGIN = 30;
 
         Point from;
         if(corner != null) {
