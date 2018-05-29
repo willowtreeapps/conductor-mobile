@@ -1,6 +1,7 @@
 package com.joss.conductor.mobile;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -84,6 +85,9 @@ public class ConductorConfigTest {
                 .isEqualTo("./apps/android.apk");
         Assertions.assertThat(config.getAppActivity())
                 .isEqualTo("com.android.activity");
+
+        Assertions.assertThat(config.getNewCommandTimeout() == null);
+        Assertions.assertThat(config.getIdleTimeout() == null);
     }
 
     @Test
@@ -100,6 +104,9 @@ public class ConductorConfigTest {
                 .isEqualTo("iPhone Developer");
         Assertions.assertThat(config.getXcodeOrgId())
                 .isEqualTo(("TEAMID"));
+
+        Assertions.assertThat(config.getNewCommandTimeout() == null);
+        Assertions.assertThat(config.getIdleTimeout() == null);
     }
 
     @Test
