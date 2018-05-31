@@ -62,6 +62,10 @@ public class LocomotiveTest {
         capabilities.setCapability("xcodeOrgId", nul);
         capabilities.setCapability("xcodeSigningId", nul);
         capabilities.setCapability("waitForQuiescence", nul);
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "600");
+        capabilities.setCapability("idleTimeout", "600");
+        capabilities.setCapability("simpleIsVisibleCheck", true);
+
         Locomotive locomotive = new Locomotive()
                 .setConfiguration(androidConfig)
                 .setAppiumDriver(mockDriver);
@@ -91,6 +95,9 @@ public class LocomotiveTest {
         capabilities.setCapability("xcodeOrgId", "orgId");
         capabilities.setCapability("xcodeSigningId", "signingId");
         capabilities.setCapability("waitForQuiescence", true);
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "600");
+        capabilities.setCapability("idleTimeout", "600");
+        capabilities.setCapability("simpleIsVisibleCheck", true);
         Locomotive locomotive = new Locomotive()
                 .setConfiguration(iosConfig)
                 .setAppiumDriver(mockDriver);

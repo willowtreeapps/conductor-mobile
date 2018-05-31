@@ -186,6 +186,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         capabilities.setCapability("sauceUserName", config.getSauceUserName());
         capabilities.setCapability("sauceAccessKey", config.getSauceAccessKey());
         capabilities.setCapability("waitForQuiescence", config.isWaitForQuiescence());
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, config.getNewCommandTimeout());
+        capabilities.setCapability("idleTimeout", config.getIdleTimeout());
+        capabilities.setCapability("simpleIsVisibleCheck", config.isSimpleIsVisibleCheck());
 
         if (StringUtils.isNotEmpty(config.getAutomationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
@@ -529,7 +532,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = getAppiumDriver().manage().window().getSize();
 
-         final int SCREEN_MARGIN = 10;
+        final int SCREEN_MARGIN = 10;
 
         Point from;
         if(corner != null) {
