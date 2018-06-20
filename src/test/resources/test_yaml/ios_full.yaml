@@ -14,4 +14,8 @@ defaults:
     deviceName: Bravest Auxless Phone
     xcodeOrgId: orgId
     xcodeSigningId: signingId
+    waitForQuiescence: true
     appFile: /full/path/to/ios.ipa
+    newCommandTimeout: 600
+    idleTimeout: 600
+    simpleIsVisibleCheck: true

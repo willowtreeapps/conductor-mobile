@@ -151,10 +151,10 @@ Support for grouping your platform (android, ios) IDs into one place via annotat
 public By Item;
 ```
 
-Default locator is `By.id` but there is also support for `By.xpath`: 
+Default locator is `By.id` but there is also support for `By.xpath` and 'By.className':
 ```java 
 @AndroidFindBy(xpath = "//*[@text='Knock Knock']")
-@IOSFindBy(xpath = "//*[@text='Who's there?']")
+@IOSFindBy(className = "//*[@text='Who's there?']")
 public By XpathItem;
 ```
 String types are not supported, must be type `By`.

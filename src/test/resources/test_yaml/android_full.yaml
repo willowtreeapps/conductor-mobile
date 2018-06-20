@@ -6,6 +6,7 @@ defaults:
   noReset: false
   orientation: vertical
 
+
   android:
     appFile: /full/path/to/android.apk
     udid: qwerty
@@ -16,3 +17,9 @@ defaults:
     appActivity: LaunchActivity
     appWaitActivity: HomeActivity
     intentCategory: android.intent.category.LEANBACK_LAUNCHER
+    newCommandTimeout: 600
+    idleTimeout: 600
+    simpleIsVisibleCheck: true
+
+
+

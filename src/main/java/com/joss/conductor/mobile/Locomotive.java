@@ -72,53 +72,46 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     public Locomotive() {
     }
 
-    /**
-     * Constructor for Unit Tests
-     */
-    public Locomotive(ConductorConfig configuration, AppiumDriver driver) {
-        init(configuration, driver);
-    }
-
     public AppiumDriver getAppiumDriver() {
         return driver.get();
     }
 
-    public void setAppiumDriver(AppiumDriver d) {
+    public Locomotive setAppiumDriver(AppiumDriver d) {
         driver.set(d);
+        return this;
+    }
+
+    public Locomotive setConfiguration(ConductorConfig configuration) {
+        this.configuration = configuration;
+        return this;
     }
 
     @Before
     public void init() {
         // For jUnit get the method name from a test rule.
         this.testMethodName = testNameRule.getMethodName();
-
-        ConductorConfig config = new ConductorConfig();
-        init(config);
+        initialize();
     }
 
     @BeforeMethod(alwaysRun = true)
     public void init(Method method) {
         // For testNG get the method name from an injected dependency.
         this.testMethodName = method.getName();
-
-        ConductorConfig config = new ConductorConfig();
-        init(config);
+        initialize();
     }
 
     @AfterMethod(alwaysRun = true)
     public void quit() {
         getAppiumDriver().quit();
-    }
+        driver.remove();
+        }
 
-    private void init(ConductorConfig testConfig) {
-        init(testConfig, null);
-    }
+    private void initialize() {
+        if (this.configuration == null) {
+            this.configuration = new ConductorConfig();
+        }
 
-    private void init(ConductorConfig configuration, AppiumDriver driver) {
-        this.configuration = configuration;
-        if (driver != null) {
-            setAppiumDriver(driver);
-        } else {
+        if (driver.get() == null) {
             URL hub = configuration.getHub();
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
 
@@ -192,6 +185,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, config.getIntentCategory());
         capabilities.setCapability("sauceUserName", config.getSauceUserName());
         capabilities.setCapability("sauceAccessKey", config.getSauceAccessKey());
+        capabilities.setCapability("waitForQuiescence", config.isWaitForQuiescence());
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, config.getNewCommandTimeout());
+        capabilities.setCapability("idleTimeout", config.getIdleTimeout());
+        capabilities.setCapability("simpleIsVisibleCheck", config.isSimpleIsVisibleCheck());
 
         if (StringUtils.isNotEmpty(config.getAutomationName())) {
             capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, config.getAutomationName());
@@ -535,7 +532,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = getAppiumDriver().manage().window().getSize();
 
-         final int SCREEN_MARGIN = 10;
+        final int SCREEN_MARGIN = 10;
 
         Point from;
         if(corner != null) {
@@ -616,7 +613,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     return element;
                 }
                 // element was not visible, continue scrolling
-            } catch (NoSuchElementException exception) {
+            } catch (WebDriverException exception) {
                 // element could not be found, continue scrolling
             }
         }
