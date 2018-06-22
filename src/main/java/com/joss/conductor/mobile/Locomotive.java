@@ -16,8 +16,6 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
-import io.appium.java_client.touch.WaitOptions;
-import io.appium.java_client.touch.offset.PointOption;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
@@ -25,12 +23,16 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.NoSuchElementException;
 import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -38,10 +40,16 @@ import org.testng.annotations.Listeners;
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.time.Duration;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static io.appium.java_client.touch.WaitOptions.waitOptions;
+import static io.appium.java_client.touch.offset.PointOption.point;
+import static java.time.Duration.ofMillis;
 
 /**
  * Created on 8/10/16.
@@ -526,9 +534,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         }
 
         TouchAction swipe = new TouchAction(getAppiumDriver())
-                .press(PointOption.point(from.getX(), from.getY()))
-                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(SWIPE_DURATION_MILLIS)))
-                .moveTo(PointOption.point(to.getX(), to.getY()))
+                .press(point(from.getX(), from.getY()))
+                .waitAction(waitOptions(ofMillis(SWIPE_DURATION_MILLIS)))
+                .moveTo(point(to.getX(), to.getY()))
                 .release();
         swipe.perform();
         return this;
@@ -598,9 +606,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
-        new TouchAction(getAppiumDriver()).press(PointOption.point(from.getX(), from.getY()))
-                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(duration)))
-                .moveTo(PointOption.point(to.getX(), to.getY()))
+        new TouchAction(getAppiumDriver())
+                .press(point(from.getX(), from.getY()))
+                .waitAction(waitOptions(ofMillis(duration)))
+                .moveTo(point(to.getX(), to.getY()))
                 .release()
                 .perform();
         return this;

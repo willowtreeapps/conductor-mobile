@@ -4,29 +4,33 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
-import io.appium.java_client.touch.WaitOptions;
-import io.appium.java_client.touch.offset.PointOption;
-import javafx.scene.input.TouchPoint;
-import org.apache.tools.ant.taskdefs.Touch;
-import org.assertj.core.api.ThrowableAssert;
 import org.assertj.swing.assertions.Assertions;
 import org.mockito.ArgumentCaptor;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.Duration;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
+import static com.joss.conductor.mobile.MockTestUtil.matchesEntriesIn;
+import static io.appium.java_client.touch.WaitOptions.waitOptions;
+import static io.appium.java_client.touch.offset.PointOption.point;
+import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
-import static com.joss.conductor.mobile.MockTestUtil.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created on 9/14/16.
@@ -334,9 +338,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000)))
-                            .moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
 
@@ -359,8 +363,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -382,8 +387,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -405,8 +411,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -428,8 +435,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -451,8 +459,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -474,8 +483,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -497,8 +507,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(50, 50))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -536,8 +547,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(90 ,90))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(90 ,90))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -559,8 +571,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(90 ,90))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(90 ,90))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -582,8 +595,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(10, 90))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(10, 90))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -605,8 +619,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(10, 90))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(10, 90))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -628,8 +643,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(90, 10))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(90, 10))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -651,8 +667,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(90, 10))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(90, 10))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -674,8 +691,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(10, 10))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(10, 10))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -697,8 +715,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(10, 10))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(10, 10))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -720,8 +739,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(10, 10))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(10, 10))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -743,8 +763,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(90, 10))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(100))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(90, 10))
+                            .waitAction(waitOptions(ofMillis(100)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -767,8 +788,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -791,8 +813,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -815,8 +838,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -839,8 +863,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -863,8 +888,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -887,8 +913,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -911,8 +938,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
@@ -935,8 +963,9 @@ public class LocomotiveTest {
             verify(mockDriver, times(i+1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(PointOption.point(5, 5))
-                            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000))).moveTo(PointOption.point(moveTo[i].x, moveTo[i].y))
+                    new TouchAction(mockDriver).press(point(5, 5))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
     }
