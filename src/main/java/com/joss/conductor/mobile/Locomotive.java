@@ -523,9 +523,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
-        TouchAction swipe = new TouchAction(getAppiumDriver()).press(from.getX(), from.getY())
-                .waitAction(Duration.ofMillis(SWIPE_DURATION_MILLIS)).moveTo(to.getX(), to.getY()).release();
-        swipe.perform();
+//        TouchAction swipe = new TouchAction(getAppiumDriver()).press(from.getX(), from.getY())
+//                .waitAction(Duration.ofMillis(SWIPE_DURATION_MILLIS)).moveTo(to.getX(), to.getY()).release();
+//        swipe.perform();
         return this;
     }
   
@@ -593,11 +593,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
-        new TouchAction(getAppiumDriver()).press(from.getX(), from.getY())
-                .waitAction(Duration.ofMillis(duration))
-                .moveTo(to.getX(), to.getY())
-                .release()
-                .perform();
+//        new TouchAction(getAppiumDriver()).press(from.getX(), from.getY())
+//                .waitAction(Duration.ofMillis(duration))
+//                .moveTo(to.getX(), to.getY())
+//                .release()
+//                .perform();
         return this;
     }
 
