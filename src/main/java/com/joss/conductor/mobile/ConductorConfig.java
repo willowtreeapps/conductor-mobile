@@ -394,7 +394,9 @@ public class ConductorConfig {
         this.screenshotOnSkip = screenshotOnSkip;
     }
 
-    public String getAvd() { return avd; }
+    public String getAvd() {
+        return avd;
+    }
 
     public void setAvd(String avd) {
         this.avd = avd;
