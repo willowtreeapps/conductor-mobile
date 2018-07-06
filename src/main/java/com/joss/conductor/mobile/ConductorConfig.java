@@ -28,6 +28,7 @@ public class ConductorConfig {
     private int timeout = 5;
     private int retries = 5;
     private boolean screenshotOnFail = true;
+    private boolean screenshotOnSkip = false;
 
     // Appium Properties
     private Platform platformName = Platform.NONE;
@@ -385,9 +386,11 @@ public class ConductorConfig {
         this.screenshotOnFail = screenshotOnFail;
     }
 
-    public String getAvd() {
-        return avd;
-    }
+    public boolean isScreenshotOnSkip() { return screenshotOnSkip; }
+
+    public void setScreenshotOnSkip(boolean screenshotOnSkip) { this.screenshotOnSkip = screenshotOnSkip; }
+
+    public String getAvd() { return avd; }
 
     public void setAvd(String avd) {
         this.avd = avd;
