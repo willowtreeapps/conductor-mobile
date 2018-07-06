@@ -386,9 +386,13 @@ public class ConductorConfig {
         this.screenshotOnFail = screenshotOnFail;
     }
 
-    public boolean isScreenshotOnSkip() { return screenshotOnSkip; }
+    public boolean isScreenshotOnSkip() {
+        return screenshotOnSkip;
+    }
 
-    public void setScreenshotOnSkip(boolean screenshotOnSkip) { this.screenshotOnSkip = screenshotOnSkip; }
+    public void setScreenshotOnSkip(boolean screenshotOnSkip) {
+        this.screenshotOnSkip = screenshotOnSkip;
+    }
 
     public String getAvd() { return avd; }
 
@@ -423,25 +427,41 @@ public class ConductorConfig {
     }
 
 
-    public String getSauceUserName() {return this.sauceUserName; }
+    public String getSauceUserName() {
+        return this.sauceUserName;
+    }
 
-    public String getSauceAccessKey() {return this.sauceAccessKey; }
+    public String getSauceAccessKey() {
+        return this.sauceAccessKey;
+    }
 
-    public String getNewCommandTimeout() {return this.newCommandTimeout;}
+    public String getNewCommandTimeout() {
+        return this.newCommandTimeout;
+    }
 
-    public String getIdleTimeout() {return this.idleTimeout;}
+    public String getIdleTimeout() {
+        return this.idleTimeout;
+    }
 
+    public void setSauceUserName (String sauceUserName) {
+        this.sauceUserName = sauceUserName;
+    }
 
+    public void setSauceAccessKey (String sauceAccessKey) {
+        this.sauceAccessKey = sauceAccessKey;
+    }
 
-    public void setSauceUserName (String sauceUserName) {this.sauceUserName = sauceUserName; }
+    public void setNewCommandTimeout (String newCommandTimeout) {
+        this.newCommandTimeout = newCommandTimeout;
+    }
 
-    public void setSauceAccessKey (String sauceAccessKey) {this.sauceAccessKey = sauceAccessKey; }
+    public void setIdleTimeout (String idleTimeout) {
+        this.idleTimeout = idleTimeout;
+    }
 
-    public void setNewCommandTimeout (String newCommandTimeout) {this.newCommandTimeout = newCommandTimeout;}
-
-    public void setIdleTimeout (String idleTimeout) {this.idleTimeout = idleTimeout;}
-
-    public void setSimpleIsVisibleCheck (boolean value) {this.simpleIsVisibleCheck = value;}
+    public void setSimpleIsVisibleCheck (boolean value) {
+        this.simpleIsVisibleCheck = value;
+    }
 
     public Platform getPlatformName() {
         return platformName;
