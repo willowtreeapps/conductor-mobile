@@ -28,7 +28,12 @@ public class TestListener implements ITestListener {
     }
 
     public void onTestSkipped(ITestResult result) {
-
+        Locomotive locomotive = (Locomotive) result.getInstance();
+        if (locomotive.configuration.isScreenshotOnSkip()) {
+            ScreenShotUtil.take(locomotive,
+                    result.getTestClass().getName() + "." + result.getMethod().getMethodName(),
+                    result.getThrowable().getMessage());
+        }
     }
 
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
