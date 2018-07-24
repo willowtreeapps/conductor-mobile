@@ -70,8 +70,11 @@ public class ConductorConfig {
     private String newCommandTimeout;
     private String idleTimeout;
 
+    // dependencies
+    private Map<String, String> environment;
+
     public ConductorConfig() {
-        this(DEFAULT_CONFIG_FILE);
+        this(DEFAULT_CONFIG_FILE, System.getenv());
     }
 
     /**
@@ -80,13 +83,21 @@ public class ConductorConfig {
      * @param localResourcesConfigPath Relative path to local config resource
      */
     public ConductorConfig(String localResourcesConfigPath) {
-        try {
-            InputStream is = this.getClass().getResourceAsStream(localResourcesConfigPath);
-            if (is != null) {
-                readConfig(is);
-            }
-        } catch (Exception e) {
-            Logger.error("Couldn't load default conductor config! ", e);
+        this(localResourcesConfigPath, System.getenv());
+    }
+
+    /**
+     * Constructor method that takes in a relative path to a local resource config file and custom environment variables
+     *
+     * @param localResourcesConfigPath Relative path to local config resource
+     * @param environment Map to use custom environment variables instead of provided by system
+     */
+    public ConductorConfig(String localResourcesConfigPath, Map<String, String> environment) {
+        this.environment = environment;
+
+        InputStream is = this.getClass().getResourceAsStream(localResourcesConfigPath);
+        if (is != null) {
+            readConfig(is);
         }
     }
 
@@ -175,6 +186,12 @@ public class ConductorConfig {
         while (envMatcher.find()) {
             String env = envMatcher.group(1);
             String val = System.getProperty(env);
+
+            // If the system property is not set '-Dsystem_property=<value` then look for an environment variable
+            if(val == null) {
+                val = environment.get(env);
+            }
+
             if (val != null) {
                 propertyValue = propertyValue.replaceAll("\\$\\{" + env + "\\}", val);
             } else {
