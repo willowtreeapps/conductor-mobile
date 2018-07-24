@@ -228,12 +228,35 @@ public class ConductorConfigTest {
     }
 
     @Test
-    public void environment_variables_complete_by_environment() {
+    public void environment_variables_complete_by_systen() {
         System.setProperty("FOO_PROPERTY", "foobar");
         ConductorConfig config = new ConductorConfig("/test_yaml/environment_vars.yaml");
 
         Assertions.assertThat(config.getUdid())
                 .isEqualTo("foobar");
+        System.clearProperty("FOO_PROPERTY");
+    }
+
+    @Test
+    public void environment_variables_complete_by_environment() {
+        Map<String, String> environmentVariables = new HashMap<>();
+        environmentVariables.put("FOO_PROPERTY", "foobar_env");
+        ConductorConfig config = new ConductorConfig("/test_yaml/environment_vars.yaml", environmentVariables);
+
+        Assertions.assertThat(config.getUdid())
+                .isEqualTo("foobar_env");
+    }
+
+    @Test
+    public void environment_variables_system_overwrites_environment() {
+        Map<String, String> environmentVariables = new HashMap<>();
+        environmentVariables.put("FOO_PROPERTY", "foobar_env");
+        System.setProperty("FOO_PROPERTY", "foobar_system");
+
+        ConductorConfig config = new ConductorConfig("/test_yaml/environment_vars.yaml", environmentVariables);
+
+        Assertions.assertThat(config.getUdid())
+                .isEqualTo("foobar_system");
         System.clearProperty("FOO_PROPERTY");
     }
 
