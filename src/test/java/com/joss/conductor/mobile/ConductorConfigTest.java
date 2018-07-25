@@ -228,7 +228,7 @@ public class ConductorConfigTest {
     }
 
     @Test
-    public void environment_variables_complete_by_systen() {
+    public void environment_variables_complete_by_system() {
         System.setProperty("FOO_PROPERTY", "foobar");
         ConductorConfig config = new ConductorConfig("/test_yaml/environment_vars.yaml");
 
