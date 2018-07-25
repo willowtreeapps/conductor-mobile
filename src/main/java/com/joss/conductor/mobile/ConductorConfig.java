@@ -187,7 +187,7 @@ public class ConductorConfig {
             String env = envMatcher.group(1);
             String val = System.getProperty(env);
 
-            // If the system property is not set '-Dsystem_property=<value` then look for an environment variable
+            // If the system property is not set '-Dsystem_property=<value>` then look for an environment variable
             if(val == null) {
                 val = environment.get(env);
             }
