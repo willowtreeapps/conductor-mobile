@@ -272,4 +272,11 @@ public class ConductorConfigTest {
         System.clearProperty("PLATFORM_MAJOR");
         System.clearProperty("PLATFORM_MINOR");
     }
+
+    @Test
+    public void appium_version_is_read() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+
+        Assertions.assertThat(config.getAppiumVersion()).isEqualTo("1.7.1");
+    }
 }
