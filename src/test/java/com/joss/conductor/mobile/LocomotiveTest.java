@@ -73,6 +73,7 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "600");
         capabilities.setCapability("idleTimeout", "600");
         capabilities.setCapability("simpleIsVisibleCheck", true);
+        capabilities.setCapability(MobileCapabilityType.APPIUM_VERSION, "1.7.1");
 
         Locomotive locomotive = new Locomotive()
                 .setConfiguration(androidConfig)

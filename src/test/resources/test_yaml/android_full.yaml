@@ -5,6 +5,7 @@ defaults:
   fullReset: true
   noReset: false
   orientation: vertical
+  appiumVersion: 1.7.1
 
 
   android:
