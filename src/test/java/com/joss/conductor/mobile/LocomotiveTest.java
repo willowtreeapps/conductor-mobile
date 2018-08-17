@@ -363,7 +363,7 @@ public class LocomotiveTest {
                 .setAppiumDriver(customDriver);
 
         try {
-            locomotive.startAppiumSession();
+            locomotive.startAppiumSession(1);
             assertThat("Expected startAppiumSession() has failed", false);
         } catch (WebDriverException e) {
             assertThat("Verify startAppiumSession() has failed", true);
