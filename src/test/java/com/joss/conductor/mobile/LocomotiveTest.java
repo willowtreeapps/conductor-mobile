@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
@@ -345,6 +346,31 @@ public class LocomotiveTest {
                             .release());
         }
 
+    }
+
+    @Test
+    public void startAppiumSessionCounter() {
+        AppiumDriver customDriver = mock(AppiumDriver.class);
+        // cause startAppiumSession() to fail
+        when(customDriver.getSessionId()).thenReturn(null);
+
+        ConductorConfig customConfig = new ConductorConfig("/test_yaml/android_full.yaml");
+        // cause startAppiumSession to retry 4 times
+        customConfig.setStartSessionRetries(4);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(customConfig)
+                .setAppiumDriver(customDriver);
+
+        try {
+            locomotive.startAppiumSession();
+            assertThat("Expected startAppiumSession() has failed", false);
+        } catch (WebDriverException e) {
+            assertThat("Verify startAppiumSession() has failed", true);
+        }
+
+        // expected 4 retries, verified by making sure the sessionId was checked 4 times.
+        verify(customDriver, times(4)).getSessionId();
     }
 
     @Test

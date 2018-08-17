@@ -30,6 +30,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -121,6 +122,18 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             this.configuration = new ConductorConfig();
         }
 
+        startAppiumSession(1);
+
+        // Set session ID after driver has been initialized
+        SessionId id = getAppiumDriver().getSessionId();
+        sessionId.set(id.toString());
+
+        // TODO: Added to support biometrics on android until java-client PR #473 is pulled in
+        MobileCommand.commandRepository.put("fingerPrint",
+                MobileCommand.postC("/session/:sessionId/appium/device/finger_print"));
+    }
+
+    void startAppiumSession(int startCounter) {
         if (driver.get() == null) {
             URL hub = configuration.getHub();
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
@@ -131,26 +144,30 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             switch (configuration.getPlatformName()) {
                 case ANDROID:
                     setAppiumDriver(configuration.isLocal()
-                            ? new AndroidDriver(builder, capabilities)
-                            : new AndroidDriver(hub, capabilities));
+                                            ? new AndroidDriver(builder, capabilities)
+                                            : new AndroidDriver(hub, capabilities));
                     break;
                 case IOS:
                     setAppiumDriver(configuration.isLocal()
-                            ? new IOSDriver(builder, capabilities)
-                            : new IOSDriver(hub, capabilities));
+                                            ? new IOSDriver(builder, capabilities)
+                                            : new IOSDriver(hub, capabilities));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
             }
         }
 
-        // Set session ID after driver has been initialized
-        String id = getAppiumDriver().getSessionId().toString();
-        sessionId.set(id);
-
-        // TODO: Added to support biometrics on android until java-client PR #473 is pulled in
-        MobileCommand.commandRepository.put("fingerPrint",
-                MobileCommand.postC("/session/:sessionId/appium/device/finger_print"));
+        // if session could not be established then retry for a limited amount of times
+        if (getAppiumDriver().getSessionId() == null) {
+            if (startCounter < configuration.getStartSessionRetries()) {
+                Logger.warn("Error starting an Appium Session, retry {} out of {}.", startCounter,
+                            configuration.getStartSessionRetries());
+                startAppiumSession(startCounter + 1);
+            } else {
+                throw new WebDriverException(
+                        "Could not start Appium Session: " + getAppiumDriver().getSessionDetails());
+            }
+        }
     }
 
     protected DesiredCapabilities onCapabilitiesCreated(DesiredCapabilities desiredCapabilities) {
