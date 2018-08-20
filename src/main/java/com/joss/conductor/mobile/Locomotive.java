@@ -134,8 +134,20 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     void startAppiumSession(int startCounter) {
-        if (driver.get() == null) {
-            URL hub = configuration.getHub();
+        if (getAppiumDriver() != null && getAppiumDriver().getSessionId() != null) {
+            // session is already active -> terminal condition
+            return;
+        }
+
+        if (startCounter > configuration.getStartSessionRetries()) {
+            // maximum amount of retries reached
+            throw new WebDriverException(
+                    "Could not start Appium Session");
+        }
+
+        // start a new session
+        try {
+            URL                 hub          = configuration.getHub();
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
 
             AppiumServiceBuilder builder = new AppiumServiceBuilder()
@@ -144,30 +156,23 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             switch (configuration.getPlatformName()) {
                 case ANDROID:
                     setAppiumDriver(configuration.isLocal()
-                            ? new AndroidDriver(builder, capabilities)
-                            : new AndroidDriver(hub, capabilities));
+                                            ? new AndroidDriver(builder, capabilities)
+                                            : new AndroidDriver(hub, capabilities));
                     break;
                 case IOS:
                     setAppiumDriver(configuration.isLocal()
-                            ? new IOSDriver(builder, capabilities)
-                            : new IOSDriver(hub, capabilities));
+                                            ? new IOSDriver(builder, capabilities)
+                                            : new IOSDriver(hub, capabilities));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
             }
+        } catch (WebDriverException exception) {
+            Logger.warn("Received an exception while trying to start Appium session", exception);
         }
 
-        // if session could not be established then retry for a limited amount of times
-        if (getAppiumDriver().getSessionId() == null) {
-            if (startCounter < configuration.getStartSessionRetries()) {
-                Logger.warn("Error starting an Appium Session, retry {} out of {}.", startCounter,
-                            configuration.getStartSessionRetries());
-                startAppiumSession(startCounter + 1);
-            } else {
-                throw new WebDriverException(
-                        "Could not start Appium Session: " + getAppiumDriver().getSessionDetails());
-            }
-        }
+        // recursive call to retry if necessary
+        startAppiumSession(startCounter + 1);
     }
 
     protected DesiredCapabilities onCapabilitiesCreated(DesiredCapabilities desiredCapabilities) {
