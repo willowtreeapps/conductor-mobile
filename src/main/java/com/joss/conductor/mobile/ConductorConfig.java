@@ -69,6 +69,7 @@ public class ConductorConfig {
     // Timeouts
     private String newCommandTimeout;
     private String idleTimeout;
+    private int    startSessionRetries = 1; // by default try only once
 
     // dependencies
     private Map<String, String> environment;
@@ -555,5 +556,13 @@ public class ConductorConfig {
     }
     public boolean isHubLocal() {
         return islocalhub;
+    }
+
+    public int getStartSessionRetries() {
+        return startSessionRetries;
+    }
+
+    public void setStartSessionRetries(int startSessionRetries) {
+        this.startSessionRetries = startSessionRetries;
     }
 }
