@@ -4,8 +4,9 @@ platformName: ANDROID
 defaults:
   fullReset: true
   noReset: false
-  orientation: vertical
+  orientation: PORTRAIT
   appiumVersion: 1.7.1
+  startSessionRetries: 6
 
 
   android:

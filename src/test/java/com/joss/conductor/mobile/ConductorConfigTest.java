@@ -279,4 +279,19 @@ public class ConductorConfigTest {
 
         Assertions.assertThat(config.getAppiumVersion()).isEqualTo("1.7.1");
     }
+
+    @Test
+    public void start_session_retries_default() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+
+        Assertions.assertThat(config.getStartSessionRetries()).isEqualTo(1);
+    }
+
+    @Test
+    public void start_session_retries_from_file() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/android_full.yaml");
+
+        Assertions.assertThat(config.getStartSessionRetries()).isEqualTo(6);
+    }
+
 }
