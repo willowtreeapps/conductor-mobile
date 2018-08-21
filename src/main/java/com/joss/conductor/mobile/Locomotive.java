@@ -673,7 +673,24 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public WebElement swipeTo(SwipeElementDirection direction, String id, int attempts) {
-        return swipeTo(direction, By.id(id), attempts);
+        WebElement element;
+        for (int i = 0; i < attempts; i++) {
+            swipeCenterLong(direction);
+            try {
+                element = getAppiumDriver().findElementById(id);   //THIS IS SIGNIFICANTLY FASTER FOR IOS INSTEAD OF ROUTING THROUGH THE BY BY METHOD ABOVE
+                // element was found, check for visibility
+                if (element.isDisplayed()) {        //THIS IS STILL TAKING A LOT OF TIME AND FAILING TO ID PRESENT ELEMENTS FOR IOS...
+                    // element is in view, exit the loop
+                    return element;
+                }
+                // element was not visible, continue scrolling
+            } catch (WebDriverException exception) {
+                // element could not be found, continue scrolling
+            }
+        }
+        // element could not be found or was not visible, return null
+        Logger.warn("Element " + id + " does not exist!");
+        return null;
     }
 
     /**
