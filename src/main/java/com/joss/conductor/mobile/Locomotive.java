@@ -34,6 +34,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.pmw.tinylog.LogEntry;
 import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -113,9 +114,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @AfterMethod(alwaysRun = true)
     public void quit() {
-        getAppiumDriver().quit();
-        driver.remove();
+        try {
+            getAppiumDriver().quit();
+            driver.remove();
+        } catch (org.openqa.selenium.WebDriverException exception) {
+            Logger.warn("WebDriverException occurred during quit method", exception);
         }
+    }
 
     private void initialize() {
         if (this.configuration == null) {
