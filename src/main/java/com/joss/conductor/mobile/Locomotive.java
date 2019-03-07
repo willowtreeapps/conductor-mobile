@@ -217,6 +217,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         capabilities.setCapability("xcodeSigningId", config.getXcodeSigningId());
         capabilities.setCapability("xcodeOrgId", config.getXcodeOrgId());
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, config.getAvd());
+        capabilities.setCapability(AndroidMobileCapabilityType.AVD_ARGS, config.getAvdArgs());
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, config.getAppActivity());
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, config.getAppWaitActivity());
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, config.getIntentCategory());
