@@ -57,6 +57,7 @@ public class ConductorConfig {
 
     // Android specific
     private String avd;
+    private String avdArgs;
     private String appActivity;
     private String appWaitActivity;
     private String intentCategory;
@@ -419,6 +420,10 @@ public class ConductorConfig {
     public void setAvd(String avd) {
         this.avd = avd;
     }
+
+    public String getAvdArgs() { return avdArgs; }
+
+    public void setAvdArgs(String avdArgs) { this.avdArgs = avdArgs; }
 
     public String getDeviceName() {
         return deviceName;
