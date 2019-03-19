@@ -67,6 +67,7 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, true);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "6.0");
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, "Nexus 13");
+        capabilities.setCapability(AndroidMobileCapabilityType.AVD_ARGS, "-no-window");
         capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, "LaunchActivity");
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, "HomeActivity");
         capabilities.setCapability(AndroidMobileCapabilityType.INTENT_CATEGORY, "android.intent.category.LEANBACK_LAUNCHER");

@@ -16,6 +16,7 @@ defaults:
     platformVersion: 6.0
     deviceName: Pixelated Nexus
     avd: Nexus 13
+    avdArgs: -no-window
     appActivity: LaunchActivity
     appWaitActivity: HomeActivity
     intentCategory: android.intent.category.LEANBACK_LAUNCHER
