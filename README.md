@@ -111,6 +111,7 @@ You can see a variety of example configuration files in the unit tests for condu
 
 ## Android specific
 - `avd` = {string: the name of the avd to boot}
+- `avdArgs` = {string: arguments to pass in to specify behaviors of the emulator i.e. "-no-window -no-boot-anim -no-snapshot -skin 480x800".  See [Android Developer Docs](https://developer.android.com/studio/run/emulator-commandline#common) for more arguments.}
 - `appActivity` = {string: the name of the activity that starts the app}
 - `appWaitActivity` = {string: the name of the activity to wait for}
 - `intentCategory` = {string: i.e. android.intent.category.LEANBACK_LAUNCHER}
