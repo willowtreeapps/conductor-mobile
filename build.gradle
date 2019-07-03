@@ -4,7 +4,7 @@ plugins {
     id 'signing'
 }
 
-group = 'com.github.willowtreeapps'
+group = 'com.willowtreeapps'
 version = '0.18.0'
 
 repositories {
