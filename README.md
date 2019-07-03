@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/willowtreeapps/conductor-mobile.svg?branch=master)](https://travis-ci.org/jossjacobo/conductor-mobile)
-[![GitHub release](https://img.shields.io/github/release/willowtreeapps/conductor-mobile.svg)](https://github.com/willowtreeapps/conductor-mobile)
+[![CircleCI](https://circleci.com/gh/willowtreeapps/conductor-mobile.svg?style=svg)](https://circleci.com/gh/willowtreeapps/conductor-mobile)
+[![Maven Central](https://img.shields.io/maven-central/v/com.willowtreeapps/conductor-mobile.svg)](https://search.maven.org/search?q=a:conductor-mobile)
 
 Conductor Mobile
 ================
