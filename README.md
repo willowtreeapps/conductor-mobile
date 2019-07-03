@@ -7,26 +7,13 @@ Conductor Mobile
 Conductor Mobile is a port of the [Conductor](https://github.com/conductor-framework/conductor) Web Framework for iOS and Android, instead of wrapping around [Selenium](http://www.seleniumhq.org/) it wraps the [Appium Framework](http://appium.io/). Thanks to [@ddavison]
 
 # Getting Started
-Using maven, add jitpack.io to your repositories and include it as a dependency:
-```xml
-<repositories>
-    
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-    
-</repositories>
-```
 ```xml
 <dependencies>
-
     <dependency>
-        <groupId>com.github.willowtreeapps</groupId>
+        <groupId>com.willowtreeapps</groupId>
         <artifactId>conductor-mobile</artifactId>
-        <version>v1.0</version>
+        <version>0.18</version>
     </dependency>
-    
 </dependencies>
 ```
 Create a Java Class, and extend it from `com.joss.conductor.mobile.Locomotive`
