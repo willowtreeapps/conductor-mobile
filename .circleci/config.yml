@@ -10,24 +10,31 @@ jobs:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
+      - run:
+            name: Install node
+            command: |
+              curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+              sudo apt-get install -y build-essential
+              sudo apt-get install build-essential curl git m4 python-setuptools ruby texinfo libbz2-dev libcurl4-openssl-dev libexpat-dev libncurses-dev zlib1g-dev
+      - run:
+          name: Install Appium
+          command: sudo npm install -g appium@1.13.0 --unsafe-perm=true --allow-root
       - restore_cache:
           key: j-{{ checksum "build.gradle" }}-{{ checksum  "settings.gradle" }}
       #      - run:
       #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
       #         command: sudo chmod +x ./gradlew
+      - run:
+          name: Check
+          command: gradle test
       - save_cache:
           paths:
             - ~/.gradle
           key: j-{{ checksum "build.gradle" }}-{{ checksum  "settings.gradle" }}
-      - run:
-          name: Build
-          command: gradle assemble
-      #- run:
-      #    name: Check
-      #    command: ./gradlew test
-      #- gradle/collect_test_results:
-      #    test_results_path: build/test-results
-      #    reports_path: build/reports
+      - gradle/collect_test_results:
+          test_results_path: build/test-results
+          reports_path: build/reports
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
