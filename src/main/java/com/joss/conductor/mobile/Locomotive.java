@@ -118,7 +118,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             getAppiumDriver().quit();
             driver.remove();
         } catch (org.openqa.selenium.WebDriverException exception) {
-            Logger.warn("WebDriverException occurred during quit method", exception);
+            Logger.warn(exception,"WebDriverException occurred during quit method");
         }
     }
 
@@ -173,7 +173,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
             }
         } catch (WebDriverException exception) {
-            Logger.warn("Received an exception while trying to start Appium session", exception);
+            Logger.error(exception, "Received an exception while trying to start Appium session");
         }
 
         // recursive call to retry if necessary
