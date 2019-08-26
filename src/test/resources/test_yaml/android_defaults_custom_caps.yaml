@@ -3,7 +3,7 @@ platformName: ANDROID
 
 defaults:
   noReset: false
-  appiumVersion: 1.7.1
+  appiumVersion: 1.13.0
   timeout: 8
   retries: 10
   customCapabilities:

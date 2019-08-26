@@ -64,7 +64,7 @@ public class ConductorConfigTest {
         Assertions.assertThat(config.getNoReset())
                 .isFalse();
         Assertions.assertThat(config.getAppiumVersion())
-                .isEqualTo("1.7.1");
+                .isEqualTo("1.13.0");
         Assertions.assertThat(config.getTimeout())
                 .isEqualTo(8);
         Assertions.assertThat(config.getRetries())
@@ -322,7 +322,7 @@ public class ConductorConfigTest {
     public void appium_version_is_read() {
         ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
 
-        Assertions.assertThat(config.getAppiumVersion()).isEqualTo("1.7.1");
+        Assertions.assertThat(config.getAppiumVersion()).isEqualTo("1.13.0");
     }
 
     @Test
