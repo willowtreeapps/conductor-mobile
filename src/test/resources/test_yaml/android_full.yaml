@@ -5,7 +5,7 @@ defaults:
   fullReset: true
   noReset: false
   orientation: PORTRAIT
-  appiumVersion: 1.7.1
+  appiumVersion: 1.13.0
   startSessionRetries: 6
 
 

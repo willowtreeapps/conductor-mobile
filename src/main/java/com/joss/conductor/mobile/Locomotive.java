@@ -5,6 +5,7 @@ import com.joss.conductor.mobile.util.PageUtil;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.CommandExecutionHelper;
 import io.appium.java_client.MobileCommand;
@@ -16,6 +17,7 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
+
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
@@ -52,6 +54,7 @@ import java.util.regex.Pattern;
 import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 
 /**
  * Created on 8/10/16.
@@ -118,7 +121,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             getAppiumDriver().quit();
             driver.remove();
         } catch (org.openqa.selenium.WebDriverException exception) {
-            Logger.warn("WebDriverException occurred during quit method", exception);
+            Logger.error(exception, "WebDriverException occurred during quit method");
         }
     }
 
@@ -139,7 +142,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     void startAppiumSession(int startCounter) {
-        if (getAppiumDriver() != null && getAppiumDriver().getSessionId() != null) {
+        if ((getAppiumDriver() != null) && (getAppiumDriver().getSessionId() != null)) {
             // session is already active -> terminal condition
             return;
         }
@@ -173,7 +176,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     throw new IllegalArgumentException("Unknown platform: " + configuration.getPlatformName());
             }
         } catch (WebDriverException exception) {
-            Logger.warn("Received an exception while trying to start Appium session", exception);
+            Logger.error(exception, "Received an exception while trying to start Appium session");
         }
 
         // recursive call to retry if necessary
@@ -254,7 +257,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         try {
             waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
         } catch (Exception e) {
-            Logger.info("WaitForElement: Eat exception thrown waiting for condition");
+            Logger.warn(e, "WaitForElement: Eat exception thrown waiting for condition");
         }
 
         int size = getAppiumDriver().findElements(by).size();
@@ -326,68 +329,20 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public boolean isPresentWait(String id) {
-        return isPresentWait(PageUtil.buildBy(configuration, id));
+        return isPresentWait(PageUtil.buildBy(configuration, id), 5);
     }
 
     public boolean isPresentWait(By by) {
+        return isPresentWait(by, 5);
+    }
 
-        //Line Separator Variable for formatting output
-        String newLine = System.getProperty("line.separator");//This will retrieve line separator dependent on OS.
-        //Array of stacktrace elements to output
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+    public boolean isPresentWait(String id, int timeOutInSeconds) {
+        return isPresentWait(PageUtil.buildBy(configuration, id), timeOutInSeconds);
+    }
 
-        try {
-            waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
-
-        } catch (Exception e) {
-            Logger.error(newLine + newLine + "----     WARNING: METHOD DID NOT FIND ELEMENT  ----" + newLine);
-
-            if (stackTraceElements != null) {
-
-                int traceSize = stackTraceElements.length >= 3 ? 3 : stackTraceElements.length;
-
-                try {
-
-                    for (int i = 0; i < traceSize; i++) {
-
-                        if (stackTraceElements[i] != null) {
-                            Logger.error(stackTraceElements[i] + newLine);
-                        }
-                    }
-
-                } catch (ArrayIndexOutOfBoundsException exception) {
-                    Logger.error(exception);
-                }
-            }
-
-
-            Logger.error(newLine + newLine + "----     WARNING: ELEMENT NOT PRESENT  ---- " + newLine + e.toString() + newLine + newLine);
-        }
-
-        int size = getAppiumDriver().findElements(by).size();
-
-        if (size == 0) {
-            int attempts = 1;
-            while (attempts <= configuration.getRetries()) {
-                try {
-                    Thread.sleep(1000); // sleep for 1 second.
-                } catch (Exception x) {
-                    Assertions.fail(x.getMessage(), x);
-                }
-
-                size = getAppiumDriver().findElements(by).size();
-                if (size > 0) {
-                    break;
-                }
-                attempts++;
-            }
-        }
-
-        if (size > 1) {
-            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
-        }
-
-        return size > 0;
+    public boolean isPresentWait(By by, int timeOutInSeconds) {
+        waitForCondition(presenceOfAllElementsLocatedBy(by), timeOutInSeconds, 500);
+        return isPresent(by);
     }
 
     public String getText(String id) {
@@ -558,7 +513,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
         // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
         // does not. As a result we have to check if we're on iOS and perform the relativization manually
-        if(configuration.getPlatformName() == Platform.IOS) {
+        if (configuration.getPlatformName() == Platform.IOS) {
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
@@ -570,15 +525,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         swipe.perform();
         return this;
     }
-  
+
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
         Dimension screen = getAppiumDriver().manage().window().getSize();
 
         final int SCREEN_MARGIN = 10;
 
         Point from;
-        if(corner != null) {
-            switch(corner) {
+        if (corner != null) {
+            switch (corner) {
                 case TOP_LEFT:
                     from = new Point(SCREEN_MARGIN, SCREEN_MARGIN);
                     break;
@@ -599,8 +554,8 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         }
 
         Point to;
-        if(direction != null) {
-            switch(direction) {
+        if (direction != null) {
+            switch (direction) {
                 case UP:
                     int toYUp = (int) (from.getY() - (screen.getHeight() * percentage));
                     toYUp = toYUp <= 0 ? 1 : toYUp;
@@ -631,7 +586,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
         // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
         // does not. As a result we have to check if we're on iOS and perform the relativization manually
-        if(configuration.getPlatformName() == Platform.IOS) {
+        if (configuration.getPlatformName() == Platform.IOS) {
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
@@ -873,7 +828,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                 break;
 
             case IOS:
-                PerformsTouchID performsTouchID = (PerformsTouchID)driver;
+                PerformsTouchID performsTouchID = (PerformsTouchID) driver;
                 performsTouchID.toggleTouchIDEnrollment(true);
                 break;
 
@@ -889,7 +844,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
      * fingerprint (Android)
      *
      * @param match Whether or not the finger should match. This parameter is ignored on Android
-     * @param id The id of the enrolled finger. This parameter is ignored on iOS
+     * @param id    The id of the enrolled finger. This parameter is ignored on iOS
      * @return The implementing class for fluency
      */
     public Locomotive performBiometric(boolean match, int id) {

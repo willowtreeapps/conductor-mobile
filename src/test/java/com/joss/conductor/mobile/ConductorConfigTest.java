@@ -1,7 +1,6 @@
 package com.joss.conductor.mobile;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -65,7 +64,7 @@ public class ConductorConfigTest {
         Assertions.assertThat(config.getNoReset())
                 .isFalse();
         Assertions.assertThat(config.getAppiumVersion())
-                .isEqualTo("1.7.1");
+                .isEqualTo("1.13.0");
         Assertions.assertThat(config.getTimeout())
                 .isEqualTo(8);
         Assertions.assertThat(config.getRetries())
@@ -168,7 +167,7 @@ public class ConductorConfigTest {
     }
 
     @Test
-    public void full_app_path_expands_relative() {
+    public void getFullAppPath_should_expand_to_full_path_when_given_relative_path_to_appfile() {
         ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
 
         Assertions.assertThat(config.getFullAppPath())
@@ -185,12 +184,58 @@ public class ConductorConfigTest {
     }
 
     @Test
-    public void absolute_paths_are_kept() {
+    public void absolute_paths_are_kept_for_ipa() {
         ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
         config.setAppFile("/Users/username/code/path/app.ipa");
 
         Assertions.assertThat(config.getFullAppPath())
                 .isEqualTo("/Users/username/code/path/app.ipa");
+    }
+
+    @Test
+    public void absolute_paths_are_kept_for_apk() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        config.setAppFile("/Users/username/code/path/android.apk");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo("/Users/username/code/path/android.apk");
+    }
+
+    @Test
+    public void when_appFile_is_a_directory_getFullAppPath_can_find_apk_extension() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        config.setAppFile("./apps/");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo(System.getProperty("user.dir") + "/apps/android-fake.apk");
+    }
+
+    // getFullApp Path currently does not have logic to detect an ipa file
+    @Test
+    public void when_appFile_is_a_directory_getFullAppPath_cannot_find_ipa_extension() {
+        System.setProperty("conductorPlatformName", "IOS");
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        config.setAppFile("./apps/");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .doesNotEndWith(".ipa");
+    }
+
+    @Test
+    public void when_appFile_is_a_directory_getFullAppPath_can_find_app_extension() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/ios_defaults.yaml");
+        config.setAppFile("./apps/");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo(System.getProperty("user.dir") + "/apps/iOS-fake.app");
+    }
+
+    @Test
+    public void absolute_paths_are_kept_and_appFile_is_appended_to_userDir() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/android_defaults.yaml");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo(System.getProperty("user.dir") + "/apps/android.apk");
     }
 
     @Test
@@ -277,7 +322,7 @@ public class ConductorConfigTest {
     public void appium_version_is_read() {
         ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
 
-        Assertions.assertThat(config.getAppiumVersion()).isEqualTo("1.7.1");
+        Assertions.assertThat(config.getAppiumVersion()).isEqualTo("1.13.0");
     }
 
     @Test

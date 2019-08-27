@@ -77,7 +77,7 @@ public class LocomotiveTest {
         capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "600");
         capabilities.setCapability("idleTimeout", "600");
         capabilities.setCapability("simpleIsVisibleCheck", true);
-        capabilities.setCapability(MobileCapabilityType.APPIUM_VERSION, "1.7.1");
+        capabilities.setCapability(MobileCapabilityType.APPIUM_VERSION, "1.13.0");
 
         Locomotive locomotive = new Locomotive()
                 .setConfiguration(androidConfig)
@@ -151,7 +151,7 @@ public class LocomotiveTest {
 
         Assertions.assertThat(locomotive.waitForElement(id))
                 .isEqualTo(foundElement);
-        verify(mockDriver, times(2))
+        verify(mockDriver, times(1))
                 .findElements(id);
     }
 
@@ -169,7 +169,7 @@ public class LocomotiveTest {
 
         Assertions.assertThatThrownBy(() -> locomotive.waitForElement(id)).isInstanceOf(AssertionError.class);
         // First attempt to find elements plus 5 retries + one added from the driver
-        verify(mockDriver, times(numberOfRetries + 2))
+        verify(mockDriver, times(numberOfRetries + 1))
                 .findElements(id);
     }
 
@@ -210,47 +210,6 @@ public class LocomotiveTest {
         Assertions.assertThat(locomotive.isPresentWait(id))
                 .isEqualTo(true);
         verify(mockDriver, times(2))
-                .findElements(id);
-    }
-
-    @Test
-    public void test_is_present_wait_retries_and_fail() {
-        int numberOfRetries = 5;
-        iosConfig.setRetries(numberOfRetries);
-        iosConfig.setTimeout(0);
-
-        final By id = mock(By.class);
-        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
-        final Locomotive locomotive = new Locomotive()
-                .setConfiguration(iosConfig)
-                .setAppiumDriver(mockDriver);
-
-        Assertions.assertThat(locomotive.isPresentWait(id))
-                .isEqualTo(false);
-        // First attempt to find elements plus 5 retries, plus one from the driver
-        verify(mockDriver, times(numberOfRetries + 2))
-                .findElements(id);
-    }
-
-    @Test
-    public void test_is_present_wait_retries_and_find_item() {
-        iosConfig.setRetries(5);
-        iosConfig.setTimeout(0);
-
-        WebElement foundElement = mock(WebElement.class);
-        By id = mock(By.class);
-
-        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList(foundElement));
-        when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive()
-                .setConfiguration(iosConfig)
-                .setAppiumDriver(mockDriver);
-
-        Assertions.assertThat(locomotive.isPresentWait(id))
-                .isEqualTo(true);
-        verify(mockDriver, times(3)) // Found on it's 3rd attempt
                 .findElements(id);
     }
 

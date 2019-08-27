@@ -1,11 +1,12 @@
 package com.joss.conductor.mobile;
 
 import com.saucelabs.common.SauceOnDemandAuthentication;
-import io.appium.java_client.CommandExecutionHelper;
+
 import org.openqa.selenium.InvalidArgumentException;
 import org.pmw.tinylog.Logger;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -70,7 +71,7 @@ public class ConductorConfig {
     // Timeouts
     private String newCommandTimeout;
     private String idleTimeout;
-    private int    startSessionRetries = 1; // by default try only once
+    private int startSessionRetries = 1; // by default try only once
 
     // dependencies
     private Map<String, String> environment;
@@ -92,7 +93,7 @@ public class ConductorConfig {
      * Constructor method that takes in a relative path to a local resource config file and custom environment variables
      *
      * @param localResourcesConfigPath Relative path to local config resource
-     * @param environment Map to use custom environment variables instead of provided by system
+     * @param environment              Map to use custom environment variables instead of provided by system
      */
     public ConductorConfig(String localResourcesConfigPath, Map<String, String> environment) {
         this.environment = environment;
@@ -125,7 +126,7 @@ public class ConductorConfig {
         Map<String, Object> defaults = (Map<String, Object>) config.get("defaults");
         if (defaults != null) {
             readProperties(defaults);
-            if (defaults.get("hub") != null){
+            if (defaults.get("hub") != null) {
                 setIsLocalHub(true);
             }
             Map<String, Object> platformDefaults = null;
@@ -190,7 +191,7 @@ public class ConductorConfig {
             String val = System.getProperty(env);
 
             // If the system property is not set '-Dsystem_property=<value>` then look for an environment variable
-            if(val == null) {
+            if (val == null) {
                 val = environment.get(env);
             }
 
@@ -320,7 +321,7 @@ public class ConductorConfig {
         this.hub = hub;
     }
 
-    public void setIsLocalHub(boolean isLocalHubValue){
+    public void setIsLocalHub(boolean isLocalHubValue) {
         this.islocalhub = isLocalHubValue;
     }
 
@@ -421,9 +422,13 @@ public class ConductorConfig {
         this.avd = avd;
     }
 
-    public String getAvdArgs() { return avdArgs; }
+    public String getAvdArgs() {
+        return avdArgs;
+    }
 
-    public void setAvdArgs(String avdArgs) { this.avdArgs = avdArgs; }
+    public void setAvdArgs(String avdArgs) {
+        this.avdArgs = avdArgs;
+    }
 
     public String getDeviceName() {
         return deviceName;
@@ -445,7 +450,9 @@ public class ConductorConfig {
         return waitForQuiescence;
     }
 
-    public Boolean isSimpleIsVisibleCheck() { return simpleIsVisibleCheck;}
+    public Boolean isSimpleIsVisibleCheck() {
+        return simpleIsVisibleCheck;
+    }
 
     public void setWaitForQuiescence(boolean waitForQuiescence) {
         this.waitForQuiescence = waitForQuiescence;
@@ -468,23 +475,23 @@ public class ConductorConfig {
         return this.idleTimeout;
     }
 
-    public void setSauceUserName (String sauceUserName) {
+    public void setSauceUserName(String sauceUserName) {
         this.sauceUserName = sauceUserName;
     }
 
-    public void setSauceAccessKey (String sauceAccessKey) {
+    public void setSauceAccessKey(String sauceAccessKey) {
         this.sauceAccessKey = sauceAccessKey;
     }
 
-    public void setNewCommandTimeout (String newCommandTimeout) {
+    public void setNewCommandTimeout(String newCommandTimeout) {
         this.newCommandTimeout = newCommandTimeout;
     }
 
-    public void setIdleTimeout (String idleTimeout) {
+    public void setIdleTimeout(String idleTimeout) {
         this.idleTimeout = idleTimeout;
     }
 
-    public void setSimpleIsVisibleCheck (boolean value) {
+    public void setSimpleIsVisibleCheck(boolean value) {
         this.simpleIsVisibleCheck = value;
     }
 
@@ -500,9 +507,23 @@ public class ConductorConfig {
         if (appFile == null) {
             return null;
         }
-
+        File dir = new File(appFile);
         Path path = Paths.get(appFile);
-        if (appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
+        if (dir.isDirectory()) {
+            try {
+                String expectedFileExtension = platformName == Platform.ANDROID ? ".apk" : ".app";
+                File[] files = dir.listFiles((dir1, name) -> name.toLowerCase().endsWith(expectedFileExtension));
+                if ((files != null) && (files.length == 1)) {
+                    File fileFoundMatchingExtension = files[0];
+                    return Paths.get(System.getProperty("user.dir"), fileFoundMatchingExtension.toString()).normalize().toString();
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } catch (IllegalArgumentException e) {
+                Logger.error(e, "Unable to find a valid application in specified appFile directory: {} . Make sure there is only ONE unique file extension in {}, or else you must specify an absolute path." +
+                        " Also, double check that there is indeed an application with a valid extension in the specified appFile directory. ERROR", dir, dir);
+            }
+        } else if (appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
             return appFile;
         }
         try {
@@ -559,6 +580,7 @@ public class ConductorConfig {
     public boolean isLocal() {
         return getHub() == null;
     }
+
     public boolean isHubLocal() {
         return islocalhub;
     }
