@@ -7,7 +7,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class ConductorCapabilities {
 
-    private static ConductorConfig config = new ConductorConfig();
+    private static ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
 
     public static DesiredCapabilities build() {
         return build(null);
@@ -59,8 +59,8 @@ public class ConductorCapabilities {
         }
 
         // If deviceName is empty replace it with something
-        // noinspection Since15
-        if (capabilities.getCapability(MobileCapabilityType.DEVICE_NAME).toString().isEmpty()) {
+        Object deviceName = capabilities.getCapability(MobileCapabilityType.DEVICE_NAME);
+        if (deviceName == null || deviceName.toString().isEmpty()) {
             capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Empty Device Name");
         }
 
