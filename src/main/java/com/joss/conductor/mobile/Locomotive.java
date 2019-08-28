@@ -5,7 +5,6 @@ import com.joss.conductor.mobile.util.PageUtil;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
-
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.CommandExecutionHelper;
 import io.appium.java_client.MobileCommand;
@@ -17,26 +16,18 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
-
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.pmw.tinylog.LogEntry;
 import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -60,7 +51,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllEle
  * Created on 8/10/16.
  */
 @Listeners({TestListener.class, SauceLabsListener.class})
-public class Locomotive extends Watchman implements Conductor<Locomotive>, SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
+public class Locomotive extends Watchman implements ConductorInterface<Locomotive>, SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static final float SWIPE_DISTANCE = 0.25f;
     private static final float SWIPE_DISTANCE_LONG = 0.50f;
@@ -155,7 +146,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
         // start a new session
         try {
-            URL                 hub          = configuration.getHub();
+            URL hub = configuration.getHub();
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
 
             AppiumServiceBuilder builder = new AppiumServiceBuilder()

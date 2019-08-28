@@ -24,7 +24,7 @@ public class ConductorConfig {
     private static final String DEFAULT_CONFIG_FILE = "/config.yaml";
     private static final String CUSTOM_CAPABILITIES = "customCapabilities";
 
-    // Conductor properties
+    // ConductorInterface properties
     private String[] currentSchemes;
     private int timeout = 5;
     private int retries = 5;
