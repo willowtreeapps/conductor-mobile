@@ -3,7 +3,7 @@
 <suite name="conductor-mobile">
     <test name="tests">
         <classes>
-            <class name="com.joss.conductor.mobile" />
+            <class name=".*" />
         </classes>
     </test>
 </suite>
