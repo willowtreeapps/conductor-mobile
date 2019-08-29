@@ -78,7 +78,6 @@ public interface Conductor<Test> {
      */
     Test swipeCenter(SwipeElementDirection direction);
     Test swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis);
-    Test swipeCenter(SwipeElementDirection direction, short numberOfSwipes);
     Test swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes);
 
     /**

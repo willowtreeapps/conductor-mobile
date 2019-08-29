@@ -351,10 +351,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return swipe(direction, /*element=*/null, SWIPE_DISTANCE, swipeDurationInMillis);
     }
 
-    public Locomotive swipeCenter(SwipeElementDirection direction, short numberOfSwipes) {
-     return swipeCenter(direction, 0, numberOfSwipes);
-    }
-
     public Locomotive swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
         short i = 0;
         while (i < numberOfSwipes) {
@@ -428,11 +424,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis) {
         return swipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, swipeDurationInMillis);
     }
-
-    public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, short numberOfSwipes) {
-        return swipeCenterSuperLong(direction, 0, numberOfSwipes);
-    }
-
+    
     public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
         short i = 0;
         while (i < numberOfSwipes) {
@@ -551,10 +543,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE, swipeDurationInMillis);
     }
 
-    public Locomotive longPressSwipeCenter(SwipeElementDirection direction, short numberOfSwipes) {
-        return longPressSwipeCenter(direction, 0, numberOfSwipes);
-    }
-
     public Locomotive longPressSwipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
         short i = 0;
         while (i < numberOfSwipes) {
@@ -596,10 +584,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
     }
 
-    public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction, short numberOfSwipes) {
-        return longPressSwipeCenterLong(direction, 0, numberOfSwipes);
-    }
-
     public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
         short i = 0;
         while (i < numberOfSwipes) {
@@ -615,10 +599,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis) {
         return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, swipeDurationInMillis);
-    }
-
-    public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction, short numberOfSwipes) {
-        return longPressSwipeCenterSuperLong(direction, 0, numberOfSwipes);
     }
 
     public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
