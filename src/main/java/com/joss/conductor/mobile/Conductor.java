@@ -77,6 +77,9 @@ public interface Conductor<Test> {
      * @return The implementing class for fluency
      */
     Test swipeCenter(SwipeElementDirection direction);
+    Test swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis);
+    Test swipeCenter(SwipeElementDirection direction, short numberOfSwipes);
+    Test swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes);
 
     /**
      * Swipe on specified direction from center 50 percent of the screen
@@ -84,6 +87,9 @@ public interface Conductor<Test> {
      * @return The implementing class for fluency
      */
     Test swipeCenterLong(SwipeElementDirection direction);
+    Test swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis);
+    Test swipeCenterLong(SwipeElementDirection direction, short numberOfSwipes);
+    Test swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes);
 
 
     Test swipeCornerLong(ScreenCorner corner, SwipeElementDirection direction, int duration);
@@ -98,6 +104,9 @@ public interface Conductor<Test> {
     Test swipe(SwipeElementDirection direction, String id);
     Test swipe(SwipeElementDirection direction, By by);
     Test swipe(SwipeElementDirection direction, WebElement element);
+    Test swipe(SwipeElementDirection direction, String id, int swipeDurationInMillis);
+    Test swipe(SwipeElementDirection direction, By by, int swipeDurationInMillis);
+    Test swipe(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis);
 
     /**
      * Swipe on specified direction from element 50 percent of the screen

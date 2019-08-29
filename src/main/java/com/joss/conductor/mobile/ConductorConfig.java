@@ -26,8 +26,8 @@ public class ConductorConfig {
 
     // Conductor properties
     private String[] currentSchemes;
-    private int timeout = 5;
-    private int retries = 5;
+    private int appiumRequestTimeout = 5;
+    private int implicitWaitTime = 5;
     private boolean screenshotOnFail = true;
     private boolean screenshotOnSkip = false;
 
@@ -248,20 +248,20 @@ public class ConductorConfig {
         this.appiumVersion = appiumVersion;
     }
 
-    public int getTimeout() {
-        return timeout;
+    public int getAppiumRequestTimeout() {
+        return appiumRequestTimeout;
     }
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
+    public void setAppiumRequestTimeout(int appiumRequestTimeout) {
+        this.appiumRequestTimeout = appiumRequestTimeout;
     }
 
-    public int getRetries() {
-        return retries;
+    public int getImplicitWaitTime() {
+        return implicitWaitTime;
     }
 
-    public void setRetries(int retries) {
-        this.retries = retries;
+    public void setImplicitWaitTime(int implicitWaitTime) {
+        this.implicitWaitTime = implicitWaitTime;
     }
 
     public boolean isFullReset() {
