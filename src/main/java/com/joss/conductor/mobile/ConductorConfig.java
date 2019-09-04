@@ -29,13 +29,13 @@ public class ConductorConfig {
     /***
      * @deprecated in favor of {@link #appiumRequestTimeout} for clarity sake on what the variable actually is used for
      */
-    @Deprecated(since="0.19.1")
+    @Deprecated//(since="0.19.1")
     private int timeout = 5; // deprecated in favor of `appiumRequestTimeout`
     private int appiumRequestTimeout = 5;
     /***
      * @deprecated in favor of {@link #implicitWaitTime} for clarity sake on what the variable actually is used for
      */
-    @Deprecated(since="0.19.1")
+    @Deprecated//(since="0.19.1")
     private int retries = 5; // deprecated in favor of `implicitWaitTime`
     private int implicitWaitTime = 5;
     private boolean screenshotOnFail = true;
@@ -263,7 +263,7 @@ public class ConductorConfig {
      *
      * @deprecated use {@link #getAppiumRequestTimeout()} instead
      */
-    @Deprecated(since="0.19.1")
+    @Deprecated//(since="0.19.1")
     public int getTimeout() {
         return timeout;
     }
@@ -278,7 +278,7 @@ public class ConductorConfig {
      *
      * @deprecated use {@link #setAppiumRequestTimeout(int)} instead
      */
-    @Deprecated(since="0.19.1")
+    @Deprecated//(since="0.19.1")
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
@@ -292,7 +292,7 @@ public class ConductorConfig {
      *
      * @deprecated use {@link #getImplicitWaitTime()} instead
      */
-    @Deprecated(since="0.19.1")
+    @Deprecated//(since="0.19.1")
     public int getRetries() {
         return retries;
     }
@@ -307,7 +307,7 @@ public class ConductorConfig {
      *
      * @deprecated use {@link #setImplicitWaitTime(int)}  instead
      */
-    @Deprecated(since="0.19.1")
+    @Deprecated//(since="0.19.1")
     public void setRetries(int retries) {
         this.retries = retries;
     }
