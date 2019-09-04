@@ -26,7 +26,17 @@ public class ConductorConfig {
 
     // Conductor properties
     private String[] currentSchemes;
+    /***
+     * @deprecated in favor of {@link #appiumRequestTimeout} for clarity sake on what the variable actually is used for
+     */
+    @Deprecated(since = "0.19.1")
+    private int timeout = 5; // deprecated in favor of `appiumRequestTimeout`
     private int appiumRequestTimeout = 5;
+    /***
+     * @deprecated in favor of {@link #implicitWaitTime} for clarity sake on what the variable actually is used for
+     */
+    @Deprecated(since = "0.19.1")
+    private int retries = 5; // deprecated in favor of `implicitWaitTime`
     private int implicitWaitTime = 5;
     private boolean screenshotOnFail = true;
     private boolean screenshotOnSkip = false;
@@ -248,16 +258,58 @@ public class ConductorConfig {
         this.appiumVersion = appiumVersion;
     }
 
+    /***
+     * Returns the {@link #timeout} variable, which has been deprecated in favor of {@link #appiumRequestTimeout} for clarity
+     *
+     * @deprecated use {@link #getAppiumRequestTimeout()} instead
+     */
+    @Deprecated(since = "0.19.1")
+    public int getTimeout() {
+        return timeout;
+    }
+
     public int getAppiumRequestTimeout() {
         return appiumRequestTimeout;
+    }
+
+    /***
+     * Sets the {@link #timeout} variable, which has been deprecated in favor of {@link #appiumRequestTimeout} for clarity
+     * Consider replacing the `timeout:` options in the config yaml with `appiumRequestTimeout`
+     *
+     * @deprecated use {@link #setAppiumRequestTimeout(int)} instead
+     */
+    @Deprecated(since = "0.19.1")
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     public void setAppiumRequestTimeout(int appiumRequestTimeout) {
         this.appiumRequestTimeout = appiumRequestTimeout;
     }
 
+    /***
+     * Returns the {@link #retries} variable, which has been deprecated in favor of {@link #implicitWaitTime} for clarity
+     *
+     * @deprecated use {@link #getImplicitWaitTime()} instead
+     */
+    @Deprecated(since = "0.19.1")
+    public int getRetries() {
+        return retries;
+    }
+
     public int getImplicitWaitTime() {
         return implicitWaitTime;
+    }
+
+    /***
+     * Sets the {@link #retries} variable, which has been deprecated in favor of {@link #implicitWaitTime} for clarity
+     * Consider replacing the `retries:` options in the config yaml with `implicitWaitTime`
+     *
+     * @deprecated use {@link #setImplicitWaitTime(int)}  instead
+     */
+    @Deprecated(since = "0.19.1")
+    public void setRetries(int retries) {
+        this.retries = retries;
     }
 
     public void setImplicitWaitTime(int implicitWaitTime) {
