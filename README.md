@@ -12,7 +12,7 @@ Conductor Mobile is a port of the [Conductor](https://github.com/conductor-frame
     <dependency>
         <groupId>com.willowtreeapps</groupId>
         <artifactId>conductor-mobile</artifactId>
-        <version>0.19.0</version>
+        <version>0.19.1</version>
     </dependency>
 </dependencies>
 ```
@@ -38,8 +38,8 @@ The general configuration only has two properties: `platformName` (which must be
 The defaults section contains both general defaults and defaults per platform. It looks like this:
 ```yaml
 defaults:
-  retries: 3
-  timeout: 10
+  implicitWaitTime: 3
+  appiumRequestTimeout: 10
   screenshotOnFail: false
   autoGrantPermissions: true
 
@@ -48,7 +48,7 @@ defaults:
     deviceName: iPhone 8
 
   android:
-    timeout: 15
+    appiumRequestTimeout: 15
     platformVersion: 8.0
 ```
 Platforms can override defaults just be re-specifying them in the platform section
@@ -68,8 +68,8 @@ ios_sauce_labs:
   deviceName: iPhone 8
 
 shorter_timeouts:
-  timeout: 1
-  retries: 2
+  appiumRequestTimeout: 1
+  implicitWaitTime: 2
 ```
 You can see a variety of example configuration files in the unit tests for conductor [here](src/test/resources/test_yaml)
 

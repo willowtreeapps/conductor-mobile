@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static com.joss.conductor.mobile.MockTestUtil.matchesEntriesIn;
 import static com.joss.conductor.mobile.SwipeElementDirection.DOWN;
@@ -135,65 +136,6 @@ public class LocomotiveTest {
                 .isEqualTo("com.android.activity");
         Assertions.assertThat(caps.getCapability(MobileCapabilityType.NO_RESET))
                 .isEqualTo(false);
-    }
-
-    @Test
-    public void test_wait_for_elem_found_on_first_try() {
-        By id = mock(By.class);
-        WebElement foundElement = mock(WebElement.class);
-        androidConfig.setAppiumRequestTimeout(0);
-
-        when(mockDriver.findElements(id)).thenReturn(Collections.singletonList(foundElement));
-        when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive();
-        locomotive.setConfiguration(androidConfig);
-        locomotive.setAppiumDriver(mockDriver);
-
-        Assertions.assertThat(locomotive.waitForElement(id))
-                .isEqualTo(foundElement);
-        verify(mockDriver, times(1))
-                .findElements(id);
-    }
-
-    @Test
-    public void test_wait_for_ele_retries_and_fail() {
-        int numberOfRetries = 5;
-        iosConfig.setImplicitWaitTime(numberOfRetries);
-        iosConfig.setAppiumRequestTimeout(0);
-
-        final By id = mock(By.class);
-        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
-        final Locomotive locomotive = new Locomotive()
-                .setConfiguration(iosConfig)
-                .setAppiumDriver(mockDriver);
-
-        Assertions.assertThatThrownBy(() -> locomotive.waitForElement(id)).isInstanceOf(AssertionError.class);
-        // First attempt to find elements plus 5 retries + one added from the driver
-        verify(mockDriver, times(numberOfRetries + 1))
-                .findElements(id);
-    }
-
-    @Test
-    public void test_wait_for_ele_retries_and_find_item() {
-        int numberOfRetries = 5;
-        iosConfig.setImplicitWaitTime(numberOfRetries);
-        iosConfig.setAppiumRequestTimeout(0);
-
-        WebElement foundElement = mock(WebElement.class);
-        By id = mock(By.class);
-
-        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList(foundElement));
-        when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive()
-                .setConfiguration(iosConfig)
-                .setAppiumDriver(mockDriver);
-
-        Assertions.assertThat(locomotive.waitForElement(id))
-                .isEqualTo(foundElement);
-        verify(mockDriver, times(3)) // Found on it's 3rd attempt
-                .findElements(id);
     }
 
     @Test

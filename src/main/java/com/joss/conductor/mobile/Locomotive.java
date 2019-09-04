@@ -424,7 +424,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis) {
         return swipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, swipeDurationInMillis);
     }
-    
+
     public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
         short i = 0;
         while (i < numberOfSwipes) {
