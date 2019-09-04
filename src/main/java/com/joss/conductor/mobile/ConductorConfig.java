@@ -26,17 +26,7 @@ public class ConductorConfig {
 
     // Conductor properties
     private String[] currentSchemes;
-    /***
-     * @deprecated in favor of {@link #appiumRequestTimeout} since 0.19.1 for clarity sake on what the variable actually is used for
-     */
-    @Deprecated
-    private int timeout = 5; // deprecated in favor of `appiumRequestTimeout`
     private int appiumRequestTimeout = 5;
-    /***
-     * @deprecated in favor of {@link #implicitWaitTime} since 0.19.1 for clarity sake on what the variable actually is used for
-     */
-    @Deprecated//(since="0.19.1")
-    private int retries = 5; // deprecated in favor of `implicitWaitTime`
     private int implicitWaitTime = 5;
     private boolean screenshotOnFail = true;
     private boolean screenshotOnSkip = false;
@@ -185,6 +175,10 @@ public class ConductorConfig {
 
             if (key.equals(CUSTOM_CAPABILITIES)) {
                 putCustomCapabilities(properties.get(key));
+            } else if (key.equals("timeout") || key.equals("retries")){ //to automatically read deprecated
+                String newKey = key.equals("timeout") ? "appiumRequestTimeout" : "implicitWaitTime";
+                System.out.println("\"" + key + "\" has been deprecated. Please remove it from your config.yaml and replace it with \"" + newKey + "\"");
+                setProperty(newKey, properties.get(key).toString());
             } else {
                 setProperty(key, properties.get(key).toString());
             }
@@ -259,13 +253,11 @@ public class ConductorConfig {
     }
 
     /***
-     * Returns the {@link #timeout} variable, which has been deprecated since 0.19.1 in favor of {@link #appiumRequestTimeout} for clarity
-     *
-     * @deprecated use {@link #getAppiumRequestTimeout()} instead
+     * @deprecated since 0.19.1, use {@link #getAppiumRequestTimeout()} instead
      */
     @Deprecated
     public int getTimeout() {
-        return timeout;
+        return appiumRequestTimeout;
     }
 
     public int getAppiumRequestTimeout() {
@@ -273,14 +265,11 @@ public class ConductorConfig {
     }
 
     /***
-     * Sets the {@link #timeout} variable, which has been deprecated since 0.19.1 in favor of {@link #appiumRequestTimeout} for clarity
-     * Consider replacing the `timeout:` options in the config yaml with `appiumRequestTimeout`
-     *
-     * @deprecated use {@link #setAppiumRequestTimeout(int)} instead
+     * @deprecated since 0.19.1, use {@link #setAppiumRequestTimeout(int)} instead
      */
     @Deprecated
     public void setTimeout(int timeout) {
-        this.timeout = timeout;
+        this.appiumRequestTimeout = timeout;
     }
 
     public void setAppiumRequestTimeout(int appiumRequestTimeout) {
@@ -288,13 +277,11 @@ public class ConductorConfig {
     }
 
     /***
-     * Returns the {@link #retries} variable, which has been deprecated since 0.19.1 in favor of {@link #implicitWaitTime} for clarity
-     *
-     * @deprecated use {@link #getImplicitWaitTime()} instead
+     * @deprecated since 0.19.1, use {@link #getImplicitWaitTime()} instead
      */
     @Deprecated
     public int getRetries() {
-        return retries;
+        return implicitWaitTime;
     }
 
     public int getImplicitWaitTime() {
@@ -302,14 +289,11 @@ public class ConductorConfig {
     }
 
     /***
-     * Sets the {@link #retries} variable, which has been deprecated since 0.19.1 in favor of {@link #implicitWaitTime} for clarity
-     * Consider replacing the `retries:` options in the config yaml with `implicitWaitTime`
-     *
-     * @deprecated use {@link #setImplicitWaitTime(int)}  instead
+     * @deprecated since 0.19.1, use {@link #setImplicitWaitTime(int)}  instead
      */
     @Deprecated
     public void setRetries(int retries) {
-        this.retries = retries;
+        this.implicitWaitTime = retries;
     }
 
     public void setImplicitWaitTime(int implicitWaitTime) {

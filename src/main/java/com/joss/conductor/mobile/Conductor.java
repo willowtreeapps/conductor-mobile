@@ -78,7 +78,7 @@ public interface Conductor<Test> {
      */
     Test swipeCenter(SwipeElementDirection direction);
     Test swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis);
-    Test swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes);
+    Test swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes);
 
     /**
      * Swipe on specified direction from center 50 percent of the screen
@@ -87,8 +87,7 @@ public interface Conductor<Test> {
      */
     Test swipeCenterLong(SwipeElementDirection direction);
     Test swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis);
-    Test swipeCenterLong(SwipeElementDirection direction, short numberOfSwipes);
-    Test swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes);
+    Test swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes);
 
 
     Test swipeCornerLong(ScreenCorner corner, SwipeElementDirection direction, int duration);
