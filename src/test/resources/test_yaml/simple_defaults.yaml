@@ -4,5 +4,5 @@ platformName: IOS
 defaults:
   noReset: false
   appiumVersion: 1.13.0
-  timeout: 8
-  retries: 10
+  appiumRequestTimeout: 8
+  implicitWaitTime: 10

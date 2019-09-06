@@ -4,7 +4,6 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
-import io.appium.java_client.service.local.AppiumServiceBuilder;
 import org.assertj.swing.assertions.Assertions;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -24,8 +23,10 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static com.joss.conductor.mobile.MockTestUtil.matchesEntriesIn;
+import static com.joss.conductor.mobile.SwipeElementDirection.DOWN;
 import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
@@ -138,65 +139,6 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_wait_for_elem_found_on_first_try() {
-        By id = mock(By.class);
-        WebElement foundElement = mock(WebElement.class);
-        androidConfig.setTimeout(0);
-
-        when(mockDriver.findElements(id)).thenReturn(Collections.singletonList(foundElement));
-        when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive();
-        locomotive.setConfiguration(androidConfig);
-        locomotive.setAppiumDriver(mockDriver);
-
-        Assertions.assertThat(locomotive.waitForElement(id))
-                .isEqualTo(foundElement);
-        verify(mockDriver, times(1))
-                .findElements(id);
-    }
-
-    @Test
-    public void test_wait_for_ele_retries_and_fail() {
-        int numberOfRetries = 5;
-        iosConfig.setRetries(numberOfRetries);
-        iosConfig.setTimeout(0);
-
-        final By id = mock(By.class);
-        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList());
-        final Locomotive locomotive = new Locomotive()
-                .setConfiguration(iosConfig)
-                .setAppiumDriver(mockDriver);
-
-        Assertions.assertThatThrownBy(() -> locomotive.waitForElement(id)).isInstanceOf(AssertionError.class);
-        // First attempt to find elements plus 5 retries + one added from the driver
-        verify(mockDriver, times(numberOfRetries + 1))
-                .findElements(id);
-    }
-
-    @Test
-    public void test_wait_for_ele_retries_and_find_item() {
-        int numberOfRetries = 5;
-        iosConfig.setRetries(numberOfRetries);
-        iosConfig.setTimeout(0);
-
-        WebElement foundElement = mock(WebElement.class);
-        By id = mock(By.class);
-
-        when(mockDriver.findElements(id)).thenReturn(Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList(foundElement));
-        when(mockDriver.findElement(id)).thenReturn(foundElement);
-        Locomotive locomotive = new Locomotive()
-                .setConfiguration(iosConfig)
-                .setAppiumDriver(mockDriver);
-
-        Assertions.assertThat(locomotive.waitForElement(id))
-                .isEqualTo(foundElement);
-        verify(mockDriver, times(3)) // Found on it's 3rd attempt
-                .findElements(id);
-    }
-
-    @Test
     public void test_is_present_wait_found_on_first_try() {
         By id = mock(By.class);
         WebElement foundElement = mock(WebElement.class);
@@ -247,12 +189,11 @@ public class LocomotiveTest {
                 .isEqualToComparingFieldByField(center);
     }
 
-    private Map<String, List<Object>> getTouchActionParameters(TouchAction action)
-    {
+    private Map<String, List<Object>> getTouchActionParameters(TouchAction action) {
         try {
             Method method = TouchAction.class.getDeclaredMethod("getParameters");
             method.setAccessible(true);
-            return (Map)method.invoke(action);
+            return (Map) method.invoke(action);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -271,7 +212,7 @@ public class LocomotiveTest {
     }
 
     private void initMockDriverSizes(WebElement mockElement) {
-        if(mockElement != null) {
+        if (mockElement != null) {
             when(mockElement.getLocation()).thenReturn(new Point(0, 0));
             when(mockElement.getSize()).thenReturn(new Dimension(10, 10));
         }
@@ -290,16 +231,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(50, 75), new Point(0, 25) };
+        Point[] moveTo = {new Point(50, 75), new Point(0, 25)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipeCenter(SwipeElementDirection.DOWN);
+            locomotive.swipeCenter(DOWN);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -308,6 +249,55 @@ public class LocomotiveTest {
                             .release());
         }
 
+    }
+
+    @Test
+    public void test_perform_long_press_swipe_center_down() {
+        initMockDriverSizes();
+
+        ConductorConfig[] configs = {androidConfig, iosConfig};
+        Point[] moveTo = {new Point(50, 75), new Point(0, 25)};
+
+        for (int i = 0; i < configs.length; i++) {
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
+
+            locomotive.longPressSwipeCenter(DOWN);
+            ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
+            verify(mockDriver, times(i + 1))
+                    .performTouchAction(touchCapture.capture());
+            assertThatActionMatches(touchCapture.getValue(),
+                    new TouchAction(mockDriver).longPress(point(50, 50))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
+                            .release());
+        }
+
+    }
+
+    @Test
+    public void test_perform_swipe_with_custom_coordinates() {
+        initMockDriverSizes();
+
+        ConductorConfig[] configs = {androidConfig, iosConfig};
+        Point[] moveTo = {new Point(20, 20), new Point(19,19)};
+
+        for (int i = 0; i < configs.length; i++) {
+            final Locomotive locomotive = new Locomotive()
+                    .setConfiguration(configs[i])
+                    .setAppiumDriver(mockDriver);
+
+            locomotive.swipe(new Point(1,1), new Point(20, 20));
+            ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
+            verify(mockDriver, times(i + 1))
+                    .performTouchAction(touchCapture.capture());
+            assertThatActionMatches(touchCapture.getValue(),
+                    new TouchAction(mockDriver).press(point(1, 1))
+                            .waitAction(waitOptions(ofMillis(2000)))
+                            .moveTo(point(moveTo[i].x, moveTo[i].y))
+                            .release());
+        }
     }
 
     @Test
@@ -339,16 +329,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(50, 99), new Point(0, 49) };
+        Point[] moveTo = {new Point(50, 99), new Point(0, 49)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipeCenterLong(SwipeElementDirection.DOWN);
+            locomotive.swipeCenterLong(DOWN);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -363,16 +353,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(25, 50), new Point(-25, 0) };
+        Point[] moveTo = {new Point(25, 50), new Point(-25, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenter(SwipeElementDirection.LEFT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -387,16 +377,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(1, 50), new Point(-49, 0) };
+        Point[] moveTo = {new Point(1, 50), new Point(-49, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenterLong(SwipeElementDirection.LEFT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -411,16 +401,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(50, 25), new Point(0, -25) };
+        Point[] moveTo = {new Point(50, 25), new Point(0, -25)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenter(SwipeElementDirection.UP);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -435,16 +425,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(50, 1), new Point(0, -49) };
+        Point[] moveTo = {new Point(50, 1), new Point(0, -49)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenterLong(SwipeElementDirection.UP);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -459,16 +449,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(75, 50), new Point(25, 0) };
+        Point[] moveTo = {new Point(75, 50), new Point(25, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenter(SwipeElementDirection.RIGHT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -483,16 +473,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(99, 50), new Point(49, 0) };
+        Point[] moveTo = {new Point(99, 50), new Point(49, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCenterLong(SwipeElementDirection.RIGHT);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(50, 50))
@@ -523,19 +513,19 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(90, 40), new Point(0, -50) };
+        Point[] moveTo = {new Point(90, 40), new Point(0, -50)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(point(90 ,90))
+                    new TouchAction(mockDriver).press(point(90, 90))
                             .waitAction(waitOptions(ofMillis(100)))
                             .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
@@ -547,19 +537,19 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(90, 1), new Point(0, -89) };
+        Point[] moveTo = {new Point(90, 1), new Point(0, -89)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_RIGHT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
-                    new TouchAction(mockDriver).press(point(90 ,90))
+                    new TouchAction(mockDriver).press(point(90, 90))
                             .waitAction(waitOptions(ofMillis(100)))
                             .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
@@ -571,16 +561,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(10, 40), new Point(0, -50) };
+        Point[] moveTo = {new Point(10, 40), new Point(0, -50)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(10, 90))
@@ -595,16 +585,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(10, 1), new Point(0, -89) };
+        Point[] moveTo = {new Point(10, 1), new Point(0, -89)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerSuperLong(ScreenCorner.BOTTOM_LEFT, SwipeElementDirection.UP, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(10, 90))
@@ -619,16 +609,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(90, 60), new Point(0, 50) };
+        Point[] moveTo = {new Point(90, 60), new Point(0, 50)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+            locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(90, 10))
@@ -643,16 +633,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(90, 99), new Point(0, 89) };
+        Point[] moveTo = {new Point(90, 99), new Point(0, 89)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.DOWN, 100);
+            locomotive.swipeCornerSuperLong(ScreenCorner.TOP_RIGHT, DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(90, 10))
@@ -667,16 +657,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(10, 60), new Point(0, 50) };
+        Point[] moveTo = {new Point(10, 60), new Point(0, 50)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+            locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(10, 10))
@@ -691,16 +681,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(10, 99), new Point(0, 89) };
+        Point[] moveTo = {new Point(10, 99), new Point(0, 89)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.DOWN, 100);
+            locomotive.swipeCornerSuperLong(ScreenCorner.TOP_LEFT, DOWN, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(10, 10))
@@ -715,16 +705,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(60, 10), new Point(50, 0) };
+        Point[] moveTo = {new Point(60, 10), new Point(50, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.TOP_LEFT, SwipeElementDirection.RIGHT, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(10, 10))
@@ -739,16 +729,16 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(40, 10), new Point(-50, 0) };
+        Point[] moveTo = {new Point(40, 10), new Point(-50, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeCornerLong(ScreenCorner.TOP_RIGHT, SwipeElementDirection.LEFT, 100);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(90, 10))
@@ -759,21 +749,21 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_perform_swipe_on_element_down()  {
+    public void test_perform_swipe_on_element_down() {
         final WebElement element = mock(WebElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(5, 30), new Point(0, 25) };
+        Point[] moveTo = {new Point(5, 30), new Point(0, 25)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipe(SwipeElementDirection.DOWN, element);
+            locomotive.swipe(DOWN, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))
@@ -789,16 +779,16 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(5, 55), new Point(0, 50) };
+        Point[] moveTo = {new Point(5, 55), new Point(0, 50)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipeLong(SwipeElementDirection.DOWN, element);
+            locomotive.swipeLong(DOWN, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))
@@ -809,21 +799,21 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_perform_swipe_on_element_left()  {
+    public void test_perform_swipe_on_element_left() {
         final WebElement element = mock(WebElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(1, 5), new Point(-4, 0) };
+        Point[] moveTo = {new Point(1, 5), new Point(-4, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipe(SwipeElementDirection.LEFT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))
@@ -839,16 +829,16 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(1, 5), new Point(-4, 0) };
+        Point[] moveTo = {new Point(1, 5), new Point(-4, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeLong(SwipeElementDirection.LEFT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))
@@ -859,21 +849,21 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_perform_swipe_on_element_up()  {
+    public void test_perform_swipe_on_element_up() {
         final WebElement element = mock(WebElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(5, 1), new Point(0, -4) };
+        Point[] moveTo = {new Point(5, 1), new Point(0, -4)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipe(SwipeElementDirection.UP, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))
@@ -889,16 +879,16 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(5, 1), new Point(0, -4) };
+        Point[] moveTo = {new Point(5, 1), new Point(0, -4)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeLong(SwipeElementDirection.UP, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))
@@ -909,21 +899,21 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_perform_swipe_on_element_right()  {
+    public void test_perform_swipe_on_element_right() {
         final WebElement element = mock(WebElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(30, 5), new Point(25, 0) };
+        Point[] moveTo = {new Point(30, 5), new Point(25, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipe(SwipeElementDirection.RIGHT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))
@@ -939,16 +929,16 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = { new Point(55, 5), new Point(50, 0) };
+        Point[] moveTo = {new Point(55, 5), new Point(50, 0)};
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
             locomotive.swipeLong(SwipeElementDirection.RIGHT, element);
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
-            verify(mockDriver, times(i+1))
+            verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
             assertThatActionMatches(touchCapture.getValue(),
                     new TouchAction(mockDriver).press(point(5, 5))

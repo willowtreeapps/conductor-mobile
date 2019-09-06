@@ -26,8 +26,8 @@ public class ConductorConfig {
 
     // Conductor properties
     private String[] currentSchemes;
-    private int timeout = 5;
-    private int retries = 5;
+    private int appiumRequestTimeout = 5;
+    private int implicitWaitTime = 5;
     private boolean screenshotOnFail = true;
     private boolean screenshotOnSkip = false;
 
@@ -175,6 +175,10 @@ public class ConductorConfig {
 
             if (key.equals(CUSTOM_CAPABILITIES)) {
                 putCustomCapabilities(properties.get(key));
+            } else if (key.equals("timeout") || key.equals("retries")){ //to automatically read deprecated
+                String newKey = key.equals("timeout") ? "appiumRequestTimeout" : "implicitWaitTime";
+                System.out.println("\"" + key + "\" has been deprecated. Please remove it from your config.yaml and replace it with \"" + newKey + "\"");
+                setProperty(newKey, properties.get(key).toString());
             } else {
                 setProperty(key, properties.get(key).toString());
             }
@@ -248,20 +252,52 @@ public class ConductorConfig {
         this.appiumVersion = appiumVersion;
     }
 
+    /***
+     * @deprecated since 0.19.1, use {@link #getAppiumRequestTimeout()} instead
+     */
+    @Deprecated
     public int getTimeout() {
-        return timeout;
+        return appiumRequestTimeout;
     }
 
+    public int getAppiumRequestTimeout() {
+        return appiumRequestTimeout;
+    }
+
+    /***
+     * @deprecated since 0.19.1, use {@link #setAppiumRequestTimeout(int)} instead
+     */
+    @Deprecated
     public void setTimeout(int timeout) {
-        this.timeout = timeout;
+        this.appiumRequestTimeout = timeout;
     }
 
+    public void setAppiumRequestTimeout(int appiumRequestTimeout) {
+        this.appiumRequestTimeout = appiumRequestTimeout;
+    }
+
+    /***
+     * @deprecated since 0.19.1, use {@link #getImplicitWaitTime()} instead
+     */
+    @Deprecated
     public int getRetries() {
-        return retries;
+        return implicitWaitTime;
     }
 
+    public int getImplicitWaitTime() {
+        return implicitWaitTime;
+    }
+
+    /***
+     * @deprecated since 0.19.1, use {@link #setImplicitWaitTime(int)}  instead
+     */
+    @Deprecated
     public void setRetries(int retries) {
-        this.retries = retries;
+        this.implicitWaitTime = retries;
+    }
+
+    public void setImplicitWaitTime(int implicitWaitTime) {
+        this.implicitWaitTime = implicitWaitTime;
     }
 
     public boolean isFullReset() {
