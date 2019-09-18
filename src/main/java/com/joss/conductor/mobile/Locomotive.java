@@ -23,12 +23,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.junit.rules.Timeout;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -314,8 +310,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public boolean isPresentWait(By by, long timeOutInSeconds) {
-        waitForCondition(presenceOfAllElementsLocatedBy(by), timeOutInSeconds, 500);
-        return isPresent(by);
+        try {
+            waitForCondition(presenceOfAllElementsLocatedBy(by), timeOutInSeconds, 500);
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 
     public String getText(String id) {
