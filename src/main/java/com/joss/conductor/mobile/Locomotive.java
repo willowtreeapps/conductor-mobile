@@ -46,6 +46,7 @@ import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 
 /**
  * Created on 8/10/16.
@@ -310,7 +311,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     public boolean isPresentWait(By by, long timeOutInSeconds) {
         try {
-            waitForCondition(presenceOfAllElementsLocatedBy(by), timeOutInSeconds, 500);
+            waitForCondition(visibilityOfAllElementsLocatedBy(by), timeOutInSeconds, 500);
             return true;
         } catch (TimeoutException e) {
             return false;
