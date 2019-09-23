@@ -7,10 +7,9 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.CommandExecutionHelper;
-import io.appium.java_client.MobileCommand;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AuthenticatesByFinger;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.PerformsTouchID;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -19,24 +18,17 @@ import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
 
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.pmw.tinylog.LogEntry;
 import org.pmw.tinylog.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -44,7 +36,6 @@ import org.testng.annotations.Listeners;
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +46,7 @@ import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 
 /**
  * Created on 8/10/16.
@@ -135,10 +127,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         // Set session ID after driver has been initialized
         SessionId id = getAppiumDriver().getSessionId();
         sessionId.set(id.toString());
-
-        // TODO: Added to support biometrics on android until java-client PR #473 is pulled in
-        MobileCommand.commandRepository.put("fingerPrint",
-                MobileCommand.postC("/session/:sessionId/appium/device/finger_print"));
     }
 
     void startAppiumSession(int startCounter) {
@@ -155,7 +143,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
         // start a new session
         try {
-            URL                 hub          = configuration.getHub();
+            URL hub = configuration.getHub();
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
 
             AppiumServiceBuilder builder = new AppiumServiceBuilder()
@@ -252,46 +240,27 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return waitForElement(PageUtil.buildBy(configuration, id));
     }
 
+    public WebElement waitForElement(String id, long timeoutInSeconds) {
+        return waitForElement(PageUtil.buildBy(configuration, id), timeoutInSeconds);
+    }
+
     public WebElement waitForElement(By by) {
+        return waitForElement(by, configuration.getAppiumRequestTimeout());
+    }
 
-        try {
-            waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)));
-        } catch (Exception e) {
-            Logger.warn(e, "WaitForElement: Eat exception thrown waiting for condition");
-        }
-
-        int size = getAppiumDriver().findElements(by).size();
-
-        if (size == 0) {
-            int attempts = 1;
-            while (attempts <= configuration.getRetries()) {
-                try {
-                    Thread.sleep(1000); // sleep for 1 second.
-                } catch (Exception x) {
-                    Assert.fail("Failed due to an exception during Thread.sleep!");
-                    Logger.error(x);
-                }
-
-                size = getAppiumDriver().findElements(by).size();
-                if (size > 0) {
-                    break;
-                }
-                attempts++;
-            }
-            if (size == 0) {
-                Assert.fail(String.format("Could not find %s after %d attempts",
-                        by.toString(),
-                        configuration.getRetries()));
-            }
-        }
-
-        if (size > 1) {
-            Logger.error("WARN: There are more than 1 " + by.toString() + " 's!");
-        }
-
+    public WebElement waitForElement(By by, long timeoutInSeconds) {
+        waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOfElementLocated(by)), timeoutInSeconds);
         return getAppiumDriver().findElement(by);
     }
 
+    public WebElement waitForElement(WebElement element) {
+        return waitForElement(element, configuration.getAppiumRequestTimeout());
+    }
+
+    public WebElement waitForElement(WebElement element, long timeoutInSeconds) {
+        waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOf(element)), timeoutInSeconds);
+        return element;
+    }
 
     public Locomotive click(String id) {
         return click(PageUtil.buildBy(configuration, id));
@@ -336,13 +305,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return isPresentWait(by, 5);
     }
 
-    public boolean isPresentWait(String id, int timeOutInSeconds) {
+    public boolean isPresentWait(String id, long timeOutInSeconds) {
         return isPresentWait(PageUtil.buildBy(configuration, id), timeOutInSeconds);
     }
 
-    public boolean isPresentWait(By by, int timeOutInSeconds) {
-        waitForCondition(presenceOfAllElementsLocatedBy(by), timeOutInSeconds, 500);
-        return isPresent(by);
+    public boolean isPresentWait(By by, long timeOutInSeconds) {
+        try {
+            waitForCondition(visibilityOfAllElementsLocatedBy(by), timeOutInSeconds, 500);
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 
     public String getText(String id) {
@@ -369,8 +342,29 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return element.getAttribute(attribute);
     }
 
+    //region Generic swipes
     public Locomotive swipeCenter(SwipeElementDirection direction) {
-        return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE);
+        return swipe(direction, /*element=*/null, SWIPE_DISTANCE, 0);
+    }
+
+    public Locomotive swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis) {
+        return swipe(direction, /*element=*/null, SWIPE_DISTANCE, swipeDurationInMillis);
+    }
+
+    public Locomotive swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes){
+        return repetitiveCenterSwipe(direction, swipeDurationInMillis, numberOfSwipes, SWIPE_DISTANCE);
+    }
+
+    public Locomotive swipe(SwipeElementDirection direction, String id, float percentage) {
+        return swipe(direction, PageUtil.buildBy(configuration, id), percentage);
+    }
+
+    public Locomotive swipe(SwipeElementDirection direction, By by, float percentage) {
+        return swipe(direction, getAppiumDriver().findElement(by), percentage);
+    }
+
+    public Locomotive swipe(SwipeElementDirection direction, WebElement element, float percentage) {
+        return swipe(direction, element, percentage, 0);
     }
 
     public Locomotive swipe(SwipeElementDirection direction, String id) {
@@ -378,19 +372,51 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive swipe(SwipeElementDirection direction, By by) {
-        return swipe(direction, by, SWIPE_DISTANCE);
+        return swipe(direction, getAppiumDriver().findElement(by));
     }
 
     public Locomotive swipe(SwipeElementDirection direction, WebElement element) {
-        return performSwipe(direction, element, /*by=*/null, SWIPE_DISTANCE);
+        return swipe(direction, element, SWIPE_DISTANCE, 0);
+    }
+
+    public Locomotive swipe(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
+        return swipe(direction, PageUtil.buildBy(configuration, id), swipeDurationInMillis);
+    }
+
+    public Locomotive swipe(SwipeElementDirection direction, By by, int swipeDurationInMillis) {
+        return swipe(direction, getAppiumDriver().findElement(by), swipeDurationInMillis);
+    }
+
+    public Locomotive swipe(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
+        return swipe(direction, element, SWIPE_DISTANCE, swipeDurationInMillis);
     }
 
     public Locomotive swipeCenterLong(SwipeElementDirection direction) {
-        return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE_LONG);
+        return swipe(direction, /*element=*/null, SWIPE_DISTANCE_LONG, 0);
+    }
+
+    public Locomotive swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis) {
+        return swipe(direction, /*element=*/null, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
+    }
+
+    public Locomotive swipeCenterLong(SwipeElementDirection direction, short numberOfSwipes) {
+        return swipeCenterLong(direction, 0, numberOfSwipes);
+    }
+
+    public Locomotive swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes){
+        return repetitiveCenterSwipe(direction, swipeDurationInMillis, numberOfSwipes, SWIPE_DISTANCE_LONG);
     }
 
     public Locomotive swipeCenterSuperLong(SwipeElementDirection direction) {
-        return performSwipe(direction, /*element=*/null, /*by=*/null, SWIPE_DISTANCE_SUPER_LONG);
+        return swipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, 0);
+    }
+
+    public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis) {
+        return swipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, swipeDurationInMillis);
+    }
+
+    public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes){
+        return repetitiveCenterSwipe(direction, swipeDurationInMillis, numberOfSwipes, SWIPE_DISTANCE_SUPER_LONG);
     }
 
     public Locomotive swipeCornerLong(ScreenCorner corner, SwipeElementDirection direction, int duration) {
@@ -402,25 +428,53 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, String id) {
-        return swipeLong(direction, PageUtil.buildBy(configuration, id));
+        return swipe(direction, PageUtil.buildBy(configuration, id));
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, By by) {
-        return swipe(direction, by, SWIPE_DISTANCE_LONG);
+        return swipe(direction, getAppiumDriver().findElement(by));
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, WebElement element) {
-        return performSwipe(direction, element, /*by=*/null, SWIPE_DISTANCE_LONG);
+        return swipe(direction, element, SWIPE_DISTANCE_LONG, 0);
     }
 
-    public Locomotive swipe(SwipeElementDirection direction, By by, float percentage) {
-        return performSwipe(direction, /*element=*/null, by, percentage);
+    public Locomotive swipeLong(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
+        return swipe(direction, PageUtil.buildBy(configuration, id), swipeDurationInMillis);
     }
 
-    public Locomotive swipe(SwipeElementDirection direction, WebElement element, float percentage) {
-        return performSwipe(direction, element, /*by=*/null, percentage);
+    public Locomotive swipeLong(SwipeElementDirection direction, By by, int swipeDurationInMillis) {
+        return swipe(direction, getAppiumDriver().findElement(by), swipeDurationInMillis);
     }
 
+    public Locomotive swipeLong(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
+        return swipe(direction, element, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
+    }
+
+    public Locomotive swipe(SwipeElementDirection direction, WebElement element, float percentage, int swipeDurationInMillis) {
+        return performSwipe(direction, false, element, percentage, swipeDurationInMillis);
+    }
+
+    public Locomotive swipe(Point start, Point end, int swipeDurationInMillis) {
+        return performSwipe(false, start, end, swipeDurationInMillis);
+    }
+
+    public Locomotive swipe(Point start, Point end) {
+        return swipe(start, end, 0);
+    }
+
+    public Locomotive repetitiveCenterSwipe(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes, float swipeDistance) {
+        int i = 0;
+        while (i < numberOfSwipes) {
+            swipe(direction, /*element=*/null, swipeDistance, swipeDurationInMillis);
+            i++;
+        }
+        return this;
+    }
+
+    //endregion Generic swipes
+
+    //region Directional swipes
     public void swipeDown() {
         swipeCenterLong(SwipeElementDirection.UP);
     }
@@ -461,6 +515,138 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         }
     }
 
+    /***
+     * Used to trigger iOS' gestural navigation back
+     * As of 8/29/2019, Android does not have this feature, but it may in the future
+     * More information on Android here: https://developer.android.com/preview/features/gesturalnav
+     */
+    public Locomotive swipeSystemBack() {
+        Dimension screen = getAppiumDriver().manage().window().getSize();
+        Point start = new Point(screen.getWidth() - 2, getYCenter());
+        Point end = new Point(2, getYCenter());
+
+        return swipe(start, end);
+    }
+    //endregion Directional swipes
+
+    //region longPress swipes
+    public Locomotive longPressSwipeCenter(SwipeElementDirection direction) {
+        return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE, 0);
+    }
+
+    public Locomotive longPressSwipeCenter(SwipeElementDirection direction, int swipeDurationInMillis) {
+        return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE, swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
+        short i = 0;
+        while (i < numberOfSwipes) {
+            longPressSwipeCenter(direction, swipeDurationInMillis);
+            i++;
+        }
+        return this;
+    }
+
+    public Locomotive longPressSwipe(SwipeElementDirection direction, String id) {
+        return longPressSwipe(direction, PageUtil.buildBy(configuration, id));
+    }
+
+    public Locomotive longPressSwipe(SwipeElementDirection direction, By by) {
+        return longPressSwipe(direction, getAppiumDriver().findElement(by));
+    }
+
+    public Locomotive longPressSwipe(SwipeElementDirection direction, WebElement element) {
+        return longPressSwipe(direction, element, SWIPE_DISTANCE, 0);
+    }
+
+    public Locomotive longPressSwipe(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
+        return longPressSwipe(direction, PageUtil.buildBy(configuration, id), swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipe(SwipeElementDirection direction, By by, int swipeDurationInMillis) {
+        return longPressSwipe(direction, getAppiumDriver().findElement(by), swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipe(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
+        return longPressSwipe(direction, element, SWIPE_DISTANCE, swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction) {
+        return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_LONG, 0);
+    }
+
+    public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis) {
+        return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
+        short i = 0;
+        while (i < numberOfSwipes) {
+            longPressSwipeCenterLong(direction, swipeDurationInMillis);
+            i++;
+        }
+        return this;
+    }
+
+    public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction) {
+        return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, 0);
+    }
+
+    public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis) {
+        return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
+        short i = 0;
+        while (i < numberOfSwipes) {
+            longPressSwipeCenterSuperLong(direction, swipeDurationInMillis);
+            i++;
+        }
+        return this;
+    }
+
+    public Locomotive longPressSwipeLong(SwipeElementDirection direction, String id) {
+        return longPressSwipe(direction, PageUtil.buildBy(configuration, id));
+    }
+
+    public Locomotive longPressSwipeLong(SwipeElementDirection direction, By by) {
+        return longPressSwipe(direction, getAppiumDriver().findElement(by));
+    }
+
+    public Locomotive longPressSwipeLong(SwipeElementDirection direction, WebElement element) {
+        return longPressSwipe(direction, element, SWIPE_DISTANCE_LONG, 0);
+    }
+
+    public Locomotive longPressSwipeLong(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
+        return longPressSwipe(direction, PageUtil.buildBy(configuration, id), swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipeLong(SwipeElementDirection direction, By by, int swipeDurationInMillis) {
+        return longPressSwipe(direction, getAppiumDriver().findElement(by), swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipeLong(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
+        return longPressSwipe(direction, element, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipe(SwipeElementDirection direction, WebElement element, float percentage, int swipeDurationInMillis) {
+        return performSwipe(direction, true, element, percentage, swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipe(Point start, Point end, int swipeDurationInMillis) {
+        return performSwipe(true, start, end, swipeDurationInMillis);
+    }
+
+    public Locomotive longPressSwipe(Point start, Point end) {
+        return longPressSwipe(start, end, 0);
+    }
+    //endregion longPress swipes
+
+    /*
+
+     */
+
+
     public Locomotive hideKeyboard() {
         try {
             getAppiumDriver().hideKeyboard();
@@ -470,18 +656,22 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return this;
     }
 
-    private Locomotive performSwipe(SwipeElementDirection direction, WebElement element, By by, float percentage) {
-        Point from;
-        if (element != null) {
-            from = getCenter(element);
-        } else if (by != null) {
-            from = getCenter(waitForElement(by));
-        } else {
-            from = getCenter(/*element=*/null);
-        }
+    /***
+     * Generic Perform Swipe Method
+     * Allows for different TouchAction presses: press() and longPress()
+     * Can accept different start and end Points, by Selenium's WebElement, By, or Points
+     *
+     * @param direction - nullable, but required if `to` is null
+     * @param isLongPress - determines TouchAction as `press()` or `longPress()`
+     * @param from - origin point of swipe, not nullable
+     * @param to - destination point of swipe, nullable, but required if `direction` is null
+     * @param percentage - modifies destination X and Y depending on `direction`
+     * @param swipeDurationInMillis - modifies duration of swipe
+     ***/
 
+    private Locomotive performSwipe(SwipeElementDirection direction, boolean isLongPress, Point from, Point to, float percentage, int swipeDurationInMillis) {
         Dimension screen = getAppiumDriver().manage().window().getSize();
-        Point to = null;
+
         if (direction != null) {
             switch (direction) {
                 case UP:
@@ -507,8 +697,8 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                 default:
                     throw new IllegalArgumentException("Swipe Direction not specified: " + direction.name());
             }
-        } else {
-            throw new IllegalArgumentException("Swipe Direction not specified");
+        } else if (to == null) {
+            throw new IllegalArgumentException("Swipe Direction and To Point are not specified.");
         }
 
         // Appium specifies that TouchAction.moveTo should be relative. iOS implements this correctly, but android
@@ -517,13 +707,35 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             to = new Point(to.getX() - from.getX(), to.getY() - from.getY());
         }
 
-        TouchAction swipe = new TouchAction(getAppiumDriver())
-                .press(point(from.getX(), from.getY()))
-                .waitAction(waitOptions(ofMillis(SWIPE_DURATION_MILLIS)))
-                .moveTo(point(to.getX(), to.getY()))
-                .release();
+        int swipeDuration = (swipeDurationInMillis != 0) ? swipeDurationInMillis : SWIPE_DURATION_MILLIS;
+
+        TouchAction swipe;
+        if (!isLongPress) {
+            swipe = new TouchAction(getAppiumDriver())
+                    .press(point(from.getX(), from.getY()))
+                    .waitAction(waitOptions(ofMillis(swipeDuration)))
+                    .moveTo(point(to.getX(), to.getY()))
+                    .release();
+        } else {
+            swipe = new TouchAction(getAppiumDriver())
+                    .longPress(point(from.getX(), from.getY()))
+                    .waitAction(waitOptions(ofMillis(swipeDuration)))
+                    .moveTo(point(to.getX(), to.getY()))
+                    .release();
+        }
+
         swipe.perform();
         return this;
+    }
+
+    //Overload method for using custom Points
+    private Locomotive performSwipe(boolean isLongPress, Point from, Point to, int swipeDurationInMillis) {
+        return performSwipe(null, isLongPress, from, to, 0, swipeDurationInMillis);
+    }
+
+    //Overload method for using WebElement, By, or String
+    private Locomotive performSwipe(SwipeElementDirection direction, boolean isLongPress, WebElement element, float percentage, int swipeDurationInMillis) {
+        return performSwipe(direction, isLongPress, getCenter(element), null, percentage, swipeDurationInMillis);
     }
 
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
@@ -645,15 +857,31 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
      */
 
     public Point getCenter(WebElement element) {
-        int x, y;
+        return new Point(getXCenter(element), getYCenter(element));
+    }
+
+    public int getXCenter(WebElement element) {
         if (element == null) {
-            x = getAppiumDriver().manage().window().getSize().getWidth() / 2;
-            y = getAppiumDriver().manage().window().getSize().getHeight() / 2;
+            return getAppiumDriver().manage().window().getSize().getWidth() / 2;
         } else {
-            x = element.getLocation().getX() + (element.getSize().getWidth() / 2);
-            y = element.getLocation().getY() + (element.getSize().getHeight() / 2);
+            return element.getLocation().getX() + (element.getSize().getWidth() / 2);
         }
-        return new Point(x, y);
+    }
+
+    public int getXCenter() {
+        return getXCenter(null);
+    }
+
+    public int getYCenter(WebElement element) {
+        if (element == null) {
+            return getAppiumDriver().manage().window().getSize().getHeight() / 2;
+        } else {
+            return element.getLocation().getY() + (element.getSize().getHeight() / 2);
+        }
+    }
+
+    public int getYCenter() {
+        return getYCenter(null);
     }
 
     public List<WebElement> getElements(String id) {
@@ -851,10 +1079,9 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
         switch (configuration.getPlatformName()) {
             case ANDROID:
-                // TODO: Restructure when the Java-client supports biometrics (PR #473 on appium/java-client)
-                Map.Entry<String, Map<String, ?>> paramMap = new AbstractMap.SimpleEntry<>("fingerPrint",
-                        MobileCommand.prepareArguments("fingerprintId", id));
-                CommandExecutionHelper.execute(getAppiumDriver(), paramMap);
+                //Note: Biometrics are only supported on Android APIs 23 and above (6.0)
+                AuthenticatesByFinger authenticatesByFinger = (AuthenticatesByFinger) getAppiumDriver();
+                authenticatesByFinger.fingerPrint(id);
                 break;
 
             case IOS:
@@ -876,7 +1103,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
      * @return The implementing class for fluency
      */
     public Locomotive waitForCondition(ExpectedCondition<?> condition) {
-        return waitForCondition(condition, configuration.getTimeout());
+        return waitForCondition(condition, configuration.getAppiumRequestTimeout());
     }
 
     /**

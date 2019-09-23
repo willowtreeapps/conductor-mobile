@@ -65,9 +65,9 @@ public class ConductorConfigTest {
                 .isFalse();
         Assertions.assertThat(config.getAppiumVersion())
                 .isEqualTo("1.13.0");
-        Assertions.assertThat(config.getTimeout())
+        Assertions.assertThat(config.getAppiumRequestTimeout())
                 .isEqualTo(8);
-        Assertions.assertThat(config.getRetries())
+        Assertions.assertThat(config.getImplicitWaitTime())
                 .isEqualTo(10);
     }
 
@@ -78,7 +78,7 @@ public class ConductorConfigTest {
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.ANDROID);
         // Tests that platform overrides defaults
-        Assertions.assertThat(config.getRetries())
+        Assertions.assertThat(config.getImplicitWaitTime())
                 .isEqualTo(4);
         Assertions.assertThat(config.getAppFile())
                 .isEqualTo("./apps/android.apk");
@@ -95,7 +95,7 @@ public class ConductorConfigTest {
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.IOS);
-        Assertions.assertThat(config.getRetries())
+        Assertions.assertThat(config.getImplicitWaitTime())
                 .isEqualTo(2);
         Assertions.assertThat(config.getAppFile())
                 .isEqualTo("./apps/ios.app");
@@ -116,9 +116,9 @@ public class ConductorConfigTest {
                 .isEqualByComparingTo(Platform.IOS);
         Assertions.assertThat(config.getCurrentSchemes())
                 .isEqualTo(new String[] { "longer_timeouts", "ios_device" });
-        Assertions.assertThat(config.getRetries())
+        Assertions.assertThat(config.getImplicitWaitTime())
                 .isEqualTo(3);
-        Assertions.assertThat(config.getTimeout())
+        Assertions.assertThat(config.getAppiumRequestTimeout())
                 .isEqualTo(20);
         Assertions.assertThat(config.getAppFile())
                 .isEqualTo("./apps/ios.ipa");
@@ -132,9 +132,9 @@ public class ConductorConfigTest {
                 .isEqualByComparingTo(Platform.IOS);
         Assertions.assertThat(config.getCurrentSchemes())
                 .isEqualTo(new String[] { "longer_timeouts", "ios_saucelabs" });
-        Assertions.assertThat(config.getRetries())
+        Assertions.assertThat(config.getImplicitWaitTime())
                 .isEqualTo(1);
-        Assertions.assertThat(config.getTimeout())
+        Assertions.assertThat(config.getAppiumRequestTimeout())
                 .isEqualTo(20);
         Assertions.assertThat(config.getAppFile())
                 .isEqualTo("sauce-storage:mock.zip");
@@ -158,9 +158,9 @@ public class ConductorConfigTest {
 
         Assertions.assertThat(config.getPlatformName())
                 .isEqualByComparingTo(Platform.ANDROID);
-        Assertions.assertThat(config.getRetries())
+        Assertions.assertThat(config.getImplicitWaitTime())
                 .isEqualTo(8);
-        Assertions.assertThat(config.getTimeout())
+        Assertions.assertThat(config.getAppiumRequestTimeout())
                 .isEqualTo(5);
         Assertions.assertThat(config.getUdid())
                 .isEqualTo("auto");
