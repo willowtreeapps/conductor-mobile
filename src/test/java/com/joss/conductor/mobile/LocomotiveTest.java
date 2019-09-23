@@ -151,7 +151,7 @@ public class LocomotiveTest {
 
         Assertions.assertThat(locomotive.isPresentWait(id))
                 .isEqualTo(true);
-        verify(mockDriver, times(2))
+        verify(mockDriver, times(1))
                 .findElements(id);
     }
 
