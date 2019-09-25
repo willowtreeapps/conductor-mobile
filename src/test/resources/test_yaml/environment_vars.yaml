@@ -6,5 +6,6 @@ defaults:
   appiumVersion: 1.13.0
   appiumRequestTimeout: 8
   implicitWaitTime: 10
+  
   udid: ${FOO_PROPERTY}
   platformVersion: ${PLATFORM_MAJOR}.${PLATFORM_MINOR}
