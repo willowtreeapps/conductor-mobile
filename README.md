@@ -12,7 +12,7 @@ Conductor Mobile is a port of the [Conductor](https://github.com/conductor-frame
     <dependency>
         <groupId>com.willowtreeapps</groupId>
         <artifactId>conductor-mobile</artifactId>
-        <version>0.19.1</version>
+        <version>0.19.2</version>
     </dependency>
 </dependencies>
 ```
@@ -83,8 +83,8 @@ You can see a variety of example configuration files in the unit tests for condu
 - `udid` = {string: iOS device's UDID or Android's device name from ADB, or auto to use the first connected device}
 - `noReset` = {boolean: true or false}
 - `fullReset` = {boolean: true or false}
-- `timeout` = {int: default equals 5 seconds per call}
-- `retries` = {int: default equals 5 retries}
+- `appiumRequestTimeout` = {int: default equals 5 seconds per call}
+- `implicitWaitTime` = {int: default equals 5 retries}
 - `screenshotsOnFail` = {boolean: true or false}
 - `autoGrantPermissions` = {boolean: true or false}
 - `automationName` = {string: i.e. uiautomator2 or xcuitest}
@@ -176,6 +176,12 @@ If you have an idea for the framework, fork it and submit a pull-request!
  3. set the hub property to connect to saucelabs `https://<login-name>:<API-token>@ondemand.saucelabs.com:443/wd/hub`
  4. set the appFile property to `sauce-storage:<zip-filename>.zip`
  5. run the test
+ 
+ # Dependency Updates
+ 
+ We're using [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin) to help find out-of-date dependencies. 
+  
+ To use: `./gradlew dependencyUpdates` 
 
 License
 -------
