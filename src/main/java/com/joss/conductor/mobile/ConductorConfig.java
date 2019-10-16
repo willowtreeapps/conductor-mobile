@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -540,11 +541,33 @@ public class ConductorConfig {
     }
 
     public String getFullAppPath() {
+
         if (appFile == null) {
             return null;
         }
+
         File dir = new File(appFile);
         Path path = Paths.get(appFile);
+
+
+        // Make sure apps can be hosted remotely, e.g. on a github repo for example, check for this first
+        try {
+            URL url = new URL(appFile);
+            return appFile;
+        } catch (MalformedURLException e) {
+            // Ignore, this is expected to happen, parse as a regular path
+        }
+
+        // If sending directly to Saucelabs, we want to check for this case first because the app is not hosted locally
+        if (appFile.contains("sauce-storage:") || path.isAbsolute()) {
+            return appFile;
+        }
+
+        //if appFile end with these, assume we should try to use them
+        if ((appFile.endsWith(".ipa") || appFile.endsWith(".apk") || appFile.endsWith(".app"))) {
+            return Paths.get(System.getProperty("user.dir"), path.normalize().toString()).normalize().toString();
+        }
+
         if (dir.isDirectory()) {
             try {
                 String expectedFileExtension = platformName == Platform.ANDROID ? ".apk" : ".app";
@@ -556,19 +579,14 @@ public class ConductorConfig {
                     throw new IllegalArgumentException();
                 }
             } catch (IllegalArgumentException e) {
-                Logger.error(e, "Unable to find a valid application in specified appFile directory: {} . Make sure there is only ONE unique file extension in {}, or else you must specify an absolute path." +
-                        " Also, double check that there is indeed an application with a valid extension in the specified appFile directory. ERROR", dir, dir);
+                String expectedFileExtension = platformName == Platform.ANDROID ? ".apk" : ".app";
+                Logger.error(e, "Unable to find a valid application in specified appFile directory: [{}] \n\nIf there is more than one app per unique file extension in [{}], you must specify an absolute path." +
+                        " Also, double check that there is indeed an application with a valid extension in the specified appFile directory. If in a folder, represent the root directory like so: [./apps/android.apk] " +
+                        "\n\nFound the following files in the specified appFile: {} \n\nERROR", dir, dir, Arrays.toString(dir.listFiles((dir1, name) -> name.toLowerCase().endsWith(expectedFileExtension))));
             }
-        } else if (appFile.startsWith("sauce-storage:") || path.isAbsolute()) {
-            return appFile;
-        }
-        try {
-            URL url = new URL(appFile);
-            return appFile;
-        } catch (MalformedURLException e) {
-            // Ignore, this is expected to happen, parse as a regular path
         }
 
+        // if all else fails, just return user.dir + appFile
         return Paths.get(System.getProperty("user.dir"), path.normalize().toString()).normalize().toString();
     }
 

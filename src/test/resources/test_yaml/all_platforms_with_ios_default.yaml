@@ -1,0 +1,36 @@
+
+platformName: IOS
+currentSchemes:
+  - longer_timeouts
+
+defaults:
+  noReset: false
+  appiumVersion: 1.13.0
+  appiumRequestTimeout: 8
+  implicitWaitTime: 10
+
+  android:
+    implicitWaitTime: 4
+    appFile: ./apps/android.apk
+    appActivity: com.android.activity
+
+  ios:
+    implicitWaitTime: 4
+    appFile: ./apps/ios.app
+    xcodeSigningId: iPhone Developer
+    xcodeOrgId: TEAMID
+
+shorter_timeouts:
+  implicitWaitTime: 8
+  appiumRequestTimeout: 5
+
+longer_timeouts:
+  implicitWaitTime: 5
+  appiumRequestTimeout: 20
+
+android_device:
+  udid: auto
+
+ios_device:
+  appFile: ./apps/ios.ipa
+  udid: auto

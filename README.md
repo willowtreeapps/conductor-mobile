@@ -84,7 +84,7 @@ You can see a variety of example configuration files in the unit tests for condu
 - `noReset` = {boolean: true or false}
 - `fullReset` = {boolean: true or false}
 - `appiumRequestTimeout` = {int: default equals 5 seconds per call}
-- `implicitWaitTime` = {int: default equals 5 retries}
+- `implicitWaitTime` = {int: default equals 5}
 - `screenshotsOnFail` = {boolean: true or false}
 - `autoGrantPermissions` = {boolean: true or false}
 - `automationName` = {string: i.e. uiautomator2 or xcuitest}
