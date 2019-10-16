@@ -168,15 +168,26 @@ public class ConductorConfigTest {
 
     @Test
     public void getFullAppPath_should_expand_to_full_path_when_given_relative_path_to_appfile() {
-        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig("/test_yaml/relative_path_appfile_android.yaml");
+        System.setProperty("conductorPlatformName", "ANDROID");
 
         Assertions.assertThat(config.getFullAppPath())
-                .isEqualTo(System.getProperty("user.dir") + "/apps/android.apk");
+                .isEqualTo(System.getProperty("user.dir") + "/apps/android-fake.apk");
+    }
+
+    @Test
+    public void getFullAppPath_should_expand_to_full_path_when_given_relative_path_to_appfile_ios() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/relative_path_appfile_ios.yaml");
+        System.setProperty("conductorPlatformName", "IOS");
+        config.setAppFile("./apps/IOS/");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo(System.getProperty("user.dir") + "/apps/IOS/IOS.app");
     }
 
     @Test
     public void sauce_storage_scheme_does_not_resolve_path() {
-        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms_with_ios_default.yaml");
         config.setAppFile("sauce-storage:app.zip");
 
         Assertions.assertThat(config.getFullAppPath())
@@ -195,10 +206,10 @@ public class ConductorConfigTest {
     @Test
     public void absolute_paths_are_kept_for_apk() {
         ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
-        config.setAppFile("/Users/username/code/path/android.apk");
+        config.setAppFile("/Code/conductor-mobile/android.apk");
 
         Assertions.assertThat(config.getFullAppPath())
-                .isEqualTo("/Users/username/code/path/android.apk");
+                .isEqualTo("/Code/conductor-mobile/android.apk");
     }
 
     @Test
@@ -221,8 +232,19 @@ public class ConductorConfigTest {
                 .doesNotEndWith(".ipa");
     }
 
+    // getFullApp Path currently does not have logic to detect an ipa file
     @Test
-    public void when_appFile_is_a_directory_getFullAppPath_can_find_app_extension() {
+    public void when_appFile_is_a_directory_getFullAppPath_can_find_app() {
+        System.setProperty("conductorPlatformName", "IOS");
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        config.setAppFile("./apps/IOS");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo(System.getProperty("user.dir") + "/apps/IOS/IOS.app");
+    }
+
+    @Test
+    public void when_appFile_is_a_directory_getFullAppPath_can_find_nested_app_extension() {
         ConductorConfig config = new ConductorConfig("/test_yaml/ios_defaults.yaml");
         config.setAppFile("./apps/");
 
@@ -245,6 +267,24 @@ public class ConductorConfigTest {
 
         Assertions.assertThat(config.getFullAppPath())
                 .isEqualTo("https://willowtreeapps.com/app.zip");
+    }
+
+    @Test
+    public void urls_do_not_resolve_path_with_app() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        config.setAppFile("https://willowtreeapps.com/ios.app");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo("https://willowtreeapps.com/ios.app");
+    }
+
+    @Test
+    public void urls_do_not_resolve_path_with_apk() {
+        ConductorConfig config = new ConductorConfig("/test_yaml/all_platforms.yaml");
+        config.setAppFile("https://willowtreeapps.com/android.apk");
+
+        Assertions.assertThat(config.getFullAppPath())
+                .isEqualTo("https://willowtreeapps.com/android.apk");
     }
 
     @Test

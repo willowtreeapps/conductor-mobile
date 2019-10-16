@@ -12,7 +12,7 @@ Conductor Mobile is a port of the [Conductor](https://github.com/conductor-frame
     <dependency>
         <groupId>com.willowtreeapps</groupId>
         <artifactId>conductor-mobile</artifactId>
-        <version>0.19.2</version>
+        <version>0.19.3</version>
     </dependency>
 </dependencies>
 ```
@@ -84,7 +84,7 @@ You can see a variety of example configuration files in the unit tests for condu
 - `noReset` = {boolean: true or false}
 - `fullReset` = {boolean: true or false}
 - `appiumRequestTimeout` = {int: default equals 5 seconds per call}
-- `implicitWaitTime` = {int: default equals 5 retries}
+- `implicitWaitTime` = {int: default equals 5}
 - `screenshotsOnFail` = {boolean: true or false}
 - `autoGrantPermissions` = {boolean: true or false}
 - `automationName` = {string: i.e. uiautomator2 or xcuitest}
