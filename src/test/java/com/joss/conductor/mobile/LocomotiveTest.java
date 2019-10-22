@@ -949,11 +949,11 @@ public class LocomotiveTest {
                 .setConfiguration(androidConfig)
                 .setAppiumDriver(mockDriver);
 
-        when(element.getText()).thenReturn("ElementText");
-        assertThat("Expected element text to return \"ElementText\" but it does not.", locomotive.getText(element).equals("ElementText"));
+        when(element.getText()).thenReturn("string");
+        assertThat("Expected element text to return \"ElementText\" but it does not.", locomotive.getText(element).equals("string"));
     }
 
-    @Test
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*" )
     public void test_getText_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
@@ -962,18 +962,10 @@ public class LocomotiveTest {
                 .setAppiumDriver(mockDriver);
 
         when(element.getText()).thenThrow(NoSuchElementException.class);
-        NoSuchElementException noSuchElementException = null;
-
-        try {
-            locomotive.getText(element);
-        } catch (NoSuchElementException e){
-            noSuchElementException = e;
-        }
-
-        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
+        locomotive.getText(element);
     }
 
-    @Test
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*")
     public void test_setText_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
@@ -981,19 +973,12 @@ public class LocomotiveTest {
                 .setConfiguration(androidConfig)
                 .setAppiumDriver(mockDriver);
 
-        doThrow(NoSuchElementException.class).when(element).sendKeys("Text");
+        doThrow(NoSuchElementException.class).when(element).sendKeys(anyString());
 
-        NoSuchElementException noSuchElementException = null;
-        try {
-            locomotive.setText(element, "Text");
-        } catch (NoSuchElementException e) {
-            noSuchElementException = e;
-        }
-
-        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
+        locomotive.setText(element, "text");
     }
 
-    @Test
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*")
     public void test_click_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
@@ -1002,15 +987,7 @@ public class LocomotiveTest {
                 .setAppiumDriver(mockDriver);
 
         doThrow(NoSuchElementException.class).when(element).click();
-
-        NoSuchElementException noSuchElementException = null;
-        try {
-            locomotive.click(element);
-        } catch (NoSuchElementException e) {
-            noSuchElementException = e;
-        }
-
-        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
+        locomotive.click(element);
     }
 
     @Test
@@ -1021,11 +998,11 @@ public class LocomotiveTest {
                 .setConfiguration(androidConfig)
                 .setAppiumDriver(mockDriver);
 
-        when(element.getAttribute("visible")).thenReturn("true");
+        when(element.getAttribute(anyString())).thenReturn("true");
         assertThat("Error: Expected element attribute of \"visible\" to return \"true\", but it did not.", locomotive.getAttribute(element, "visible").equals("true"));
     }
 
-    @Test
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*")
     public void test_getAttribute_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
@@ -1033,15 +1010,7 @@ public class LocomotiveTest {
                 .setConfiguration(androidConfig)
                 .setAppiumDriver(mockDriver);
 
-        when(element.getAttribute("visible")).thenThrow(NoSuchElementException.class);
-        NoSuchElementException noSuchElementException = null;
-
-        try {
-            locomotive.getAttribute(element, "visible");
-        } catch (NoSuchElementException e){
-            noSuchElementException = e;
-        }
-
-        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
+        when(element.getAttribute(anyString())).thenThrow(NoSuchElementException.class);
+        locomotive.getAttribute(element, anyString());
     }
 }
