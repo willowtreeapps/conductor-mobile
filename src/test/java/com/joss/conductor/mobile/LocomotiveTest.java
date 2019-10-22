@@ -5,14 +5,10 @@ import io.appium.java_client.TouchAction;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.assertj.swing.assertions.Assertions;
+import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.BeforeMethod;
@@ -23,7 +19,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static com.joss.conductor.mobile.MockTestUtil.matchesEntriesIn;
 import static com.joss.conductor.mobile.SwipeElementDirection.DOWN;
@@ -31,10 +26,8 @@ import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 /**
  * Created on 9/14/16.
@@ -281,14 +274,14 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(20, 20), new Point(19,19)};
+        Point[] moveTo = {new Point(20, 20), new Point(19, 19)};
 
         for (int i = 0; i < configs.length; i++) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipe(new Point(1,1), new Point(20, 20));
+            locomotive.swipe(new Point(1, 1), new Point(20, 20));
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
             verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
@@ -946,5 +939,109 @@ public class LocomotiveTest {
                             .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
+    }
+
+    @Test
+    public void test_getText_returns_element_text() {
+        final WebElement element = mock(WebElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getText()).thenReturn("ElementText");
+        assertThat("Error: Expected element text to equal \"ElementText\" but it does not.", locomotive.getText(element).equals("ElementText"));
+    }
+
+    @Test
+    public void test_getText_returns_exception() {
+        final WebElement element = mock(WebElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getText()).thenThrow(NoSuchElementException.class);
+        NoSuchElementException noSuchElementException = null;
+
+        try {
+            locomotive.getText(element);
+        } catch (NoSuchElementException e){
+            noSuchElementException = e;
+        }
+
+        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
+    }
+
+    @Test
+    public void test_setText_returns_exception() {
+        final WebElement element = mock(WebElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        doThrow(NoSuchElementException.class).when(element).sendKeys("Text");
+
+        NoSuchElementException noSuchElementException = null;
+        try {
+            locomotive.setText(element, "Text");
+        } catch (NoSuchElementException e) {
+            noSuchElementException = e;
+        }
+
+        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
+    }
+
+    @Test
+    public void test_click_returns_exception() {
+        final WebElement element = mock(WebElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        doThrow(NoSuchElementException.class).when(element).click();
+
+        NoSuchElementException noSuchElementException = null;
+        try {
+            locomotive.click(element);
+        } catch (NoSuchElementException e) {
+            noSuchElementException = e;
+        }
+
+        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
+    }
+
+    @Test
+    public void test_getAttribute_returns_attribute() {
+        final WebElement element = mock(WebElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getAttribute("visible")).thenReturn("true");
+        assertThat("Error: Expected element attribute of \"visible\" to return \"true\", but it did not.", locomotive.getAttribute(element, "visible").equals("true"));
+    }
+
+    @Test
+    public void test_getAttribute_returns_exception() {
+        final WebElement element = mock(WebElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getAttribute("visible")).thenThrow(NoSuchElementException.class);
+        NoSuchElementException noSuchElementException = null;
+
+        try {
+            locomotive.getAttribute(element, "visible");
+        } catch (NoSuchElementException e){
+            noSuchElementException = e;
+        }
+
+        assertThat("Expected to have NoSuchElementException, but did not find one", noSuchElementException.getLocalizedMessage().startsWith("Unable to locate element: " + element.toString()));
     }
 }
