@@ -950,7 +950,7 @@ public class LocomotiveTest {
                 .setAppiumDriver(mockDriver);
 
         when(element.getText()).thenReturn("ElementText");
-        assertThat("Error: Expected element text to equal \"ElementText\" but it does not.", locomotive.getText(element).equals("ElementText"));
+        assertThat("Expected element text to return \"ElementText\" but it does not.", locomotive.getText(element).equals("ElementText"));
     }
 
     @Test
