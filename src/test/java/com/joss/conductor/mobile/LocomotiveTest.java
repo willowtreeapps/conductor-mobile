@@ -951,7 +951,7 @@ public class LocomotiveTest {
         assertThat("Expected element text to return \"ElementText\" but it does not.", locomotive.getText(element).equals("string"));
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*" )
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to find element: .*" )
     public void test_getText_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
@@ -963,7 +963,7 @@ public class LocomotiveTest {
         locomotive.getText(element);
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*")
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to find element: .*")
     public void test_setText_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
@@ -976,7 +976,7 @@ public class LocomotiveTest {
         locomotive.setText(element, "text");
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*")
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to find element: .*")
     public void test_click_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
@@ -1000,7 +1000,7 @@ public class LocomotiveTest {
         assertThat("Error: Expected element attribute of \"visible\" to return \"true\", but it did not.", locomotive.getAttribute(element, "visible").equals("true"));
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to locate element: .*")
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Unable to find element: .*")
     public void test_getAttribute_returns_exception() {
         final WebElement element = mock(WebElement.class);
 
