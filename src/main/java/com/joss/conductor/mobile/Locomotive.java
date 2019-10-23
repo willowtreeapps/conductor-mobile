@@ -109,11 +109,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @AfterMethod(alwaysRun = true)
     public void quit() {
-        try {
-            getAppiumDriver().quit();
-            driver.remove();
-        } catch (org.openqa.selenium.WebDriverException exception) {
-            Logger.error(exception, "WebDriverException occurred during quit method");
+        if (getAppiumDriver() != null) {
+            try {
+                getAppiumDriver().quit();
+                driver.remove();
+            } catch (WebDriverException exception) {
+                Logger.error(exception, "WebDriverException occurred during quit method");
+            }
         }
     }
 
