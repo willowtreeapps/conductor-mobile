@@ -5,7 +5,6 @@ import io.appium.java_client.TouchAction;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.assertj.swing.assertions.Assertions;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openqa.selenium.*;
@@ -26,7 +25,6 @@ import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 /**

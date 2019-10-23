@@ -274,12 +274,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         try {
             element.click();
             return this;
-        } catch (Exception e) {
-            if (e instanceof NoSuchElementException) {
-                throw new NoSuchElementException("Unable to locate element: " + element.toString());
-            } else {
-                throw e;
-            }
+        } catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to click the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
         }
     }
 
@@ -296,12 +294,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             element.clear();
             element.sendKeys(text);
             return this;
-        } catch (Exception e) {
-            if (e instanceof NoSuchElementException) {
-                throw new NoSuchElementException("Unable to locate element: " + element.toString());
-            } else {
-                throw e;
-            }
+        }  catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to set the text of the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
         }
     }
 
@@ -345,12 +341,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     public String getText(WebElement element) {
         try {
             return element.getText();
-        } catch (Exception e) {
-            if (e instanceof NoSuchElementException) {
-                throw new NoSuchElementException("Unable to locate element: " + element.toString());
-            } else {
-                throw e;
-            }
+        }  catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to get the text of the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
         }
     }
 
@@ -365,12 +359,10 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     public String getAttribute(WebElement element, String attribute) {
         try {
             return element.getAttribute(attribute);
-        } catch (Exception e) {
-            if (e instanceof NoSuchElementException) {
-                throw new NoSuchElementException("Unable to locate element: " + element.toString());
-            } else {
-                throw e;
-            }
+        } catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to get the attribute of the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
         }
     }
 
