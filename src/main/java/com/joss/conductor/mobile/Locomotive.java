@@ -271,8 +271,14 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive click(WebElement element) {
-        element.click();
-        return this;
+        try {
+            element.click();
+            return this;
+        } catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to click the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
+        }
     }
 
     public Locomotive setText(String id, String text) {
@@ -284,9 +290,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive setText(WebElement element, String text) {
-        element.clear();
-        element.sendKeys(text);
-        return this;
+        try {
+            element.clear();
+            element.sendKeys(text);
+            return this;
+        }  catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to set the text of the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
+        }
     }
 
     public boolean isPresent(String id) {
@@ -327,7 +339,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public String getText(WebElement element) {
-        return element.getText();
+        try {
+            return element.getText();
+        }  catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to get the text of the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
+        }
     }
 
     public String getAttribute(String id, String attribute) {
@@ -339,7 +357,13 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public String getAttribute(WebElement element, String attribute) {
-        return element.getAttribute(attribute);
+        try {
+            return element.getAttribute(attribute);
+        } catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to get the attribute of the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
+        }
     }
 
     //region Generic swipes
@@ -351,7 +375,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return swipe(direction, /*element=*/null, SWIPE_DISTANCE, swipeDurationInMillis);
     }
 
-    public Locomotive swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes){
+    public Locomotive swipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes) {
         return repetitiveCenterSwipe(direction, swipeDurationInMillis, numberOfSwipes, SWIPE_DISTANCE);
     }
 
@@ -403,7 +427,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return swipeCenterLong(direction, 0, numberOfSwipes);
     }
 
-    public Locomotive swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes){
+    public Locomotive swipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes) {
         return repetitiveCenterSwipe(direction, swipeDurationInMillis, numberOfSwipes, SWIPE_DISTANCE_LONG);
     }
 
@@ -415,7 +439,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return swipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, swipeDurationInMillis);
     }
 
-    public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes){
+    public Locomotive swipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, int numberOfSwipes) {
         return repetitiveCenterSwipe(direction, swipeDurationInMillis, numberOfSwipes, SWIPE_DISTANCE_SUPER_LONG);
     }
 
@@ -538,7 +562,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE, swipeDurationInMillis);
     }
 
-    public Locomotive longPressSwipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
+    public Locomotive longPressSwipeCenter(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes) {
         short i = 0;
         while (i < numberOfSwipes) {
             longPressSwipeCenter(direction, swipeDurationInMillis);
@@ -579,7 +603,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
     }
 
-    public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
+    public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes) {
         short i = 0;
         while (i < numberOfSwipes) {
             longPressSwipeCenterLong(direction, swipeDurationInMillis);
@@ -596,7 +620,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         return longPressSwipe(direction, /*element=*/null, SWIPE_DISTANCE_SUPER_LONG, swipeDurationInMillis);
     }
 
-    public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes){
+    public Locomotive longPressSwipeCenterSuperLong(SwipeElementDirection direction, int swipeDurationInMillis, short numberOfSwipes) {
         short i = 0;
         while (i < numberOfSwipes) {
             longPressSwipeCenterSuperLong(direction, swipeDurationInMillis);
