@@ -258,21 +258,21 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @Deprecated
     public MobileElement waitForElement(WebElement element) {
-        return waitForElement((MobileElement) element);
+        return waitForElement(element, configuration.getAppiumRequestTimeout());
     }
 
     @Deprecated
     public MobileElement waitForElement(WebElement element, long timeoutInSeconds) {
-        return waitForElement((MobileElement) element, timeoutInSeconds);
+        waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOf(element)), timeoutInSeconds);
+        return (MobileElement) element;
     }
 
     public MobileElement waitForElement(MobileElement element) {
-        return waitForElement(element, configuration.getAppiumRequestTimeout());
+        return waitForElement((WebElement) element);
     }
 
     public MobileElement waitForElement(MobileElement element, long timeoutInSeconds) {
-        waitForCondition(ExpectedConditions.not(ExpectedConditions.invisibilityOf(element)), timeoutInSeconds);
-        return element;
+        return waitForElement((WebElement) element, timeoutInSeconds);
     }
 
     public Locomotive click(String id) {
@@ -284,6 +284,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive click(MobileElement element) {
+        return click((WebElement) element);
+    }
+
+    @Deprecated
+    public Locomotive click(WebElement element) {
         try {
             element.click();
             return this;
@@ -292,11 +297,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         } catch (Exception exception) {
             throw exception;
         }
-    }
-
-    @Deprecated
-    public Locomotive click(WebElement element) {
-        return click((MobileElement) element);
     }
 
     public Locomotive setText(String id, String text) {
@@ -308,20 +308,20 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive setText(MobileElement element, String text) {
-        try {
-            element.clear();
-            element.sendKeys(text);
-            return this;
-        }  catch (NoSuchElementException noSuchElementException) {
-            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to set the text of the element", noSuchElementException);
-        } catch (Exception exception) {
-            throw exception;
-        }
+        return setText((WebElement) element, text);
     }
 
     @Deprecated
     public Locomotive setText(WebElement element, String text) {
-        return setText((MobileElement) element, text);
+        try {
+            element.clear();
+            element.sendKeys(text);
+            return this;
+        } catch (NoSuchElementException noSuchElementException) {
+            throw new NoSuchElementException("Error: Unable to find element: " + element.toString() + " in order to set the text of the element", noSuchElementException);
+        } catch (Exception exception) {
+            throw exception;
+        }
     }
 
     public boolean isPresent(String id) {
@@ -380,17 +380,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @Deprecated
     public String getText(WebElement webElement) {
-        return getText((MobileElement) webElement);
-    }
-
-    public String getText (MobileElement mobileElement) {
         try {
-            return mobileElement.getText();
+            return webElement.getText();
         } catch (NoSuchElementException noSuchElementException) {
-            throw new NoSuchElementException("Error: Unable to find element: " + mobileElement.toString() + " in order to get the text of the element", noSuchElementException);
+            throw new NoSuchElementException("Error: Unable to find element: " + webElement.toString() + " in order to get the text of the element", noSuchElementException);
         } catch (Exception exception) {
             throw exception;
         }
+    }
+
+    public String getText(MobileElement mobileElement) {
+        return getText((WebElement) mobileElement);
     }
 
     public String getAttribute(String id, String attribute) {
@@ -402,6 +402,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public String getAttribute(MobileElement element, String attribute) {
+        return getAttribute((WebElement) element, attribute);
+    }
+
+    @Deprecated
+    public String getAttribute(WebElement element, String attribute) {
         try {
             return element.getAttribute(attribute);
         } catch (NoSuchElementException noSuchElementException) {
@@ -409,11 +414,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         } catch (Exception exception) {
             throw exception;
         }
-    }
-
-    @Deprecated
-    public String getAttribute(WebElement element, String attribute) {
-        return getAttribute((MobileElement) element, attribute);
     }
 
     //region Generic swipes
@@ -438,12 +438,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive swipe(SwipeElementDirection direction, MobileElement element, float percentage) {
-        return swipe(direction, element, percentage, 0);
+        return swipe(direction, (WebElement) element, percentage);
     }
 
     @Deprecated
     public Locomotive swipe(SwipeElementDirection direction, WebElement element, float percentage) {
-        return swipe(direction, (MobileElement) element, percentage);
+        return swipe(direction, element, percentage, 0);
     }
 
     public Locomotive swipe(SwipeElementDirection direction, String id) {
@@ -455,12 +455,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive swipe(SwipeElementDirection direction, MobileElement element) {
-        return swipe(direction, element, SWIPE_DISTANCE, 0);
+        return swipe(direction, (WebElement) element);
     }
 
     @Deprecated
     public Locomotive swipe(SwipeElementDirection direction, WebElement element) {
-        return swipe(direction, (MobileElement) element);
+        return swipe(direction, element, SWIPE_DISTANCE, 0);
     }
 
     public Locomotive swipe(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
@@ -473,12 +473,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
 
     public Locomotive swipe(SwipeElementDirection direction, MobileElement element, int swipeDurationInMillis) {
-        return swipe(direction, element, SWIPE_DISTANCE, swipeDurationInMillis);
+        return swipe(direction, (WebElement) element, swipeDurationInMillis);
     }
 
     @Deprecated
     public Locomotive swipe(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
-        return swipe(direction, (MobileElement) element, swipeDurationInMillis);
+        return swipe(direction, element, SWIPE_DISTANCE, swipeDurationInMillis);
     }
 
     public Locomotive swipeCenterLong(SwipeElementDirection direction) {
@@ -526,12 +526,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, MobileElement element) {
-        return swipe(direction, element, SWIPE_DISTANCE_LONG, 0);
+        return swipeLong(direction, (WebElement) element);
     }
 
     @Deprecated
     public Locomotive swipeLong(SwipeElementDirection direction, WebElement element) {
-        return swipeLong(direction, (MobileElement) element);
+        return swipe(direction, element, SWIPE_DISTANCE_LONG, 0);
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
@@ -543,22 +543,21 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive swipeLong(SwipeElementDirection direction, MobileElement element, int swipeDurationInMillis) {
-        return swipe(direction, element, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
-
+        return swipe(direction, (WebElement) element, swipeDurationInMillis);
     }
 
     @Deprecated
     public Locomotive swipeLong(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
-        return swipeLong(direction, (MobileElement) element, swipeDurationInMillis);
+        return swipe(direction, element, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
     }
 
     public Locomotive swipe(SwipeElementDirection direction, MobileElement element, float percentage, int swipeDurationInMillis) {
-        return performSwipe(direction, false, element, percentage, swipeDurationInMillis);
+        return swipe(direction, (WebElement) element, percentage, swipeDurationInMillis);
     }
 
     @Deprecated
     public Locomotive swipe(SwipeElementDirection direction, WebElement element, float percentage, int swipeDurationInMillis) {
-        return swipe(direction, (MobileElement) element, percentage, swipeDurationInMillis);
+        return performSwipe(direction, false, element, percentage, swipeDurationInMillis);
     }
 
     public Locomotive swipe(Point start, Point end, int swipeDurationInMillis) {
@@ -662,12 +661,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive longPressSwipe(SwipeElementDirection direction, MobileElement element) {
-        return longPressSwipe(direction, element, SWIPE_DISTANCE, 0);
+        return longPressSwipe(direction, (WebElement) element);
     }
 
     @Deprecated
     public Locomotive longPressSwipe(SwipeElementDirection direction, WebElement element) {
-        return longPressSwipe(direction, (MobileElement) element);
+        return longPressSwipe(direction, element, SWIPE_DISTANCE, 0);
     }
 
     public Locomotive longPressSwipe(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
@@ -679,12 +678,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive longPressSwipe(SwipeElementDirection direction, MobileElement element, int swipeDurationInMillis) {
-        return longPressSwipe(direction, element, SWIPE_DISTANCE, swipeDurationInMillis);
+        return longPressSwipe(direction, (WebElement) element, swipeDurationInMillis);
     }
 
     @Deprecated
     public Locomotive longPressSwipe(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
-        return longPressSwipe(direction, (MobileElement) element, swipeDurationInMillis);
+        return longPressSwipe(direction, element, SWIPE_DISTANCE, swipeDurationInMillis);
     }
 
     public Locomotive longPressSwipeCenterLong(SwipeElementDirection direction) {
@@ -730,12 +729,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive longPressSwipeLong(SwipeElementDirection direction, MobileElement element) {
-        return longPressSwipe(direction, element, SWIPE_DISTANCE_LONG, 0);
+        return longPressSwipe(direction, (WebElement) element);
     }
 
     @Deprecated
     public Locomotive longPressSwipeLong(SwipeElementDirection direction, WebElement element) {
-        return longPressSwipeLong(direction, (MobileElement) element);
+        return longPressSwipe(direction, element, SWIPE_DISTANCE_LONG, 0);
     }
 
     public Locomotive longPressSwipeLong(SwipeElementDirection direction, String id, int swipeDurationInMillis) {
@@ -747,21 +746,21 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive longPressSwipeLong(SwipeElementDirection direction, MobileElement element, int swipeDurationInMillis) {
-        return longPressSwipe(direction, element, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
+        return longPressSwipeLong(direction, (WebElement) element, swipeDurationInMillis);
     }
 
     @Deprecated
     public Locomotive longPressSwipeLong(SwipeElementDirection direction, WebElement element, int swipeDurationInMillis) {
-        return longPressSwipeLong(direction, (MobileElement) element, swipeDurationInMillis);
+        return longPressSwipe(direction, element, SWIPE_DISTANCE_LONG, swipeDurationInMillis);
     }
 
     public Locomotive longPressSwipe(SwipeElementDirection direction, MobileElement element, float percentage, int swipeDurationInMillis) {
-        return performSwipe(direction, true, element, percentage, swipeDurationInMillis);
+        return longPressSwipe(direction, (WebElement) element, percentage, swipeDurationInMillis);
     }
 
     @Deprecated
     public Locomotive longPressSwipe(SwipeElementDirection direction, WebElement element, float percentage, int swipeDurationInMillis) {
-        return longPressSwipe(direction, (MobileElement) element, percentage, swipeDurationInMillis);
+        return performSwipe(direction, true, element, percentage, swipeDurationInMillis);
     }
 
     public Locomotive longPressSwipe(Point start, Point end, int swipeDurationInMillis) {
@@ -861,12 +860,12 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     //Overload method for using MobileElement, By, or String
     private Locomotive performSwipe(SwipeElementDirection direction, boolean isLongPress, MobileElement element, float percentage, int swipeDurationInMillis) {
-        return performSwipe(direction, isLongPress, getCenter(element), null, percentage, swipeDurationInMillis);
+        return performSwipe(direction, isLongPress, getCenter((WebElement) element), null, percentage, swipeDurationInMillis);
     }
 
     @Deprecated
     private Locomotive performSwipe(SwipeElementDirection direction, boolean isLongPress, WebElement element, float percentage, int swipeDurationInMillis) {
-        return performSwipe(direction, isLongPress, getCenter((MobileElement) element), null, percentage, swipeDurationInMillis);
+        return performSwipe(direction, isLongPress, getCenter(element), null, percentage, swipeDurationInMillis);
     }
 
     private Locomotive performCornerSwipe(ScreenCorner corner, SwipeElementDirection direction, float percentage, int duration) {
@@ -988,20 +987,16 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
      */
 
     public Point getCenter(MobileElement element) {
-        return new Point(getXCenter(element), getYCenter(element));
+        return getCenter((WebElement) element);
     }
 
     @Deprecated
     public Point getCenter(WebElement element) {
-        return getCenter((MobileElement) element);
+        return new Point(getXCenter(element), getYCenter(element));
     }
 
     public int getXCenter(MobileElement element) {
-        if (element == null) {
-            return getAppiumDriver().manage().window().getSize().getWidth() / 2;
-        } else {
-            return element.getLocation().getX() + (element.getSize().getWidth() / 2);
-        }
+        return getXCenter((WebElement) element);
     }
 
     public int getXCenter() {
@@ -1010,15 +1005,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @Deprecated
     public int getXCenter(WebElement element) {
-        return getXCenter((MobileElement) element);
+        if (element == null) {
+            return getAppiumDriver().manage().window().getSize().getWidth() / 2;
+        } else {
+            return element.getLocation().getX() + (element.getSize().getWidth() / 2);
+        }
     }
 
     public int getYCenter(MobileElement element) {
-        if (element == null) {
-            return getAppiumDriver().manage().window().getSize().getHeight() / 2;
-        } else {
-            return element.getLocation().getY() + (element.getSize().getHeight() / 2);
-        }
+        return getYCenter((WebElement) element);
     }
 
     public int getYCenter() {
@@ -1027,7 +1022,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     @Deprecated
     public int getYCenter(WebElement element) {
-        return getYCenter((MobileElement) element);
+        if (element == null) {
+            return getAppiumDriver().manage().window().getSize().getHeight() / 2;
+        } else {
+            return element.getLocation().getY() + (element.getSize().getHeight() / 2);
+        }
     }
 
     public List<MobileElement> getElements(String id) {
@@ -1074,15 +1073,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive validateTextIgnoreCase(MobileElement element, String text) {
-        String actual = getText(element);
-        Assert.assertTrue(String.format("Text does not match! [expected: %s] [actual: %s]", text, actual),
-                text.equalsIgnoreCase(actual));
-        return this;
+        return validateTextIgnoreCase((WebElement) element, text);
     }
 
     @Deprecated
     public Locomotive validateTextIgnoreCase(WebElement element, String text) {
-        return validateTextIgnoreCase((MobileElement) element, text);
+        String actual = getText(element);
+        Assert.assertTrue(String.format("Text does not match! [expected: %s] [actual: %s]", text, actual),
+                text.equalsIgnoreCase(actual));
+        return this;
     }
 
     public Locomotive validateText(By by, String text) {
@@ -1090,15 +1089,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive validateText(MobileElement element, String text) {
-        String actual = getText(element);
-        Assert.assertTrue(String.format("Text does not match! [expected: %s] [actual: %s]", text, actual),
-                text.equals(actual));
-        return this;
+        return validateText((WebElement) element, text);
     }
 
     @Deprecated
     public Locomotive validateText(WebElement element, String text) {
-        return validateText((MobileElement) element, text);
+        String actual = getText(element);
+        Assert.assertTrue(String.format("Text does not match! [expected: %s] [actual: %s]", text, actual),
+                text.equals(actual));
+        return this;
     }
 
     public Locomotive validateTextNot(String id, String text) {
@@ -1114,15 +1113,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive validateTextNotIgnoreCase(MobileElement element, String text) {
-        String actual = getText(element);
-        Assert.assertFalse(String.format("Text matches! [expected: %s] [actual: %s]", text, actual),
-                text.equalsIgnoreCase(actual));
-        return this;
+        return validateTextNotIgnoreCase((WebElement) element, text);
     }
 
     @Deprecated
     public Locomotive validateTextNotIgnoreCase(WebElement element, String text) {
-       return validateTextNotIgnoreCase((MobileElement) element, text);
+        String actual = getText(element);
+        Assert.assertFalse(String.format("Text matches! [expected: %s] [actual: %s]", text, actual),
+                text.equalsIgnoreCase(actual));
+        return this;
     }
 
     public Locomotive validateTextNot(By by, String text) {
@@ -1130,15 +1129,15 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive validateTextNot(MobileElement element, String text) {
-        String actual = getText(element);
-        Assert.assertFalse(String.format("Text matches! [expected: %s] [actual: %s]", text, actual),
-                text.equals(actual));
-        return this;
+        return validateTextNot((WebElement) element, text);
     }
 
     @Deprecated
     public Locomotive validateTextNot(WebElement element, String text) {
-        return validateTextNot((MobileElement) element, text);
+        String actual = getText(element);
+        Assert.assertFalse(String.format("Text matches! [expected: %s] [actual: %s]", text, actual),
+                text.equals(actual));
+        return this;
     }
 
     public Locomotive validateTextPresent(String text) {
@@ -1160,6 +1159,11 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     }
 
     public Locomotive validateAttribute(MobileElement element, String attr, String expected) {
+        return validateAttribute((WebElement) element, attr, expected);
+    }
+
+    @Deprecated
+    public Locomotive validateAttribute(WebElement element, String attr, String expected) {
         String actual = null;
         try {
             actual = element.getAttribute(attr);
@@ -1183,11 +1187,6 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                 m.find());
 
         return this;
-    }
-
-    @Deprecated
-    public Locomotive validateAttribute(WebElement element, String attr, String regex) {
-        return validateAttribute((MobileElement) element, attr, regex);
     }
 
     public Locomotive validateTrue(boolean condition) {
