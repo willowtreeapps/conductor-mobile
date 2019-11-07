@@ -800,7 +800,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         if (direction != null) {
             switch (direction) {
                 case UP:
-                    int toYUp = (int) (from.getY() - (screen.getHeight() * percentage));
+                    int toYUp = (int) (from.getY() - (from.getY() * percentage));
                     toYUp = toYUp <= 0 ? 1 : toYUp; // toYUp cannot be less than 0
                     to = new Point(from.getX(), toYUp);
                     break;
@@ -815,7 +815,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
                     to = new Point(from.getX(), toYDown);
                     break;
                 case LEFT:
-                    int toXLeft = (int) (from.getX() - (screen.getWidth() * percentage));
+                    int toXLeft = (int) (from.getX() - (from.getX() * percentage));
                     toXLeft = toXLeft <= 0 ? 1 : toXLeft; // toXLeft cannot be less than 0
                     to = new Point(toXLeft, from.getY());
                     break;

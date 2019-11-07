@@ -55,7 +55,7 @@ Platforms can override defaults just be re-specifying them in the platform secti
 
 ## Schemes
 
-Sometimes it is useful to specify properties under specific circumstances, and this is what "schemes" are for.  Schemes override properties in the configuarion *in the order they are specified in the `currentSchemes` section of the configuration file.*
+Sometimes it is useful to specify properties under specific circumstances, and this is what "schemes" are for.  Schemes override properties in the configuration *in the order they are specified in the `currentSchemes` section of the configuration file.*
 
 You might, for example, have a scheme for running on a specific device or specific remote testing tool. It's a pain to have to re-specify these so, Conductor makes this easy with schemes. Some example schemes:
 
@@ -113,6 +113,7 @@ You can see a variety of example configuration files in the unit tests for condu
 - ```setText(By, text)```
 - ```getText(By)```
 - ```isPresent(By)```
+- ```isPresentWait(By)```
 - ```getAttribute(By, attribute)```
 - ```swipe(SwipeElementDirection, By)```
 - etc.
@@ -129,7 +130,7 @@ This is one of the most important features that I want to _*accentuate*_.
 All of these methods are able to be called in-line, and fluently without ever having to break your tests.
 
 # Implicit Waiting
-The ```AutomationTest``` class extends on this concept by implenting a sort of ```waitFor``` functionality which ensures that an object appears before interacting with it.  This rids of most ```ElementNotFound``` exceptions that Appium will cough up.
+The ```AutomationTest``` class extends on this concept by implementing a sort of ```waitFor``` functionality which ensures that an object appears before interacting with it.  This rids of most ```ElementNotFound``` exceptions that Appium will cough up.
 
 # Platform Identifier Annotation
 Support for grouping your platform (android, ios) IDs into one place via annotations:
@@ -151,7 +152,7 @@ Initialize once in the BasePage constructor i.e.:
 ```java
 public BasePage(Locomotive driver) {
     this.driver = driver;
-    PlatformFindByHelper.initIds(this, driver.configuration.getPlatformName());
+        PlatformFindByHelper.initIds(this, driver.configuration.getPlatformName());
 }   
 ```
 

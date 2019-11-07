@@ -345,7 +345,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(25, 50), new Point(-25, 0)};
+        Point[] moveTo = {new Point(37, 50), new Point(-13, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -369,7 +369,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(1, 50), new Point(-49, 0)};
+        Point[] moveTo = {new Point(25, 50), new Point(-25, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -393,7 +393,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(50, 25), new Point(0, -25)};
+        Point[] moveTo = {new Point(50, 37), new Point(0, -13)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -417,7 +417,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(50, 1), new Point(0, -49)};
+        Point[] moveTo = {new Point(50, 25), new Point(0, -25)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -796,7 +796,7 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(1, 5), new Point(-4, 0)};
+        Point[] moveTo = {new Point(3, 5), new Point(-2, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -821,7 +821,7 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(1, 5), new Point(-4, 0)};
+        Point[] moveTo = {new Point(2, 5), new Point(-3, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -846,7 +846,7 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(5, 1), new Point(0, -4)};
+        Point[] moveTo = {new Point(5, 3), new Point(0, -2)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -871,7 +871,7 @@ public class LocomotiveTest {
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(5, 1), new Point(0, -4)};
+        Point[] moveTo = {new Point(5, 2), new Point(0, -3)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
