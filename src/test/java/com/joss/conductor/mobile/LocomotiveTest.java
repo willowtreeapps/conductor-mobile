@@ -1,18 +1,14 @@
 package com.joss.conductor.mobile;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.assertj.swing.assertions.Assertions;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.BeforeMethod;
@@ -23,7 +19,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static com.joss.conductor.mobile.MockTestUtil.matchesEntriesIn;
 import static com.joss.conductor.mobile.SwipeElementDirection.DOWN;
@@ -31,10 +26,7 @@ import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created on 9/14/16.
@@ -157,7 +149,7 @@ public class LocomotiveTest {
 
     @Test
     public void test_get_center_web_element() {
-        WebElement element = mock(WebElement.class);
+        MobileElement element = mock(MobileElement.class);
         when(element.getLocation()).thenReturn(new Point(50, 0));
         when(element.getSize()).thenReturn(new Dimension(10, 10));
 
@@ -281,14 +273,14 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(20, 20), new Point(19,19)};
+        Point[] moveTo = {new Point(20, 20), new Point(19, 19)};
 
         for (int i = 0; i < configs.length; i++) {
             final Locomotive locomotive = new Locomotive()
                     .setConfiguration(configs[i])
                     .setAppiumDriver(mockDriver);
 
-            locomotive.swipe(new Point(1,1), new Point(20, 20));
+            locomotive.swipe(new Point(1, 1), new Point(20, 20));
             ArgumentCaptor<TouchAction> touchCapture = ArgumentCaptor.forClass(TouchAction.class);
             verify(mockDriver, times(i + 1))
                     .performTouchAction(touchCapture.capture());
@@ -353,7 +345,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(25, 50), new Point(-25, 0)};
+        Point[] moveTo = {new Point(37, 50), new Point(-13, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -377,7 +369,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(1, 50), new Point(-49, 0)};
+        Point[] moveTo = {new Point(25, 50), new Point(-25, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -401,7 +393,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(50, 25), new Point(0, -25)};
+        Point[] moveTo = {new Point(50, 37), new Point(0, -13)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -425,7 +417,7 @@ public class LocomotiveTest {
         initMockDriverSizes();
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(50, 1), new Point(0, -49)};
+        Point[] moveTo = {new Point(50, 25), new Point(0, -25)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -750,7 +742,7 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_down() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
@@ -775,7 +767,7 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_down_long() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
@@ -800,11 +792,11 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_left() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(1, 5), new Point(-4, 0)};
+        Point[] moveTo = {new Point(3, 5), new Point(-2, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -825,11 +817,11 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_left_long() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(1, 5), new Point(-4, 0)};
+        Point[] moveTo = {new Point(2, 5), new Point(-3, 0)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -850,11 +842,11 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_up() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(5, 1), new Point(0, -4)};
+        Point[] moveTo = {new Point(5, 3), new Point(0, -2)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -875,11 +867,11 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_up_long() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
-        Point[] moveTo = {new Point(5, 1), new Point(0, -4)};
+        Point[] moveTo = {new Point(5, 2), new Point(0, -3)};
 
         for (int i = 0; i < 2; ++i) {
             final Locomotive locomotive = new Locomotive()
@@ -900,7 +892,7 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_right() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
@@ -925,7 +917,7 @@ public class LocomotiveTest {
 
     @Test
     public void test_perform_swipe_on_element_right_long() {
-        final WebElement element = mock(WebElement.class);
+        final MobileElement element = mock(MobileElement.class);
         initMockDriverSizes(element);
 
         ConductorConfig[] configs = {androidConfig, iosConfig};
@@ -946,5 +938,78 @@ public class LocomotiveTest {
                             .moveTo(point(moveTo[i].x, moveTo[i].y))
                             .release());
         }
+    }
+
+    @Test
+    public void test_getText_returns_element_text() {
+        final MobileElement element = mock(MobileElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getText()).thenReturn("string");
+        assertThat("Expected element text to return \"ElementText\" but it does not.", locomotive.getText(element).equals("string"));
+    }
+
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Error: Unable to find element: .*" )
+    public void test_getText_returns_exception() {
+        final MobileElement element = mock(MobileElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getText()).thenThrow(NoSuchElementException.class);
+        locomotive.getText(element);
+    }
+
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Error: Unable to find element: .*")
+    public void test_setText_returns_exception() {
+        final MobileElement element = mock(MobileElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        doThrow(NoSuchElementException.class).when(element).sendKeys(anyString());
+
+        locomotive.setText(element, "text");
+    }
+
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Error: Unable to find element: .*")
+    public void test_click_returns_exception() {
+        final MobileElement element = mock(MobileElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        doThrow(NoSuchElementException.class).when(element).click();
+        locomotive.click(element);
+    }
+
+    @Test
+    public void test_getAttribute_returns_attribute() {
+        final MobileElement element = mock(MobileElement.class);
+
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getAttribute(anyString())).thenReturn("true");
+        assertThat("Error: Expected element attribute of \"visible\" to return \"true\", but it did not.", locomotive.getAttribute(element, "visible").equals("true"));
+    }
+
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Error: Unable to find element: .*")
+    public void test_getAttribute_returns_exception() {
+        final MobileElement element = mock(MobileElement.class);
+        
+        final Locomotive locomotive = new Locomotive()
+                .setConfiguration(androidConfig)
+                .setAppiumDriver(mockDriver);
+
+        when(element.getAttribute(anyString())).thenThrow(NoSuchElementException.class);
+        locomotive.getAttribute(element, anyString());
     }
 }
