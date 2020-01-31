@@ -580,21 +580,46 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
     //endregion Generic swipes
 
     //region Directional swipes
+
+    @Deprecated
     public void swipeDown() {
         swipeCenterLong(SwipeElementDirection.UP);
     }
 
+    @Deprecated
     public void swipeDown(int times) {
         for (int i = 0; i < times; i++) {
             swipeCenterLong(SwipeElementDirection.UP);
         }
     }
 
+    public void scrollDown() {
+        swipeCenterLong(SwipeElementDirection.UP);
+    }
+
+    public void scrollDown(int times) {
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.UP);
+        }
+    }
+
+    @Deprecated
     public void swipeUp() {
         swipeCenterLong(SwipeElementDirection.DOWN);
     }
 
+    @Deprecated
     public void swipeUp(int times) {
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.DOWN);
+        }
+    }
+
+    public void scrollUp() {
+        swipeCenterLong(SwipeElementDirection.DOWN);
+    }
+
+    public void scrollUp(int times) {
         for (int i = 0; i < times; i++) {
             swipeCenterLong(SwipeElementDirection.DOWN);
         }
