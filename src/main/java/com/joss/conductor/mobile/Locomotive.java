@@ -581,11 +581,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
 
     //region Directional swipes
 
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollDown()} instead
+     */
     @Deprecated
     public void swipeDown() {
         swipeCenterLong(SwipeElementDirection.UP);
     }
 
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollDown()} instead
+     */
     @Deprecated
     public void swipeDown(int times) {
         for (int i = 0; i < times; i++) {
@@ -603,11 +609,17 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         }
     }
 
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollUp()} instead
+     */
     @Deprecated
     public void swipeUp() {
         swipeCenterLong(SwipeElementDirection.DOWN);
     }
 
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollUp()} instead
+     */
     @Deprecated
     public void swipeUp(int times) {
         for (int i = 0; i < times; i++) {
@@ -625,21 +637,57 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         }
     }
 
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollRight()} instead
+     */
+    @Deprecated
     public void swipeRight() {
         swipeCenterLong(SwipeElementDirection.LEFT);
     }
 
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollRight()} instead
+     */
+    @Deprecated
     public void swipeRight(int times) {
         for (int i = 0; i < times; i++) {
             swipeCenterLong(SwipeElementDirection.LEFT);
         }
     }
 
+    public void scrollRight() {
+        swipeCenterLong(SwipeElementDirection.LEFT);
+    }
+
+    public void scrollRight(int times) {
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.LEFT);
+        }
+    }
+
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollLeft()} instead
+     */
+    @Deprecated
     public void swipeLeft() {
         swipeCenterLong(SwipeElementDirection.RIGHT);
     }
 
+    /***
+     * @deprecated since 0.20.0, use {@link #scrollLeft()} instead
+     */
+    @Deprecated
     public void swipeLeft(int times) {
+        for (int i = 0; i < times; i++) {
+            swipeCenterLong(SwipeElementDirection.RIGHT);
+        }
+    }
+
+    public void scrollLeft() {
+        swipeCenterLong(SwipeElementDirection.RIGHT);
+    }
+
+    public void scrollLeft(int times) {
         for (int i = 0; i < times; i++) {
             swipeCenterLong(SwipeElementDirection.RIGHT);
         }
