@@ -150,7 +150,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
             DesiredCapabilities capabilities = onCapabilitiesCreated(getCapabilities(configuration));
 
             AppiumServiceBuilder builder = new AppiumServiceBuilder()
-                    .withArgument(GeneralServerFlag.LOG_LEVEL, "debug");
+                    .withArgument(GeneralServerFlag.LOG_LEVEL, "warn");
 
             switch (configuration.getPlatformName()) {
                 case ANDROID:
