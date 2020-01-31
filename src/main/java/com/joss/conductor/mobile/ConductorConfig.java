@@ -176,7 +176,7 @@ public class ConductorConfig {
 
             if (key.equals(CUSTOM_CAPABILITIES)) {
                 putCustomCapabilities(properties.get(key));
-            } else if (key.equals("timeout") || key.equals("retries")){ //to automatically read deprecated
+            } else if (key.equals("timeout") || key.equals("retries")) { //to automatically read deprecated
                 String newKey = key.equals("timeout") ? "appiumRequestTimeout" : "implicitWaitTime";
                 System.out.println("\"" + key + "\" has been deprecated. Please remove it from your config.yaml and replace it with \"" + newKey + "\"");
                 setProperty(newKey, properties.get(key).toString());
@@ -347,7 +347,7 @@ public class ConductorConfig {
             try {
                 url = new URL(hub);
             } catch (MalformedURLException e) {
-                Logger.error("Failure parsing Hub Url", e);
+                Logger.error(e, "Failure parsing Hub Url");
             }
         }
 
