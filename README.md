@@ -12,7 +12,7 @@ Conductor Mobile is a port of the [Conductor](https://github.com/conductor-frame
     <dependency>
         <groupId>com.willowtreeapps</groupId>
         <artifactId>conductor-mobile</artifactId>
-        <version>0.19.3</version>
+        <version>0.20.0</version>
     </dependency>
 </dependencies>
 ```
