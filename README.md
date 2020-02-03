@@ -44,12 +44,12 @@ defaults:
   autoGrantPermissions: true
 
   ios:
-    platformVersion: 11.0
-    deviceName: iPhone 8
+    platformVersion: 13.0
+    deviceName: iPhone 11 Pro
 
   android:
     appiumRequestTimeout: 15
-    platformVersion: 8.0
+    platformVersion: 10.0
 ```
 Platforms can override defaults just be re-specifying them in the platform section
 
@@ -64,8 +64,8 @@ ios_sauce_labs:
   hub: http://saucelabs-hub
   appFile: sauce-storage:app.zip
   automationName: XCUITest
-  platformVersion: 11.1
-  deviceName: iPhone 8
+  platformVersion: 13.0
+  deviceName: iPhone 11 Pro
 
 shorter_timeouts:
   appiumRequestTimeout: 1
@@ -129,45 +129,37 @@ This is one of the most important features that I want to _*accentuate*_.
 
 All of these methods are able to be called in-line, and fluently without ever having to break your tests.
 
-# Implicit Waiting
-The ```AutomationTest``` class extends on this concept by implementing a sort of ```waitFor``` functionality which ensures that an object appears before interacting with it.  This rids of most ```ElementNotFound``` exceptions that Appium will cough up.
-
 # Platform Identifier Annotation
-Support for grouping your platform (android, ios) IDs into one place via annotations:
-```java 
-@AndroidFindBy("google")
-@IOSFindBy("apple")
-public By Item;
-```
 
-Default locator is `By.id` but there is also support for `By.xpath` and 'By.className':
-```java 
-@AndroidFindBy(xpath = "//*[@text='Knock Knock']")
-@IOSFindBy(className = "//*[@text='Who's there?']")
-public By XpathItem;
-```
-String types are not supported, must be type `By`.
+Initiate in BasePage:
 
-Initialize once in the BasePage constructor i.e.:
-```java
-public BasePage(Locomotive driver) {
-    this.driver = driver;
-        PlatformFindByHelper.initIds(this, driver.configuration.getPlatformName());
-}   
-```
+    public BasePage(Locomotive driver) {
+        this.driver = driver;
+        PageFactory.initElements(new AppiumFieldDecorator(getDriver().getAppiumDriver()), this);
+    }
+    
+Use in Pages:    
+    
+    import io.appium.java_client.pagefactory.AndroidFindBy;
+    import io.appium.java_client.pagefactory.iOSXCUITFindBy;
+    
+        @iOSXCUITFindBy(id = "accounts_tab")
+        @AndroidFindBy(id = "tab_accounts")
+        private MobileElement ACCOUNT_TAB;
 
 # Pull requests
-If you have an idea for the framework, fork it and submit a pull-request!
+To contribute, fork our project on GitHub, then submit a pull request to our master branch. (If you're a collaborator, just branch off of master)
 
 # Release process
- We follow gitflow branch management [reference graphic](http://nvie.com/posts/a-successful-git-branching-model/). The
- steps to make a new release are:
- 1. Create a release branch from the develop branch named `release/x.x.x`.
- 2. Create a new pull request from the release branch to the master branch.
- 3. If approved merge release branch into master.
- 4. Tag the merge (with release notes) in the master branch with `x.x.x` (this will make this version available in jitpack).
- 5. Create a new pull request from master to develop so all changes are back in develop.
- 6. If approved merge master branch into develop.
+We follow [trunk-based development](https://trunkbaseddevelopment.com/).
+ 
+ 1. Create a branch off of `master` and set the version # and remove `-SNAPSHOT`. This can be done in the feature-branch you are working on.
+ 2. If approved merge branch into `master`. This will trigger the upload to Maven.
+ 3. Tag the merge commit in the master branch. `git tag 0.20.0 cdd9fad`
+ 4. Push Tag to Remote. `git push origin 0.20.0`
+ 5. Create Release in Github and add Release Notes, select the pushed up tag.
+ 6. Go to Sonatype, `Close` then `Release` the artifact.
+ 7. Releasing will move the components into the release repository of OSSRH where it will be synced to the Central Repositories
 
 # Use with Sauce Labs
 *Note: it is recommended you create a scheme for sauce labs testing when possible*
@@ -176,8 +168,16 @@ If you have an idea for the framework, fork it and submit a pull-request!
  2. upload the .app file as a zip to temporary [sauce storage](https://wiki.saucelabs.com/display/DOCS/Uploading+Mobile+Applications+to+Sauce+Storage+for+Testing)
  3. set the hub property to connect to saucelabs `https://<login-name>:<API-token>@ondemand.saucelabs.com:443/wd/hub`
  4. set the appFile property to `sauce-storage:<zip-filename>.zip`
- 5. run the test
+ 5. run the test with a scheme set
  
+ ```
+sauce-android-mock:
+  hub: https://${SAUCE_USERNAME}:${SAUCE_ACCESS_KEY}@ondemand.saucelabs.com:443/wd/hub
+  sauceUserName: ${SAUCE_USERNAME}
+  sauceAccessKey: ${SAUCE_ACCESS_KEY}
+  appFile: sauce-storage:${APP_FILENAME}
+```
+
  # Dependency Updates
  
  We're using [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin) to help find out-of-date dependencies. 
