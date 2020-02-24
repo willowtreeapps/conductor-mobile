@@ -13,6 +13,8 @@ repositories {
 }
 
 ext {
+    isReleaseVersion = !(project.version =~ /-SNAPSHOT$/)
+
     snakeYamlVersion = '1.25'
     tinyLogVersion = '1.3.6'
     appiumJavaClientVersion = '7.3.0'
@@ -28,21 +30,21 @@ ext {
     mockitoCoreVersion = '2.18.3'
 }
 
-    dependencies {
-        compile "org.tinylog:tinylog:$tinyLogVersion"
-        compile "org.yaml:snakeyaml:$snakeYamlVersion"
-        compile "io.appium:java-client:$appiumJavaClientVersion"
-        compile "org.glassfish:javax.annotation:$glassfishJavaxAnnotationVersion"
-        compile "org.junit.platform:junit-platform-surefire-provider:$junitPlatformSurefireProviderVersion"
-        compile "org.testng:testng:$testngVersion"
-        compile "org.assertj:assertj-swing-junit:$assertjSwingJunitVersion"
-        compile "com.saucelabs:sauce_testng:$sauceTestngVersion"
+dependencies {
+    compile "org.tinylog:tinylog:$tinyLogVersion"
+    compile "org.yaml:snakeyaml:$snakeYamlVersion"
+    compile "io.appium:java-client:$appiumJavaClientVersion"
+    compile "org.glassfish:javax.annotation:$glassfishJavaxAnnotationVersion"
+    compile "org.junit.platform:junit-platform-surefire-provider:$junitPlatformSurefireProviderVersion"
+    compile "org.testng:testng:$testngVersion"
+    compile "org.assertj:assertj-swing-junit:$assertjSwingJunitVersion"
+    compile "com.saucelabs:sauce_testng:$sauceTestngVersion"
 
-        testCompile "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
-        testCompile "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
-        testCompile "org.junit.vintage:junit-vintage-engine:$junitVintageEngineVersion"
-        testCompile "org.mockito:mockito-core:$mockitoCoreVersion"
-    }
+    testCompile "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
+    testCompile "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
+    testCompile "org.junit.vintage:junit-vintage-engine:$junitVintageEngineVersion"
+    testCompile "org.mockito:mockito-core:$mockitoCoreVersion"
+}
 
 
 test {
@@ -66,7 +68,6 @@ publishing {
 
     repositories {
         maven {
-            def isReleaseVersion = !(project.version =~ /-SNAPSHOT$/)
             if (isReleaseVersion) {
                 url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
             } else {
@@ -119,7 +120,7 @@ publishing {
     }
 }
 
-if (project.hasProperty("signing.keyId")) {
+if (project.hasProperty("signing.keyId") && isReleaseVersion) {
     signing {
         sign publishing.publications.lib
     }
