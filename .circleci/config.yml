@@ -5,21 +5,19 @@ jobs:
   build:
     working_directory: ~/code
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:8-jdk-browsers
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
       - run:
-            name: Install node
-            command: |
-              curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-              sudo apt-get install -y nodejs
-              sudo apt-get install -y build-essential
-              sudo apt-get install build-essential curl git m4 python-setuptools ruby texinfo libbz2-dev libcurl4-openssl-dev libexpat-dev libncurses-dev zlib1g-dev
+          name: Install node
+          command: |
+            ./scripts/install_nodejs.sh
       - run:
           name: Install Appium
-          command: sudo npm install -g appium@1.13.0 --unsafe-perm=true --allow-root
+          command: |
+            ./scripts/install_appium.sh
       - restore_cache:
           key: j-{{ checksum "build.gradle" }}-{{ checksum  "settings.gradle" }}
       #      - run:
@@ -37,11 +35,7 @@ jobs:
           reports_path: build/reports
       - deploy:
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              echo "$MAVEN_CENTRAL_SEC_RING" | base64 -d > $HOME/secring.gpg
-              gpg --import --batch $HOME/secring.gpg
-              gradle publish -Psonatype.username="$SONATYPE_USERNAME" -Psonatype.password="$SONATYPE_PASSWORD" -Psigning.keyId=0E7A8B89 -Psigning.password="$MAVEN_CENTRAL_KEY_PASSPHRASE" -Psigning.secretKeyRingFile=$HOME/secring.gpg -Porg.gradle.parallel=false
-            fi
+            ./scripts/publish_to_maven_central.sh
 workflows:
   version: 2
   build:

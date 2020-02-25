@@ -4,13 +4,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
+import io.appium.java_client.MobileElement;
+
 /**
  * Created on 8/19/16.
  */
 public interface Conductor<Test> {
-
-    WebElement waitForElement(String id);
-    WebElement waitForElement(By by);
 
     /*
         Actions
@@ -22,7 +21,8 @@ public interface Conductor<Test> {
      */
     Test click(String id);
     Test click(By by);
-    Test click(WebElement element);
+    Test click(WebElement webElement);
+    Test click(MobileElement mobileElement);
 
     /**
      * Clears the text from a text field, and sets it.
@@ -32,7 +32,8 @@ public interface Conductor<Test> {
      */
     Test setText(String id, String text);
     Test setText(By by, String text);
-    Test setText(WebElement element, String text);
+    Test setText(WebElement webElement, String text);
+    Test setText(MobileElement mobileElement, String text);
 
     /**
      * Checks if the element is present or not.<br>
@@ -42,6 +43,7 @@ public interface Conductor<Test> {
      */
     boolean isPresent(String id);
     boolean isPresent(By by);
+    boolean isPresent(MobileElement mobileElement);
 
     /**
      * Method to continuously checks if the element is present or not for 5 seconds (default).<br>
@@ -51,6 +53,7 @@ public interface Conductor<Test> {
      */
     boolean isPresentWait(String id);
     boolean isPresentWait(By by);
+    boolean isPresentWait(MobileElement mobileElement);
 
     /**
      * Get the text of an element.
@@ -60,7 +63,8 @@ public interface Conductor<Test> {
      */
     String getText(String id);
     String getText(By by);
-    String getText(WebElement element);
+    String getText(WebElement webElement);
+    String getText(MobileElement mobileElement);
 
     /**
      * Get an attribute of an element
@@ -71,6 +75,8 @@ public interface Conductor<Test> {
     String getAttribute(String id, String attribute);
     String getAttribute(By by, String attribute);
     String getAttribute(WebElement element, String attribute);
+    String getAttribute(MobileElement mobileElement, String attribute);
+
 
     /**
      * Swipe on specified direction from center 25 percent of the screen

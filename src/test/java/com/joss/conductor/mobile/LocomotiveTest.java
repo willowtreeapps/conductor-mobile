@@ -131,23 +131,6 @@ public class LocomotiveTest {
     }
 
     @Test
-    public void test_is_present_wait_found_on_first_try() {
-        By id = mock(By.class);
-        WebElement foundElement = mock(WebElement.class);
-        when(foundElement.isDisplayed()).thenReturn(true);
-
-        when(mockDriver.findElements(id)).thenReturn(Collections.singletonList(foundElement));
-        Locomotive locomotive = new Locomotive()
-                .setConfiguration(androidConfig)
-                .setAppiumDriver(mockDriver);
-
-        Assertions.assertThat(locomotive.isPresentWait(id))
-                .isEqualTo(true);
-        verify(mockDriver, times(1))
-                .findElements(id);
-    }
-
-    @Test
     public void test_get_center_web_element() {
         MobileElement element = mock(MobileElement.class);
         when(element.getLocation()).thenReturn(new Point(50, 0));
@@ -972,12 +955,12 @@ public class LocomotiveTest {
                 .setConfiguration(androidConfig)
                 .setAppiumDriver(mockDriver);
 
-        doThrow(NoSuchElementException.class).when(element).sendKeys(anyString());
+        doThrow(NoSuchElementException.class).when(element).setValue(anyString());
 
         locomotive.setText(element, "text");
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Error: Unable to find element: .*")
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Element should be defined")
     public void test_click_returns_exception() {
         final MobileElement element = mock(MobileElement.class);
 
@@ -985,7 +968,7 @@ public class LocomotiveTest {
                 .setConfiguration(androidConfig)
                 .setAppiumDriver(mockDriver);
 
-        doThrow(NoSuchElementException.class).when(element).click();
+        doThrow(IllegalArgumentException.class).when(element).click();
         locomotive.click(element);
     }
 
