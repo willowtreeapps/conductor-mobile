@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'maven-publish'
     id 'signing'
     id "com.github.ben-manes.versions" version "0.25.0"
@@ -13,7 +13,7 @@ repositories {
 }
 
 ext {
-    isReleaseVersion = !(project.version =~ /-SNAPSHOT$/)
+    isReleaseVersion = version.endsWith('SNAPSHOT') ? false : true
 
     snakeYamlVersion = '1.25'
     tinyLogVersion = '1.3.6'
@@ -68,11 +68,9 @@ publishing {
 
     repositories {
         maven {
-            if (isReleaseVersion) {
-                url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-            } else {
-                url 'https://oss.sonatype.org/content/repositories/snapshots/'
-            }
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
             credentials {
                 username = project.findProperty('sonatype.username')
@@ -111,8 +109,10 @@ publishing {
 
                 developers {
                     developer {
-                        id = 'joss'
-                        name = 'Jossay Jacobo'
+                        id = 'mrk-han'
+                        name = 'Mark Han'
+                        email = 'mark.han@willowtreeapps.com'
+                        organizationUrl = 'http://willowtreeapps.com/'
                     }
                 }
             }
@@ -120,7 +120,7 @@ publishing {
     }
 }
 
-if (project.hasProperty("signing.keyId") && isReleaseVersion) {
+if (project.hasProperty("signing.keyId") && ext.isReleaseVersion) {
     signing {
         sign publishing.publications.lib
     }
