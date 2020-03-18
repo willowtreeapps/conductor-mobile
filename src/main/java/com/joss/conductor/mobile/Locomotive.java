@@ -201,7 +201,7 @@ public class Locomotive extends Watchman implements Conductor<Locomotive>, Sauce
         if (startCounter > configuration.getStartSessionRetries()) {
             // maximum amount of retries reached
             throw new WebDriverException(
-                    "Could not start Appium Session");
+                    "Could not start Appium Session with capabilities: " + getCapabilities(configuration).toString());
         }
 
         // start a new session
