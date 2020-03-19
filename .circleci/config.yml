@@ -25,7 +25,7 @@ jobs:
       #         command: sudo chmod +x ./gradlew
       - run:
           name: Check
-          command: gradle test
+          command: ./gradlew test
       - save_cache:
           paths:
             - ~/.gradle
